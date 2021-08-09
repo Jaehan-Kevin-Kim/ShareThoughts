@@ -1,9 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Link from "next/link";
 
 const AppLayout = (props) => {
   return (
     <div>
+      <div>
+        <Link href="/profile">
+          <a>Profile</a>
+        </Link>
+        <Link href="/">
+          <a>ShareThoughts</a>
+        </Link>
+        <Link href="/signup">
+          <a>Sign Up</a>
+        </Link>
+      </div>
       Common Section
       {props.children}
     </div>
