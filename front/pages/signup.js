@@ -1,10 +1,16 @@
+import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 
 const signup = () => {
   return (
-    <AppLayout>
-      <div>Signup Page</div>
-    </AppLayout>
+    <>
+      <Head>
+        <title>Sign Up | Share Thoughts</title>
+      </Head>
+      <AppLayout>
+        <div>Signup Page</div>
+      </AppLayout>
+    </>
   );
 };
 

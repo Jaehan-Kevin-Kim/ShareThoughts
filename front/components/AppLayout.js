@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
-import { Menu } from "antd";
+import { Input, Menu, Row, Col } from "antd";
 import "antd/dist/antd.css";
 
 const AppLayout = (props) => {
@@ -10,14 +10,20 @@ const AppLayout = (props) => {
       <div>
         <Menu mode="horizontal">
           <Menu.Item>
+            <Link href="/">
+              <a>ShareThoughts</a>
+            </Link>
+          </Menu.Item>
+          <Menu.Item>
             <Link href="/profile">
               <a>Profile</a>
             </Link>
           </Menu.Item>
           <Menu.Item>
-            <Link href="/">
-              <a>ShareThoughts</a>
-            </Link>
+            <Input.Search
+              enterButton
+              style={{ verticalAlign: "middle", background: "crimson", border: "none" }}
+            />
           </Menu.Item>
           <Menu.Item>
             <Link href="/signup">
@@ -25,9 +31,20 @@ const AppLayout = (props) => {
             </Link>
           </Menu.Item>
         </Menu>
+        <Row gutter={8}>
+          <Col xs={24} md={6} lg={4}>
+            Left Section
+          </Col>
+          <Col xs={24} md={12} lg={16}>
+            {props.children}
+          </Col>
+          <Col xs={24} md={6} lg={4}>
+            <a href="https://kevin-kim.netlify.app/" target="_blank" rel="noreferrer noopener">
+              Made by Kevin
+            </a>
+          </Col>
+        </Row>
       </div>
-      Common Section
-      {props.children}
     </div>
   );
 };
