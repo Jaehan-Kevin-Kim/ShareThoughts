@@ -1,20 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { Menu } from "antd";
+import "antd/dist/antd.css";
 
 const AppLayout = (props) => {
   return (
     <div>
       <div>
-        <Link href="/profile">
-          <a>Profile</a>
-        </Link>
-        <Link href="/">
-          <a>ShareThoughts</a>
-        </Link>
-        <Link href="/signup">
-          <a>Sign Up</a>
-        </Link>
+        <Menu mode="horizontal">
+          <Menu.Item>
+            <Link href="/profile">
+              <a>Profile</a>
+            </Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link href="/">
+              <a>ShareThoughts</a>
+            </Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link href="/signup">
+              <a>Sign Up</a>
+            </Link>
+          </Menu.Item>
+        </Menu>
       </div>
       Common Section
       {props.children}
