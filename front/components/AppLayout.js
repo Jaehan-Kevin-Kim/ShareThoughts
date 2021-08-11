@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import { Input, Menu, Row, Col } from "antd";
 import "antd/dist/antd.css";
+import UserProfile from "./UserProfile";
+import LoginForm from "./LoginForm";
 
 const AppLayout = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <div>
       <div>
@@ -33,7 +36,7 @@ const AppLayout = (props) => {
         </Menu>
         <Row gutter={8}>
           <Col xs={24} md={6} lg={4}>
-            Left Section
+            {isLoggedIn ? <UserProfile /> : <LoginForm />}
           </Col>
           <Col xs={24} md={12} lg={16}>
             {props.children}
