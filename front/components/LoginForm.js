@@ -1,7 +1,15 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
+import styled from "@emotion/styled";
 
+const ButtonWrapper = styled.div`
+  margin-top: 10px;
+`;
+
+const FormItem = styled(Form.Item)`
+  margin: 0;
+`;
 const LoginForm = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
@@ -23,13 +31,13 @@ const LoginForm = () => {
     <Form theme="dark">
       <div>
         <label htmlFor="user-id">User ID</label>
-        <Form.Item style={{ margin: 0 }}>
+        <FormItem style={{ margin: 0 }}>
           <Input name="user-id" value={id} onChange={onChangeId} required />
-        </Form.Item>
+        </FormItem>
       </div>
       <div>
         <label htmlFor="user-password">User Password</label>
-        <Form.Item style={{ margin: 0 }}>
+        <FormItem style={{ margin: 0 }}>
           <Input
             name="user-password"
             type="password"
@@ -37,9 +45,9 @@ const LoginForm = () => {
             onChange={onChangePassword}
             required
           />
-        </Form.Item>
+        </FormItem>
       </div>
-      <div>
+      <ButtonWrapper>
         <Button type="primary" htmlType="submit" loading={false}>
           Log In
         </Button>
@@ -50,7 +58,7 @@ const LoginForm = () => {
             </Button>
           </a>
         </Link>
-      </div>
+      </ButtonWrapper>
     </Form>
   );
 };

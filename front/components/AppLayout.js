@@ -5,6 +5,13 @@ import { Input, Menu, Row, Col } from "antd";
 import "antd/dist/antd.css";
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
+import styled from "@emotion/styled";
+
+const SearchInput = styled(Input.Search)`
+  vertical-align: "middle";
+  background: "crimson";
+  border: "none";
+`;
 
 const AppLayout = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +30,7 @@ const AppLayout = (props) => {
             </Link>
           </Menu.Item>
           <Menu.Item>
-            <Input.Search
+            <SearchInput
               enterButton
               style={{ verticalAlign: "middle", background: "crimson", border: "none" }}
             />
