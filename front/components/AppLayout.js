@@ -13,7 +13,7 @@ const SearchInput = styled(Input.Search)`
   border: "none";
 `;
 
-const AppLayout = (props) => {
+const AppLayout = props => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <div>
@@ -43,7 +43,11 @@ const AppLayout = (props) => {
         </Menu>
         <Row gutter={8}>
           <Col xs={24} md={6} lg={4}>
-            {isLoggedIn ? <UserProfile /> : <LoginForm />}
+            {isLoggedIn ? (
+              <UserProfile setIsLoggedIn={setIsLoggedIn} />
+            ) : (
+              <LoginForm setIsLoggedIn={setIsLoggedIn} />
+            )}
           </Col>
           <Col xs={24} md={12} lg={16}>
             {props.children}

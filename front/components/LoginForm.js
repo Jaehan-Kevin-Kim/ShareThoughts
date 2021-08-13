@@ -2,6 +2,9 @@ import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
+// import { css, jsx } from "@emotion/react";
+import { css, cx } from "@emotion/css";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -10,25 +13,34 @@ const ButtonWrapper = styled.div`
 const FormItem = styled(Form.Item)`
   margin: 0;
 `;
-const LoginForm = () => {
+const LoginForm = ({ setIsLoggedIn }) => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const onChangeId = useCallback(
-    (e) => {
+    e => {
       setId(e.target.value);
     },
-    [id]
+    [id],
   );
   const onChangePassword = useCallback(
-    (e) => {
+    e => {
       setPassword(e.target.value);
     },
-    [password]
+    [password],
   );
 
+  const onSubmitForm = useCallback(() => {
+    console.log(id, password);
+    setIsLoggedIn(true);
+  }, [id, password]);
+
   return (
-    <Form theme="dark">
+    <Form
+      onFinish={onSubmitForm}
+      className={css`
+        padding: 10px;
+      `}>
       <div>
         <label htmlFor="user-id">User ID</label>
         <FormItem style={{ margin: 0 }}>
@@ -61,6 +73,9 @@ const LoginForm = () => {
       </ButtonWrapper>
     </Form>
   );
+};
+LoginForm.propTypes = {
+  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
