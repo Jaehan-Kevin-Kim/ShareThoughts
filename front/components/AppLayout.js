@@ -8,12 +8,12 @@ import LoginForm from "./LoginForm";
 import styled from "@emotion/styled";
 
 const SearchInput = styled(Input.Search)`
-  vertical-align: "middle";
-  background: "crimson";
-  border: "none";
+  vertical-align: middle;
+  background: crimson;
+  border: none;
 `;
 
-const AppLayout = props => {
+const AppLayout = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <div>
@@ -30,10 +30,7 @@ const AppLayout = props => {
             </Link>
           </Menu.Item>
           <Menu.Item>
-            <SearchInput
-              enterButton
-              style={{ verticalAlign: "middle", background: "crimson", border: "none" }}
-            />
+            <SearchInput enterButton />
           </Menu.Item>
           <Menu.Item>
             <Link href="/signup">
