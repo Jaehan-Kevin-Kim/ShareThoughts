@@ -6,6 +6,7 @@ import "antd/dist/antd.css";
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
 import styled from "@emotion/styled";
+import { useSelector } from "react-redux";
 
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
@@ -14,7 +15,9 @@ const SearchInput = styled(Input.Search)`
 `;
 
 const AppLayout = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
   return (
     <div>
       <div>
@@ -40,11 +43,7 @@ const AppLayout = (props) => {
         </Menu>
         <Row gutter={8}>
           <Col xs={24} md={6} lg={4}>
-            {isLoggedIn ? (
-              <UserProfile setIsLoggedIn={setIsLoggedIn} />
-            ) : (
-              <LoginForm setIsLoggedIn={setIsLoggedIn} />
-            )}
+            {isLoggedIn ? <UserProfile /> : <LoginForm />}
           </Col>
           <Col xs={24} md={12} lg={16}>
             {props.children}

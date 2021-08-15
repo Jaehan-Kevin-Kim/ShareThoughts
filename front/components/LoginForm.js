@@ -5,6 +5,8 @@ import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 // import { css, jsx } from "@emotion/react";
 import { css, cx } from "@emotion/css";
+import { useDispatch } from "react-redux";
+import { loginAction } from "./../reducers";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -13,18 +15,19 @@ const ButtonWrapper = styled.div`
 const FormItem = styled(Form.Item)`
   margin: 0;
 `;
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
+  const dispatch = useDispatch();
   const onChangeId = useCallback(
-    e => {
+    (e) => {
       setId(e.target.value);
     },
     [id],
   );
   const onChangePassword = useCallback(
-    e => {
+    (e) => {
       setPassword(e.target.value);
     },
     [password],
@@ -32,7 +35,8 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
-    setIsLoggedIn(true);
+    dispatch(loginAction({id, password}));
+    // setIsLoggedIn(true);
   }, [id, password]);
 
   return (
@@ -73,9 +77,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
       </ButtonWrapper>
     </Form>
   );
-};
-LoginForm.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
