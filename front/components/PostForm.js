@@ -16,6 +16,7 @@ const PostForm = () => {
     [text],
   );
 
+  //이미지 업로드 시, 아래 예시에서 userRef를 이용했기 떄문에 버튼을 클릭했을때 input을 클릭한 것과 같은 행동이 실행되서,  imageUpload창을 뜨게 할 수 있음. 만약 여기서 useRef를 사용하지 않으면, 원래 원했던 screen이 뜨게 하기위해서 엄청난 styling 변경이 필요함. 하지만 useRef를 사용해서, 기존 html에서 사용하는 DOM에 접근을 할 수 있으므로, 특별한 조작없이 원하는 action을 실행 할 수 있음.
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
@@ -31,7 +32,7 @@ const PostForm = () => {
           value={text}
           onChange={onChangeText}
           maxLength={140}
-          placeholder="write a post in here..."></Input.TextArea>
+          placeholder="Write a post in here..."></Input.TextArea>
         <div>
           <input type="file" multiple hidden ref={imageInput} />
           <Button onClick={onClickImageUpload}>Image Upload</Button>
