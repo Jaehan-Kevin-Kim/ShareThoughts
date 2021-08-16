@@ -14,7 +14,6 @@ const rootReducer = combineReducers({
           ...action.payload,
         };
       }
-
       default:
         return state;
     }
