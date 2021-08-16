@@ -1,118 +1,26 @@
 import { HYDRATE } from "next-redux-wrapper";
+import user from "./user";
+import post from "./post";
+import { combineReducers } from "redux";
 
-const initialState = {
-  user: {
-    isLoggedIn: false,
-    user: null,
-    signUpData: {},
-    loginData: {},
+//index: ~~~~ HYDRATE넣어 주는 이유: REDUX SERVERSIDE RENDERING 위해서 사용. 만약 SSR이 필요 없으면 저기 INDEX 부분이 필요 없음.
+const rootReducer = combineReducers({
+  index: (state = {}, action) => {
+    switch (action.type) {
+      case HYDRATE: {
+        console.log("HYDRATE", action);
+        return {
+          ...state,
+          ...action.payload,
+        };
+      }
+
+      default:
+        return state;
+    }
   },
-  post: {
-    mainPosts: [],
-  },
-};
-
-export const loginAction = (data) => {
-  return {
-    type: "LOG_IN",
-    data,
-  };
-};
-
-export const logoutAction = () => {
-  return {
-    type: "LOG_OUT",
-  };
-};
-
-const rootReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case HYDRATE: {
-      console.log("HYDRATE", action);
-      return {
-        ...state,
-        ...action.payload,
-      };
-    }
-    case "LOG_IN": {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          isLoggedIn: true,
-          user: action.data,
-        },
-      };
-    }
-    case "LOG_OUT": {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          isLoggedIn: false,
-          user: null,
-        },
-      };
-    }
-    default:
-      return state;
-  }
-};
+  user,
+  post,
+});
 
 export default rootReducer;
-/*
-import { HYDRATE } from "next-redux-wrapper";
-
-const initialState = {
-  user: {
-    isLoggedIn: false,
-    user: null,
-    signUpData: {},
-    loginData: {},
-  },
-  post: {
-    mainPosts: [],
-  },
-};
-
-export const loginAction = (data) => {
-  return {
-    type: "LOG_IN",
-    data: data,
-  };
-};
-
-export const logoutAction = () => {
-  return {
-    type: "LOG_OUT",
-  };
-};
-
-const rootReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case HYDRATE:
-      console.log("HYDRATE", action);
-      return { ...state, ...action.payload };
-    case "LOG_IN": {
-      return {
-        ...state,
-        user: { ...state.user, isLoggedIn: true, user: action.data },
-      };
-    }
-    case "LOG_OUT": {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          isLoggedIn: false,
-          user: null,
-        },
-      };
-    }
-    default:
-      return state;
-  }
-};
-
-export default rootReducer;
-*/
