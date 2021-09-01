@@ -15,7 +15,7 @@ export const initialState = {
           src: "https://www.fastweb.com/uploads/article_photo/photo/2161/crop380w_istock_000002193842xsmall-books.jpg",
         },
         {
-          src: "https://www.insidehighered.com/sites/default/server_files/media/iStock-520374378.jpg",
+          src: "https://assets.carpages.ca/dealersite/prod-wp-autorama/uploads/2020/07/autorttr-car-1-1.png",
         },
       ],
       Comments: [

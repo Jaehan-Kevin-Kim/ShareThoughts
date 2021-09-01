@@ -10,18 +10,19 @@ const ImagesZoom = ({ images, onClose }) => {
     <Overlay>
       <Global />
       <Header>
-        <h1>Image Details</h1>
+        <h1>상세 이미지</h1>
         <CloseBtn onClick={onClose} />
       </Header>
       <SlickWrapper>
         <div>
           <Slick
-            initialSlide={0}
-            beforeChange={(slide, newSlide) => setCurrentSlide(newSlide)}
-            infinite
-            arrows={false}
-            slidesToShow={1}
-            slidesToScroll={1}>
+            initialSlide={0} //처음 나오는 이미지 슬라이드
+            beforeChange={(slide, newSlide) => setCurrentSlide(newSlide)} // 사진 넘겼을 때 그 다음 슬라이드 설정
+            infinite // 무한 반복
+            arrows={false} // 사진 넘기기 위한 방향키 없애기
+            slidesToShow={1} //한번에 하나씩 만 보이기
+            slidesToScroll={1} // 한번에 사진 하나씩만 넘기기
+          >
             {images.map((v) => (
               <ImgWrapper key={v.src}>
                 <img src={v.src} alt={v.src} />
@@ -30,7 +31,7 @@ const ImagesZoom = ({ images, onClose }) => {
           </Slick>
           <Indicator>
             <div>
-              {currentSlide + 1} / {images.length}
+              {currentSlide + 1} /{images.length}
             </div>
           </Indicator>
         </div>
@@ -40,79 +41,10 @@ const ImagesZoom = ({ images, onClose }) => {
 };
 
 ImagesZoom.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      src: PropTypes.string,
-    }),
-  ).isRequired,
+  images: PropTypes.arrayOf(PropTypes.object).isRequired,
   onClose: PropTypes.func.isRequired,
 };
-
 export default ImagesZoom;
-
-// import React, { useState, useEffect } from "react";
-// import PropTypes from "prop-types";
-// import Slick from "react-slick";
-// import { Overlay, Header, CloseBtn, SlickWrapper, ImgWrapper, Indicator, Global } from "./styles";
-// import SimpleImageSlider from "react-simple-image-slider";
-// import { Slide } from "react-slideshow-image";
-
-// const ImagesZoom = ({ images, onClose }) => {
-//   const [currentSlide, setCurrentSlide] = useState(0);
-//   // const [imagesArray, setImagesArray] = useState([])
-//   // const images = ()=>{  }
-//   const imagesArray = images.map((image) => image.src);
-//   console.log("imagesArray", imagesArray);
-//   console.log(images);
-//   // console.log(imagesArray[0]);
-//   // useEffect(() => {
-//   //   const imagesArray = images.map((image) => image);
-//   // }, [])(images);
-//   // console.log(imagesArray);
-//   return (
-//     // <Overlay>
-//     //   <Global />
-//     //   <Header>
-//     //     <h1>상세 이미지</h1>
-//     //     <CloseBtn onClick={onClose} />
-//     //   </Header>
-//     //   <SlickWrapper>
-//     //     <div>
-//     //       <SimpleImageSlider images={imagesArray} />
-//     //       <Indicator>
-//     //         <div>
-//     //           {currentSlide + 1} /{images.length}
-//     //         </div>
-//     //       </Indicator>
-//     //     </div>
-//     //   </SlickWrapper>
-//     // </Overlay>
-//     // );
-//     <div className="slide-container">
-//       {/* <SimpleImageSlider images={imagesArray} />
-//       <SimpleImageSlider images={imagesArray} /> */}
-//       {/* <div>
-//         <img src={images[1].src} alt="" />
-//         <img src={imagesArray[0].src} alt="" />
-//       </div> */}
-//       <Slide>
-//         <div className="each-slide">
-//           {images.map((image, i) =>
-//             // <div key={image.src} style={{ backgroundImage: `url(${image.src})` }}>
-//             // </div>
-//             console.log(image.src),
-//           )}
-//         </div>
-//       </Slide>
-//     </div>
-//   );
-// };
-
-// ImagesZoom.propTypes = {
-//   images: PropTypes.arrayOf(PropTypes.object).isRequired,
-//   onClose: PropTypes.func.isRequired,
-// };
-// export default ImagesZoom;
 
 /*
 import PropTypes from "prop-types";
@@ -154,14 +86,15 @@ const ImagesZoom = ({ images, onClose }) => {
 
   return (
     <div
-      className={css`
-        position: fixed;
-        z-index: 100;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      `}>
+    // className={css`
+    //   position: fixed;
+    //   z-index: 100;
+    //   top: 0;
+    //   left: 0;
+    //   right: 0;
+    //   bottom: 0;
+    // `}
+    >
       <Global
         styles={css`
           .slick-slide {
@@ -179,6 +112,7 @@ const ImagesZoom = ({ images, onClose }) => {
           },
         }}
       />
+
 
       <header
         className={css`
@@ -216,11 +150,11 @@ const ImagesZoom = ({ images, onClose }) => {
           background: #090909;
         `}>
         <div>
-          <Slick
+          <Slider
             initialSlide={0}
             beforeChange={(slide, newSlide) => setCurrentSlide(newSlide)}
             infinite
-            arrows={true}
+            arrows={false}
             slidesToShow={1}
             slidesToScroll={1}>
             {images.map((v) => (
@@ -240,7 +174,7 @@ const ImagesZoom = ({ images, onClose }) => {
                 />
               </div>
             ))}
-          </Slick>
+          </Slider>
           <Indicator>
             <div>
               {currentSlide + 1} / {images.length}

@@ -22,9 +22,12 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-redux": "^7.2.4",
+    "react-simple-image-slider": "^2.1.2",
     "react-slick": "^0.28.1",
+    "react-slideshow-image": "^3.5.0",
     "redux": "^4.1.1",
-    "redux-devtools-extension": "^2.13.9"
+    "redux-devtools-extension": "^2.13.9",
+    "styled-components": "^5.3.1"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
