@@ -1,3 +1,4 @@
+import { axios } from "axios";
 export const initialState = {
   isLoggedIn: false,
   me: null,
@@ -6,11 +7,25 @@ export const initialState = {
 };
 
 export const loginAction = (data) => {
-  return {
-    type: "LOG_IN",
-    data,
+  return (dispatch, getState) => {
+    const state = getState(); // initial state
+    dispatch(loginRequestAction());
+    axios
+      .post("/api/login")
+      .then((res) => {
+        dispatch(loginSuccessAction(res.data));
+      })
+      .catch((err) => {
+        dispatch(loginFailureAction(err));
+      });
   };
 };
+// export const loginAction = (data) => {
+//   return {
+//     type: "LOG_IN",
+//     data,
+//   };
+// };
 
 export const logoutAction = () => {
   return {
