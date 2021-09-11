@@ -5,8 +5,8 @@ import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 // import { css, jsx } from "@emotion/react";
 import { css, cx } from "@emotion/css";
-import { useDispatch } from "react-redux";
-import { loginAction } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
+import { loginRequestAction } from "../reducers/user";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -16,15 +16,16 @@ const FormItem = styled(Form.Item)`
   margin: 0;
 `;
 const LoginForm = () => {
-  const [id, setId] = useState("");
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const dispatch = useDispatch();
-  const onChangeId = useCallback(
+  const { logInLoading } = useSelector((state) => state.user);
+  const onChangeEmail = useCallback(
     (e) => {
-      setId(e.target.value);
+      setEmail(e.target.value);
     },
-    [id],
+    [email],
   );
   const onChangePassword = useCallback(
     (e) => {
@@ -34,10 +35,10 @@ const LoginForm = () => {
   );
 
   const onSubmitForm = useCallback(() => {
-    console.log(id, password);
-    dispatch(loginAction({ id, password }));
+    console.log(email, password);
+    dispatch(loginRequestAction({ email, password }));
     // setIsLoggedIn(true);
-  }, [id, password]);
+  }, [email, password]);
 
   return (
     <Form
@@ -46,9 +47,9 @@ const LoginForm = () => {
         padding: 10px;
       `}>
       <div>
-        <label htmlFor="user-id">User ID</label>
+        <label htmlFor="user-email">User Email</label>
         <FormItem style={{ margin: 0 }}>
-          <Input name="user-id" value={id} onChange={onChangeId} required />
+          <Input name="user-email" type="email" value={email} onChange={onChangeEmail} required />
         </FormItem>
       </div>
       <div>
@@ -64,12 +65,12 @@ const LoginForm = () => {
         </FormItem>
       </div>
       <ButtonWrapper>
-        <Button type="primary" htmlType="submit" loading={false}>
+        <Button type="primary" htmlType="submit" loading={logInLoading}>
           Log In
         </Button>
         <Link href="/signup">
           <a>
-            <Button htmlType="submit" loading={false}>
+            <Button htmlType="submit" loading={logInLoading}>
               Sign Up
             </Button>
           </a>

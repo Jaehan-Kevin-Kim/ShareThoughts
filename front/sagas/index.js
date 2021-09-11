@@ -1,3 +1,12 @@
+import { all, fork } from "@redux-saga/core/effects";
+import postSaga from "./postSaga";
+import userSaga from "./userSaga";
+
+export default function* rootSaga() {
+  yield all([fork(postSaga), fork(userSaga)]);
+}
+
+/*
 import { all, fork, call, take, put } from "redux-saga/effects";
 import { axios } from "axios";
 
@@ -28,7 +37,7 @@ call을 하면 .then()이나 aysnc에서 await를 쓴거와 같음. 따라서 ca
         });
     })
 
-*/
+
 function* logIn(action) {
   try {
     //항상 call,all,fork,take,put 과 같이 effect앞에는 yield를 붙여줘야 함.
@@ -108,3 +117,4 @@ export default function* rootSaga() {
     fork(watchAddPost),
   ]);
 }
+*/

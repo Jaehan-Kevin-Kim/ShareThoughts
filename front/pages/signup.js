@@ -2,8 +2,10 @@ import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import { Button, Form, Input, Checkbox } from "antd";
 import { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import useInput from "./../hooks/useInput";
 import styled from "@emotion/styled";
+import { SIGN_UP_REQUEST } from "../reducers/user";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -18,6 +20,9 @@ const signup = () => {
   const [passwordLengthError, setPasswordLengthError] = useState(false);
   const [term, setTerm] = useState("");
   const [termError, setTermError] = useState(false);
+
+const dispatch = useDispatch();
+const {signUpLoading} = useSelector(state=>state.user);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -50,7 +55,7 @@ const signup = () => {
       type: SIGN_UP_REQUEST,
       data: { email, password, nickname },
     });
-  }, [password, passwordCheck, term]);
+  }, [email, password, passwordCheck, term]);
 
   return (
     <>
@@ -100,7 +105,7 @@ const signup = () => {
             )}
           </div>
           <div style={{ marginTop: "10px" }}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={signUpLoading}>
               Sign Up
             </Button>
           </div>
