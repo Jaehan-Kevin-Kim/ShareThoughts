@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import Link from "next/link";
 import { Input, Menu, Row, Col } from "antd";
 import "antd/dist/antd.css";
-import UserProfile from "./UserProfile";
-import LoginForm from "./LoginForm";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { createGlobalStyle } from "styled-components";
+import UserProfile from "./UserProfile";
+import LoginForm from "./LoginForm";
 
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
@@ -31,7 +31,7 @@ const Global = createGlobalStyle`
 `;
 const AppLayout = (props) => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const {me, logInDone} = useSelector((state) => state.user);
+  const { me, logInDone } = useSelector((state) => state.user);
   // const { logInDone } = useSelector((state) => state.user);
 
   return (

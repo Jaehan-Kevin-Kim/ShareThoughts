@@ -2,11 +2,11 @@ import { axios } from "axios";
 export const initialState = {
   logInLoading: false, // 로그인 시도 중
   logInDone: false,
-  logInError: false, 
-  logOutLoading: false,// 로그아웃 시도 중
+  logInError: false,
+  logOutLoading: false, // 로그아웃 시도 중
   logOutDone: false,
   logOutError: null,
-  signUpLoading: false,// 회원가입 시도 중
+  signUpLoading: false, // 회원가입 시도 중
   signUpDone: false,
   signUpError: null,
   me: null,
@@ -57,18 +57,18 @@ export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 
-const dummyUser = (data)=>({
+const dummyUser = (data) => ({
   ...data,
-  nickname: 'Kevin',
+  nickname: "Kevin",
   id: 1,
-  Posts:[],
-  Followings:[],
-  Followers:[],
-})
+  Posts: [],
+  Followings: [],
+  Followers: [],
+});
 
 export const loginRequestAction = (data) => ({
   type: LOG_IN_REQUEST,
-  data: data,
+  data,
 });
 
 export const logoutRequestAction = () => {
@@ -84,8 +84,8 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         logInLoading: true,
-        logInError:null,
-        logInDone:false,
+        logInError: null,
+        logInDone: false,
       };
     }
     case LOG_IN_SUCCESS: {

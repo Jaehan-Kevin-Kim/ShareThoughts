@@ -1,7 +1,7 @@
 import { Input, Form, Button } from "antd";
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import useInput from "./../hooks/useInput";
 import { useSelector, useDispatch } from "react-redux";
+import React, { useCallback, useState, useRef, useEffect } from "react";
+import useInput from "../hooks/useInput";
 import { addPost } from "../reducers/post";
 
 const PostForm = () => {
@@ -31,7 +31,8 @@ const PostForm = () => {
           value={text}
           onChange={onChangeText}
           maxLength={140}
-          placeholder="Write a post in here..."></Input.TextArea>
+          placeholder="Write a post in here..."
+        />
         <div>
           <input type="file" multiple hidden ref={imageInput} />
           <Button onClick={onClickImageUpload}>Image Upload</Button>

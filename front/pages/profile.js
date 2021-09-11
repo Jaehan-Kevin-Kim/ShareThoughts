@@ -1,13 +1,12 @@
-import AppLayout from "../components/AppLayout";
+import React from "react";
 import Head from "next/head";
+import { useSelector } from "react-redux";
+import AppLayout from "../components/AppLayout";
 import NicknameEditForm from "../components/NicknameEditForm";
 import FollowList from "../components/FollowList";
-import { useSelector } from "react-redux";
 
 const profile = () => {
-  const {me} = useSelector(state=>state.user);
-
-
+  const { me } = useSelector((state) => state.user);
 
   return (
     <>
