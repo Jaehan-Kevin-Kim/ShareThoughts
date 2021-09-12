@@ -14,7 +14,8 @@
         "es6": true
     },
     "extends": [
-      "airbnb"
+      "airbnb",
+      "prettier"
     ],
     "plugins": [
         "import",

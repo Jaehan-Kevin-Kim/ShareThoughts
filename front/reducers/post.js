@@ -1,7 +1,9 @@
+import shortId from "shortid";
+
 export const initialState = {
   mainPosts: [
     {
-      id: 1,
+      id: shortId.generate(),
       User: {
         id: 1,
         nickname: "jhkevin21",
@@ -9,7 +11,7 @@ export const initialState = {
       content: "First post test #Hashtag, #Node",
       Images: [
         {
-          src: `https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/2022-chevrolet-corvette-z06-1607016574.jpg?crop=0.737xw:0.738xh;0.181xw,0.218xh&resize=640:*`,
+          src: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/2022-chevrolet-corvette-z06-1607016574.jpg?crop=0.737xw:0.738xh;0.181xw,0.218xh&resize=640:*",
         },
         {
           src: "https://www.fastweb.com/uploads/article_photo/photo/2161/crop380w_istock_000002193842xsmall-books.jpg",
@@ -49,31 +51,37 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
-
-export const addPost = (data) => {
-  return {
-    type: ADD_POST_REQUEST,
-    data
-  };
-};
+export const addPost = (data) => ({
+  type: ADD_POST_REQUEST,
+  data,
+});
 
 export const addComment = (data) => {
   return {
     type: ADD_COMMENT_REQUEST,
-    data
+    data,
   };
 };
 
-const dummyPost = {
-  id: 2,
+const dummyPost = (data) => ({
+  id: shortId.generate(),
   User: {
     id: 1,
     nickname: "jhkevin21",
   },
-  content: "dummyPost",
+  content: data,
   Images: [],
   Comments: [],
-};
+});
+
+const dummyComment = (data) => ({
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: "jhkevin21",
+  },
+});
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -83,13 +91,13 @@ const reducer = (state = initialState, action) => {
         // mainPosts: [dummyPost, ...state.mainPosts],
         addPostLoading: true,
         addPostDone: false,
-        addPostError: null
+        addPostError: null,
       };
     }
     case ADD_POST_SUCCESS: {
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
         addPostDone: true,
         addPostLoading: false,
       };
@@ -98,21 +106,30 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         addPostLoading: false,
-        addPostError: action.error
+        addPostError: action.error,
       };
     }
     case ADD_COMMENT_REQUEST: {
       return {
         ...state,
-        // mainPosts: [dummyPost, ...state.mainPosts],
         addCommentLoading: true,
         addCommentDone: false,
-        addCommentError: null
+        addCommentError: null,
       };
     }
     case ADD_COMMENT_SUCCESS: {
+      const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId);
+      console.log("postIndex", postIndex);
+      const post = { ...state.mainPosts[postIndex] };
+      console.log("post", post);
+      post.Comments = [dummyComment(action.data.content), ...post.Comments];
+      console.log("postComments", post.Comments);
+      const mainPosts = [...state.mainPosts];
+      console.log("mainPosts", mainPosts);
+      mainPosts[postIndex] = post;
       return {
         ...state,
+        mainPosts,
         addCommentDone: true,
         addCommentLoading: false,
       };
@@ -121,7 +138,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         addCommentLoading: false,
-        addCommentError: action.error
+        addCommentError: action.error,
       };
     }
     default:

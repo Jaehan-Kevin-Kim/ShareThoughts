@@ -9,7 +9,7 @@ import { ADD_COMMENT_REQUEST } from "../reducers/post";
 const CommentForm = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
-  const { addCommentDone } = useSelector((state) => state.post);
+  const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
   const [commentText, onChangeCommentText, setCommentText] = useInput("");
 
   useEffect(() => {
@@ -31,10 +31,11 @@ const CommentForm = ({ post }) => {
         className={css`
           position: "relative";
           margin: 0;
+          z-index: 1;
         `}>
         <Input.TextArea value={commentText} onChange={onChangeCommentText} rows={4} />
-        <Button type="primary" htmlType="submit">
-          Post
+        <Button type="primary" htmlType="submit" loading={addCommentLoading}>
+        Comment Post
         </Button>
       </Form.Item>
     </Form>
@@ -48,7 +49,7 @@ CommentForm.propTypes = {
     content: PropTypes.string,
     createdAt: PropTypes.object,
     Comments: PropTypes.arrayOf(PropTypes.object),
-    Images: PropTypes.arrayOf(PropTypes.Object),
+    Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
 };
 
