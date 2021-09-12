@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import PropTypes from "prop-types";
-import PostImages from "./PostImages";
-import { useSelector } from "react-redux";
-import CommentForm from "./CommentForm";
+import { useDispatch, useSelector } from "react-redux";
 import {
   EllipsisOutlined,
   HeartOutlined,
@@ -11,12 +9,17 @@ import {
   RetweetOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
+import PostImages from "./PostImages";
+import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
+import { REMOVE_POST_REQUEST } from "../reducers/post";
 
 const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { me } = useSelector((state) => state.user);
+  const { removePostLoading } = useSelector((state) => state.post);
   const id = me?.id;
 
   const onToggleLike = useCallback(() => {
@@ -26,6 +29,13 @@ const PostCard = ({ post }) => {
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, [commentFormOpened]);
+
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
@@ -46,7 +56,9 @@ const PostCard = ({ post }) => {
                 {id && post.User.id === id ? (
                   <>
                     <Button>Modify</Button>
-                    <Button type="danger">Delete</Button>
+                    <Button type="danger" onClick={onRemovePost} loading={removePostLoading}>
+                      Delete
+                    </Button>
                     <Button>Report</Button>
                   </>
                 ) : (

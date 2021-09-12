@@ -34,8 +34,14 @@ const CommentForm = ({ post }) => {
           z-index: 1;
         `}>
         <Input.TextArea value={commentText} onChange={onChangeCommentText} rows={4} />
-        <Button type="primary" htmlType="submit" loading={addCommentLoading}>
-        Comment Post
+        <Button
+          className={css`
+            float: right;
+          `}
+          type="primary"
+          htmlType="submit"
+          loading={addCommentLoading}>
+          Comment Post
         </Button>
       </Form.Item>
     </Form>
