@@ -1,12 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AppLayout from "../components/AppLayout";
-import { useSelector } from "react-redux";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
+import { LOAD_POSTS_REQUEST } from "../reducers/post";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePost, loadPostsLoading } = useSelector((state) => state.post);
+
+  useEffect(() => {
+    dispatch({
+      type: LOAD_POSTS_REQUEST,
+    });
+  }, []);
+
+  useEffect(() => {
+    function onScroll() {
+      // console.log(
+      //   window.scrollY,
+      //   window.pageYOffset,
+      //   document.documentElement.clientHeight,
+      //   document.documentElement.scrollHeight,
+      // );
+      if (
+        Math.round(window.scrollY) + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        //아래는 loadPostRequest가 여러번 실행되는걸 막기위한 옵션 (!loadPostsLoading을 추가한 부분)
+        if (hasMorePost && !loadPostsLoading) {
+          dispatch({
+            type: LOAD_POSTS_REQUEST,
+          });
+        }
+      }
+    }
+    window.addEventListener("scroll", onScroll);
+    //useEffect에서 window.addListener 할 때, 항상 조심해야 하는것은 반드시 return을 해서 해당 eventListener를 지워줘야 함. 안그러면 계속 메모리에 남아있어서 심각한 문제가 생길 수 있음.
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [hasMorePost, loadPostsLoading]);
 
   return (
     <>
