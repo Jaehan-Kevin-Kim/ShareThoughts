@@ -35,6 +35,7 @@
         "no-param-reassign": "off",
         "quotes": [2, "double"],
         "max-len":"off",
-        "spaced-comment":"off"
+        "spaced-comment":"off",
+        "react/react-in-jsx-scope": "off"
     }
 }

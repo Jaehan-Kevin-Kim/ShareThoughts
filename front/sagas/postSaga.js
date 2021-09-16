@@ -29,7 +29,6 @@ function* loadPosts(action) {
     yield put({
       type: LOAD_POSTS_SUCCESS,
       data: generateDummyPost(10),
-      // data: { id, content: action.data },
     });
   } catch (error) {
     console.error(error);
