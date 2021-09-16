@@ -124,7 +124,9 @@ const reducer = (state = initialState, action) =>
       case LOG_OUT_SUCCESS: {
         draft.logOutLoading = false;
         draft.logOutDone = true;
+        draft.logInDone = false;
         draft.me = null;
+        console.log("draft", draft);
         break;
         // return {
         //   ...state,
@@ -198,7 +200,8 @@ const reducer = (state = initialState, action) =>
         // };
       }
       default:
-        return state;
+        // return state;
+        break;
     }
   });
 

@@ -1,10 +1,11 @@
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
+import Router from "next/router";
 import { Button, Form, Input, Checkbox } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useInput from "./../hooks/useInput";
 import styled from "@emotion/styled";
+import useInput from "../hooks/useInput";
 import { SIGN_UP_REQUEST } from "../reducers/user";
 
 const ErrorMessage = styled.div`
@@ -21,8 +22,17 @@ const signup = () => {
   const [term, setTerm] = useState("");
   const [termError, setTermError] = useState(false);
 
-const dispatch = useDispatch();
-const {signUpLoading} = useSelector(state=>state.user);
+  const dispatch = useDispatch();
+  const { signUpLoading, me } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (me?.id) {
+      Router.push("/");
+    }
+  }, [me?.id]);
+  if (me?.id) {
+    return null;
+  }
 
   const onChangePasswordCheck = useCallback(
     (e) => {

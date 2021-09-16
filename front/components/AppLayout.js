@@ -33,6 +33,8 @@ const AppLayout = (props) => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { me, logInDone } = useSelector((state) => state.user);
   // const { logInDone } = useSelector((state) => state.user);
+  console.log("me", me);
+  console.log("loginDone", logInDone);
 
   return (
     <div>
