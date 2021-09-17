@@ -39,7 +39,6 @@ const AppLayout = (props) => {
   return (
     <div>
       <Global />
-
       <Menu mode="horizontal">
         <Menu.Item>
           <Link href="/">
