@@ -13,7 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8mb4_general_ci", //한글 저장되기위한 setting 값 이 위 두개(charset, collate), emoticon까지 넣고 싶으면 utf8mb4로 사용 해야 함.;
     },
   );
-  Post.associate = (db) => {};
+  Post.associate = (db) => {
+    db.Post.belongsTo(db.User); //UserId: {} 생성 함.
+    db.Post.hasMany(db.Comment);
+    db.Post.hasMany(db.Image);
+    db.Post.belongsToMany(db.Hashtag);
+    db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
+    db.Post.belongsTo(db.Post, { as: "Retweet" }); //Retweet 관련 이렇게 해주면 자동으로 생기는 PostId column이 RetwetId로 변경이 되서 생김.
+  };
 
   return Post;
 };
