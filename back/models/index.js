@@ -10,8 +10,15 @@ const db = {};
 //아래와 같이 선언하면 sequelize가 node와 mysql을 연결 해 줌.
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
+db.Comment = require("./comment")(sequelize, Sequelize);
+db.User = require("./user")(sequelize, Sequelize);
+db.Post = require("./post")(sequelize, Sequelize);
+db.Hashtag = require("./hashtag")(sequelize, Sequelize);
+db.Image = require("./image")(sequelize, Sequelize);
+
 //위와 같이 연결만 하면 되는게 아니고, database에서 table을 만들어 줘야 함.
 Object.keys(db).forEach((modelName) => {
+  console.log("modelName", modelName);
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }

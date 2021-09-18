@@ -6,6 +6,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      //UserId: {} belongsTo가 속해 있는 column 이름으로 자동 생성
+      //PostId: {} belongsTo가 속해 있는 column 이름으로 자동 생성
     },
     {
       //두번째 객체는 해당 모델에 대한 setting

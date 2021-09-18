@@ -1,6 +1,15 @@
 const express = require("express");
 const app = express();
 const postRouter = require("./routes/post");
+const db = require("./models");
+
+//promise임
+db.sequelize
+  .sync()
+  .then(() => {
+    console.log("DB Connection Success");
+  })
+  .catch(console.error);
 
 app.get("/", (req, res) => {
   res.send("main page");
@@ -20,7 +29,7 @@ app.get("/posts", (req, res) => {
 app.use("/post", postRouter);
 
 app.listen(3065, () => {
-  console.log("server is running");
+  console.log("server is running!!");
 });
 
 // app.get -> 가져오다(조회)

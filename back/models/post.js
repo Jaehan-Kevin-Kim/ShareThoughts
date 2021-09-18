@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const Post = sequelize.defin(
+  const Post = sequelize.define(
     "Post",
     {
       content: {
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     db.Post.belongsTo(db.User); //UserId: {} 생성 함.
     db.Post.hasMany(db.Comment);
     db.Post.hasMany(db.Image);
-    db.Post.belongsToMany(db.Hashtag);
+    db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
     db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
     db.Post.belongsTo(db.Post, { as: "Retweet" }); //Retweet 관련 이렇게 해주면 자동으로 생기는 PostId column이 RetwetId로 변경이 되서 생김.
   };
