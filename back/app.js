@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
-const postRouter = require("./routes/post");
+const cors = require("cors");
+const postRouter = require("./routes/postRoute");
+const userRouter = require("./routes/userRoute");
 const db = require("./models");
 
 //promise임
@@ -10,6 +12,16 @@ db.sequelize
     console.log("DB Connection Success");
   })
   .catch(console.error);
+
+app.use(
+  cors({
+    origin: true,
+    credentials: false,
+  }),
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.send("main page");
@@ -27,6 +39,7 @@ app.get("/posts", (req, res) => {
 });
 
 app.use("/post", postRouter);
+app.use("/user", userRouter);
 
 app.listen(3065, () => {
   console.log("server is running!!");
