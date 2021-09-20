@@ -4,6 +4,7 @@ const cors = require("cors");
 const postRouter = require("./routes/postRoute");
 const userRouter = require("./routes/userRoute");
 const db = require("./models");
+const passportConfig = require("./passport");
 
 //promise임
 db.sequelize
@@ -13,10 +14,12 @@ db.sequelize
   })
   .catch(console.error);
 
+passportConfig();
+
 app.use(
   cors({
     origin: true,
-    credentials: false,
+    // credentials: false,
   }),
 );
 

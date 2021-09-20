@@ -1,6 +1,9 @@
 import { all, fork } from "@redux-saga/core/effects";
+import axios from "axios";
 import postSaga from "./postSaga";
 import userSaga from "./userSaga";
+
+axios.defaults.baseURL = "http://localhost:3065";
 
 export default function* rootSaga() {
   yield all([fork(postSaga), fork(userSaga)]);
