@@ -1,10 +1,10 @@
 import Head from "next/head";
-import AppLayout from "../components/AppLayout";
 import Router from "next/router";
 import { Button, Form, Input, Checkbox } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
+import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
 import { SIGN_UP_REQUEST } from "../reducers/user";
 
@@ -23,7 +23,7 @@ const signup = () => {
   const [termError, setTermError] = useState(false);
 
   const dispatch = useDispatch();
-  const { signUpLoading, me } = useSelector((state) => state.user);
+  const { signUpLoading, me, signUpDone, signUpError } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (me?.id) {
@@ -34,6 +34,19 @@ const signup = () => {
     return null;
   }
 
+  useEffect(() => {
+    if (signUpDone) {
+      Router.push("/");
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (signUpError) {
+      // console.log(signUpError);
+      alert(signUpError);
+    }
+  }, [signUpError]);
+
   const onChangePasswordCheck = useCallback(
     (e) => {
       setPasswordCheck(e.target.value);
@@ -43,7 +56,7 @@ const signup = () => {
     [password],
   );
   const onChangeTerm = useCallback((e) => {
-    console.log(e.target.checked);
+    // console.log(e.target.checked);
     setTerm(e.target.checked);
     setTermError(false);
   }, []);
@@ -57,7 +70,7 @@ const signup = () => {
       return setPasswordError(true);
     }
     if (!term) {
-      console.log(term);
+      // console.log(term);
       return setTermError(true);
     }
     console.log(email, nickname, password);

@@ -1,4 +1,4 @@
-import { axios } from "axios";
+import axios from "axios";
 import produce from "immer";
 export const initialState = {
   logInLoading: false, // 로그인 시도 중
@@ -165,6 +165,7 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_FAILURE: {
         draft.signUpLoading = false;
         draft.signUpError = action.error;
+        // console.log(action.error);
         break;
       }
       case CHANGE_NICKNAME_REQUEST: {

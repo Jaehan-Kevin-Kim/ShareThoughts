@@ -23,7 +23,7 @@ router.post("/", async (req, res, next) => {
       nickname: req.body.nickname,
       password: hashedPassword,
     });
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3050");
+    // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3050");
     // res.setHeader("Access-Control-Allow-Origin", "*"); 이건 모든 port를 다 받아들이는 것
     // res.send("ok"); 이렇게 간단하게 혹은 아래와 같이 상태코드와 함께 보내 줄 수도 있음.
     res.status(201).send("okay"); //201은 생성 성공의 뜻.
