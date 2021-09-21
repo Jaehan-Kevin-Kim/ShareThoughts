@@ -1,6 +1,6 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import Link from "next/link";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 // import { css, jsx } from "@emotion/react";
@@ -20,7 +20,14 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const { logInLoading } = useSelector((state) => state.user);
+  const { logInLoading, logInError } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError]);
+
   const onChangeEmail = useCallback(
     (e) => {
       setEmail(e.target.value);

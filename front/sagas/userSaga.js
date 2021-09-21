@@ -48,8 +48,10 @@ function logOutAPI() {
 
 function* logOut() {
   try {
+    //logout의 경우는 data를 받을 필요가 없기 때문에 result로 받을 필요없고 그냥 바로 call 함수 호출 하기
     // const result = yield call(logOutAPI);
-    yield delay(1000);
+    yield call(logOutAPI);
+    // yield delay(1000);
     yield put({
       type: LOG_OUT_SUCCESS,
     });

@@ -27,16 +27,17 @@ const signup = () => {
 
   useEffect(() => {
     if (me?.id) {
-      Router.push("/");
+      //replace는 push와 다르게 뒤로가기 했을때 이전 페이지로 돌아가지 않게 해줌.
+      Router.replace("/");
     }
   }, [me?.id]);
-  if (me?.id) {
-    return null;
-  }
+  // if (me?.id) {
+  //   return null;
+  // }
 
   useEffect(() => {
     if (signUpDone) {
-      Router.push("/");
+      Router.replace("/");
     }
   }, [signUpDone]);
 
