@@ -1,5 +1,7 @@
 node_modules
 .next
 
+
 # backend
 config.json
+.env

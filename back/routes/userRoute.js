@@ -29,6 +29,13 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+// Post /user/logout
+router.post("/logout", async (req, res, next) => {
+  req.logout();
+  req.session.destroy();
+  res.status(200).send("okay");
+});
+
 // Post /user/
 router.post("/", async (req, res, next) => {
   try {
