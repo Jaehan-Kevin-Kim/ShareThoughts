@@ -3,9 +3,10 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { User, Post } = require("../models");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 // Post /user/login
-router.post("/login", (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     //아래는 server에러인 경우
     if (err) {
@@ -49,14 +50,14 @@ router.post("/login", (req, res, next) => {
 });
 
 // Post /user/logout
-router.post("/logout", async (req, res, next) => {
+router.post("/logout", isLoggedIn, async (req, res, next) => {
   req.logout();
   req.session.destroy();
   res.status(200).send("okay");
 });
 
 // Post /user/
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     const existUser = await User.findOne({
       where: {
