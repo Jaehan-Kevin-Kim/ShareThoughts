@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Post, Comment } = require("../models");
+const { Post, Comment, Image } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 //POST /post
 router.post("/", isLoggedIn, async (req, res, next) => {
@@ -9,7 +9,13 @@ router.post("/", isLoggedIn, async (req, res, next) => {
       content: req.body.content,
       UserId: req.user.id,
     });
-    res.status(201).json(post);
+    // 기존 post로는 image, comment, user 등이 없기 때문에 아래처럼 해당 값들을 추가해서 응답을 해줘야 함.
+    //아래 where:{id:post.id} 로 찾아지는 post는 바로 위에 새로 생성한 post를 찾는 것임.
+    const fullPost = await Post.findOne({
+      where: { id: post.id },
+      include: [{ model: Image }, { model: Comment }, { model: User }],
+    });
+    res.status(201).json(fullPost);
   } catch (error) {
     console.error(error);
     next(error);
