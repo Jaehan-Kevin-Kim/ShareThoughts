@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Post, Comment, Image } = require("../models");
 const { isLoggedIn } = require("./middlewares");
+
 //POST /post
 router.post("/", isLoggedIn, async (req, res, next) => {
   try {

@@ -16,7 +16,34 @@ import {
   SIGN_UP_SUCCESS,
   UNFOLLOW_REQUEST,
   UNFOLLOW_SUCCESS,
+  LOAD_MY_INFO_REQUEST,
+  LOAD_MY_INFO_SUCCESS,
+  LOAD_MY_INFO_FAILURE,
 } from "../reducers/user";
+
+function loadMyInfoAPI() {
+  return axios.get("/user");
+}
+
+function* loadMyInfo(action) {
+  try {
+    // console.log("saga loadMyInfo");
+    // console.log(action);
+    const result = yield call(loadMyInfoAPI, action.data);
+    // yield delay(1000);
+    yield put({
+      type: LOAD_MY_INFO_SUCCESS,
+      // data.action.data,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_MY_INFO_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
 
 function logInAPI(data) {
   return axios.post("/user/login", data);
@@ -128,6 +155,9 @@ function* unfollow(action) {
   }
 }
 
+function* watchLoadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo); //take: take안에 들어있는 action이 실행 될 때 까지 기다림: 해당 action이 실행 되면 function이 실행 됨.
+}
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn); //take: take안에 들어있는 action이 실행 될 때 까지 기다림: 해당 action이 실행 되면 function이 실행 됨.
 }
@@ -146,6 +176,7 @@ function* watchUnfollow() {
 
 export default function* userSaga() {
   yield all([
+    fork(watchLoadMyInfo),
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp),
