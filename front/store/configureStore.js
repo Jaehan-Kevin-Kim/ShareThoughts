@@ -6,7 +6,6 @@ import createSagaMiddleware from "redux-saga";
 import reducer from "../reducers";
 import rootSaga from "../sagas";
 
-/*
 const loggerMiddleware =
   ({ dispatch, getState }) =>
   (next) =>
@@ -14,13 +13,12 @@ const loggerMiddleware =
     console.log(action);
     return next(action);
   };
-*/
 
 const configureStore = () => {
   //enhancer는 middleware 설치 위해 필요 함.
   //아래는 reduxDevTools는 무조건 development 모드에서만 사용하기 (해킹의 위험이 있음). 따라서 production모드일때는 middleware를 사용안하게 설정 해 둠.
   const sagaMiddleware = createSagaMiddleware();
-  const middlewares = [sagaMiddleware];
+  const middlewares = [sagaMiddleware, loggerMiddleware];
   const enhancer =
     process.env.NODE_ENV === "production"
       ? compose(applyMiddleware(...middlewares))

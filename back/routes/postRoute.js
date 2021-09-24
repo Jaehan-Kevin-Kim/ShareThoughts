@@ -14,7 +14,11 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     //아래 where:{id:post.id} 로 찾아지는 post는 바로 위에 새로 생성한 post를 찾는 것임.
     const fullPost = await Post.findOne({
       where: { id: post.id },
-      include: [{ model: Image }, { model: Comment }, { model: User }],
+      include: [
+        { model: Image },
+        { model: Comment, include: [{ model: User, attributes: ["id", "nickname"] }] },
+        { model: User, attributes: ["id", "nickname"] },
+      ],
     });
     res.status(201).json(fullPost);
   } catch (error) {
@@ -37,7 +41,12 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
       PostId: req.params.postId,
       UserId: req.user.id,
     });
-    res.status(201).json(comment);
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [{ model: User, attributes: ["id", "nickname"] }],
+    });
+
+    res.status(201).json(fullComment);
   } catch (error) {
     console.error(error);
     next(error);

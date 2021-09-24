@@ -109,8 +109,8 @@ PostCard.propTypes = {
     id: PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
-    createdAt: PropTypes.object,
-    Comments: PropTypes.arrayOf(PropTypes.object),
+    createdAt: PropTypes.string,
+    Comments: PropTypes.arrayOf(PropTypes.string),
     Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
 };
