@@ -1,7 +1,6 @@
 import { all, fork, call, takeLatest, put, delay } from "redux-saga/effects";
 import axios from "axios";
 import {
-  UNFOLLOW_FAILURE,
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
@@ -16,9 +15,13 @@ import {
   SIGN_UP_SUCCESS,
   UNFOLLOW_REQUEST,
   UNFOLLOW_SUCCESS,
+  UNFOLLOW_FAILURE,
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  CHANGE_NICKNAME_REQUEST,
+  CHANGE_NICKNAME_FAILURE,
+  CHANGE_NICKNAME_SUCCESS,
 } from "../reducers/user";
 
 function loadMyInfoAPI() {
@@ -155,6 +158,27 @@ function* unfollow(action) {
   }
 }
 
+function changeNicknameAPI(data) {
+  return axios.patch("/user/nickname", { nickname: data });
+}
+
+function* changeNickname(action) {
+  try {
+    const result = yield call(changeNicknameAPI, action.data);
+    console.log("result", result);
+    yield put({
+      type: CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: CHANGE_NICKNAME_FAILURE,
+      data: error.response.data,
+    });
+  }
+}
+
 function* watchLoadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo); //take: take안에 들어있는 action이 실행 될 때 까지 기다림: 해당 action이 실행 되면 function이 실행 됨.
 }
@@ -173,6 +197,9 @@ function* watchFollow() {
 function* watchUnfollow() {
   yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
+function* watchChangeNickname() {
+  yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
+}
 
 export default function* userSaga() {
   yield all([
@@ -182,5 +209,6 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchFollow),
     fork(watchUnfollow),
+    fork(watchChangeNickname),
   ]);
 }

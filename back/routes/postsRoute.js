@@ -11,7 +11,7 @@ router.get("/", async (req, res, next) => {
       limit: 10, //요청이 발생 했을때 10개만 가져오라는 명령어
       order: [
         ["createdAt", "DESC"],
-        [Comment, "createdAt", DESC],
+        [Comment, "createdAt", "DESC"],
       ],
       include: [
         {

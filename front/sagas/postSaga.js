@@ -64,17 +64,17 @@ function* addPost(action) {
   }
 }
 
-// function removePostAPI(data) {
-//   return axios.delete("/api/post", data, { withCredentials: true });
-// }
+function removePostAPI(data) {
+  return axios.delete(`/post/${data}`);
+}
 
 function* removePost(action) {
   try {
-    // const result = yield call(removePostAPI, action.data);
-    yield delay(1000);
+    const result = yield call(removePostAPI, action.data);
+    // yield delay(1000);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,

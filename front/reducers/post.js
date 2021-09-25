@@ -146,7 +146,7 @@ const reducer = (state = initialState, action) =>
       case REMOVE_POST_SUCCESS: {
         draft.removePostDone = true;
         draft.removePostLoading = false;
-        const postIndex = state.mainPosts.findIndex((v) => v.id === action.data);
+        const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.PostId);
         console.log("postIndex", postIndex);
         draft.mainPosts.splice(postIndex, 1);
         break;
