@@ -2,7 +2,7 @@ import { Input, Form, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import useInput from "../hooks/useInput";
-import { addPost } from "../reducers/post";
+import { addPost, UPLOAD_IMAGES_REQUEST } from "../reducers/post";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -21,6 +21,21 @@ const PostForm = () => {
     imageInput.current.click();
   }, [imageInput.current]);
 
+  const onChangeImages = useCallback((e) => {
+    console.log("images", e.target.files);
+    const imageFormData = new FormData(); // FormData로 만들면 multipart 형식으로 server로 보낼 수 있음. (무조건 multipart 형태로 만들어야지 backend에서 multer가 처리 함.)
+
+    //아래 내용은 위 e.target.files가 배열처럼 생겼지만 배열이 아닌 유사배열이기 때문에 forEach를 사용을 못하는 상황이 발생 함. 따라서 아래와 같이 배열의 forEach method를 빌려와서 하나씩 반복해서 사용 함.
+    [].forEach.call(e.target.files, (f) => {
+      //아래 append()안에 들어가는 'image'는 backend에서 upload.array()안에 받는 'image', 아래 input file에서 name으로 준 'image' 와 이름이 똑같아야지 정상 동작 함.
+      imageFormData.append("image", f);
+    });
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+      data: imageFormData,
+    });
+  }, []);
+
   const onSubmit = useCallback(() => {
     dispatch(addPost(text));
   }, [text]);
@@ -34,21 +49,28 @@ const PostForm = () => {
           placeholder="Write a post in here..."
         />
         <div>
-          <input type="file" multiple hidden ref={imageInput} />
+          <input
+            type="file"
+            name="image"
+            multiple
+            hidden
+            ref={imageInput}
+            onChange={onChangeImages}
+          />
           <Button onClick={onClickImageUpload}>Image Upload</Button>
           <Button type="primary" style={{ float: "right" }} htmlType="submit">
             Post
           </Button>
         </div>
         <div>
-          {imagePaths.map((v) => {
+          {imagePaths.map((v) => (
             <div key={v} style={{ display: "inline-block" }}>
               <img src={v} style={{ width: "200px" }} alt={v} />
               <div>
                 <Button>Remove</Button>
               </div>
-            </div>;
-          })}
+            </div>
+          ))}
         </div>
       </Form>
     </>

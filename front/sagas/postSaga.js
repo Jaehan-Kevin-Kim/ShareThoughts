@@ -15,6 +15,9 @@ import {
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   generateDummyPost,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
+  UPLOAD_IMAGES_FAILURE,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -109,6 +112,28 @@ function* addComment(action) {
     });
   }
 }
+
+function uploadImagesAPI(data) {
+  return axios.post("/post/images", data); //해당은 formdata 보내는 요청. !!formdata는 이렇게 data그대로 보내야 함. 만약 {images:data} 이런식으로 보내면 json이 되어버려서 formdata 형식으로 안보내 짐!!
+}
+
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    // yield delay(1000);
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -123,6 +148,9 @@ function* watchRemovePost() {
 function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
 
 export default function* postSaga() {
   yield all([
@@ -130,5 +158,6 @@ export default function* postSaga() {
     fork(watchAddPost),
     fork(watchAddComment),
     fork(watchRemovePost),
+    fork(watchUploadImages),
   ]);
 }

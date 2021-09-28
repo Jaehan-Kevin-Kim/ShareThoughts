@@ -15,6 +15,9 @@ export const initialState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+  uploadImagesLoading: false,
+  uploadImagesDone: false,
+  uploadImagesError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -64,6 +67,10 @@ export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
+
+export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
+export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
+export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
@@ -154,6 +161,23 @@ const reducer = (state = initialState, action) =>
       case REMOVE_POST_FAILURE: {
         draft.removePostLoading = false;
         draft.removePostError = action.error;
+        break;
+      }
+      case UPLOAD_IMAGES_REQUEST: {
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesEror = null;
+        break;
+      }
+      case UPLOAD_IMAGES_SUCCESS: {
+        draft.uploadImagesDone = true;
+        draft.uploadImagesLoading = false;
+        draft.imagePaths = action.data; //backend에서 filename들을 보내줬고, 해당 filename들은 post.imagePaths에 front에서 저장 되도록 설정 함.
+        break;
+      }
+      case UPLOAD_IMAGES_FAILURE: {
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
         break;
       }
       case ADD_COMMENT_REQUEST: {
