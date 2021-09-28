@@ -5,6 +5,7 @@ import { Overlay, Header, CloseBtn, SlickWrapper, ImgWrapper, Indicator, Global 
 
 const ImagesZoom = ({ images, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  console.log("images", images);
 
   return (
     <Overlay>
@@ -24,7 +25,7 @@ const ImagesZoom = ({ images, onClose }) => {
             slidesToScroll={1}>
             {images.map((v) => (
               <ImgWrapper key={v.src}>
-                <img src={v.src} alt={v.src} />
+                <img src={`http://localhost:3065/${v.src}`} alt={v.src} />
               </ImgWrapper>
             ))}
           </Slick>

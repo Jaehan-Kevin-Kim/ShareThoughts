@@ -14,7 +14,6 @@ import {
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
-  generateDummyPost,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
@@ -43,7 +42,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post("/post", { content: data }, { withCredentials: true });
+  return axios.post("/post", data);
 }
 
 function* addPost(action) {

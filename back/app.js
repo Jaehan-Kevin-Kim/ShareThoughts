@@ -4,6 +4,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const path = require("path");
 const postRouter = require("./routes/postRoute");
 const postsRouter = require("./routes/postsRoute");
 const userRouter = require("./routes/userRoute");
@@ -32,6 +33,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use("/", express.static(path.join(__dirname, "uploads")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
