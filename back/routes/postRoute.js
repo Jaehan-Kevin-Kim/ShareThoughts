@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { Post, Comment, Image, User } = require("../models");
+const { Post, Comment, Image, User, Hashtag } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 const fs = require("fs");
 
@@ -36,10 +36,24 @@ const upload = multer({
 //POST /post
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
+    const hashtags = req.body.content.match(/#[^\s#]+/g); //해당 코드는 post가 요청 된 경우 hashtag만 찾는 코드
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+
+    //아래는 만약 hashtag가 있는경우, #를 제거한 값들을 Hashtag db에 등록해 주는 코드
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } }),
+        ),
+      );
+
+      //위 result의 결과는 이런 형태가 됨. [[노드, true], [리액트, true]]
+      //따라서 아래의 경우 addHashtags뒤에 바로 addHashtags(result)가 아닌 아래처럼 반복문을 돌려 배열의 첫번째 값으로 등록을 해줘야 함.
+      await post.addHashtags(result.map((v) => v[0]));
+    }
 
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
