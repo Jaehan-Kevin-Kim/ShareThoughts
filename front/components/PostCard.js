@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import {
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
-import { REMOVE_POST_REQUEST } from "../reducers/post";
+import { REMOVE_POST_REQUEST, RETWEET_REQUEST } from "../reducers/post";
 import FollowButton from "./FollowButton";
 
 const PostCard = ({ post }) => {
@@ -20,7 +20,7 @@ const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { me } = useSelector((state) => state.user);
-  const { removePostLoading } = useSelector((state) => state.post);
+  const { removePostLoading, retweetError } = useSelector((state) => state.post);
   const id = me?.id;
 
   const onToggleLike = useCallback(() => {
@@ -31,8 +31,21 @@ const PostCard = ({ post }) => {
     setCommentFormOpened((prev) => !prev);
   }, [commentFormOpened]);
 
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert("Login is required");
+    }
+    return dispatch({
+      type: RETWEET_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
+
   const onRemovePost = useCallback(() => {
-    dispatch({
+    if (!id) {
+      return alert("Login is required");
+    }
+    return dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
@@ -42,7 +55,7 @@ const PostCard = ({ post }) => {
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
-          <RetweetOutlined key="retweet" />,
+          <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
             <HeartTwoTone twoToneColor="#AF0000" key="heartTwoTone" onClick={onToggleLike} />
           ) : (
@@ -70,12 +83,23 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        title={post.RetweetId ? `Retweet by ${post.User.nickname}.` : null}
         extra={id && <FollowButton post={post} />}>
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
-          description={<PostCardContent postData={post.content} />}
-        />
+        {post.RetweetId && post.Retweet ? (
+          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+            <Card.Meta
+              avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+              title={post.User.nickname}
+              description={<PostCardContent postData={post.Retweet.content} />}
+            />
+          </Card>
+        ) : (
+          <Card.Meta
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            title={post.User.nickname}
+            description={<PostCardContent postData={post.content} />}
+          />
+        )}
 
         {/* <Buttons></Buttons> */}
         {/* <CommentForm />
@@ -112,6 +136,8 @@ PostCard.propTypes = {
     createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.string),
     Images: PropTypes.arrayOf(PropTypes.object),
+    RetweetId: PropTypes.number,
+    Retweet: PropTypes.objectOf(PropTypes.any),
   }).isRequired,
 };
 

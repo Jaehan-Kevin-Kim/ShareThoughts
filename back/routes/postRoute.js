@@ -115,6 +115,97 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   }
 });
 
+//POST post/동적/retweet
+router.post("/:postId/retweet", isLoggedIn, async (req, res, next) => {
+  try {
+    //retweet 역시 게시글이 있는지 없는지, post를 먼저 찾아주기, 추가로 retweetId까지 include해서 찾으면 더 좋음
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+      include: [
+        {
+          model: Post,
+          as: "Retweet",
+        },
+      ],
+    });
+    if (!post) {
+      return res.status(403).send("You cannot post a comment on the not exist post.");
+    }
+
+    //확인해야 할것 : 리트윗 하려는게 본인게시글인 경우 || 해당 게시글이 retweet 된 게시글인 경우 && 다른 유저가 본인의 글을 retweet한것을 다시 본인이 리트윗 하는 경우
+    //두번쨰 post.Retweet~ 이 조건문을 위해서 위에서 Retweet값을 include해서 post를 찾았음.
+    if (req.user.id === post.UserId || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+      return res.status(403).send("You cannot retweet your own post");
+    }
+
+    //아래는 post.RetweetId 가 있는것은 남이 리트윗한 글이라는 뜻 || 아니면 null이므로 그냥 게시글의 id 작성
+    const retweetTargetId = post.RetweetId || post.id;
+
+    //아래는 내가 한번 retweet한 게시글을 다시 retweet하는걸 막아줌
+    const existPost = await Post.findOne({
+      where: {
+        UserId: req.user.id,
+        RetweetId: retweetTargetId,
+      },
+    });
+    if (existPost) {
+      return res.status(403).send("You already retweeted this post");
+    }
+
+    //retweet row 생성
+    const retweet = await Post.create({
+      UserId: req.user.id,
+      RetweetId: retweetTargetId,
+      content: "retweet",
+    });
+
+    //front로 보내기 전, retweet생성된 값을 포함해서, 필요한 모든 값을 front로 전달 하기 (또한 위처럼만 작성하면 내가 어떤 게시글을 retweet했는지가 안나옴. 따라서 아래와 같이 다 찾은 뒤 프론트로 보내기)
+    const retweetWithPrevPost = await Post.findOne({
+      where: { id: retweet.id },
+      include: [
+        {
+          model: Post,
+          as: "Retweet",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id"],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
+    res.status(201).json(retweetWithPrevPost);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //DELETE /post/10
 router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   try {

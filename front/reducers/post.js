@@ -1,6 +1,4 @@
 import produce from "immer";
-// import shortId from "shortid";
-// import faker from "faker";
 
 export const initialState = {
   mainPosts: [],
@@ -21,6 +19,9 @@ export const initialState = {
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 };
 
 // export const generateDummyPost = (number) =>
@@ -72,6 +73,10 @@ export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
 export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
 export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
 
+export const RETWEET_REQUEST = "RETWEET_REQUEST";
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
+export const RETWEET_FAILURE = "RETWEET_FAILURE";
+
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
 
 export const addPost = (data) => ({
@@ -119,8 +124,9 @@ const reducer = (state = initialState, action) =>
         console.log("action.data", action.data);
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.hasMorePost = draft.mainPosts.length < 50;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        // draft.hasMorePost = draft.mainPosts.length < 50;
+        draft.hasMorePost = action.data.length === 10;
         break;
       }
       case LOAD_POSTS_FAILURE: {
@@ -181,6 +187,23 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_FAILURE: {
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break;
+      }
+      case RETWEET_REQUEST: {
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetEror = null;
+        break;
+      }
+      case RETWEET_SUCCESS: {
+        draft.retweetDone = true;
+        draft.retweetLoading = false;
+        draft.mainPosts.unshift(action.data);
+        break;
+      }
+      case RETWEET_FAILURE: {
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
         break;
       }
       case ADD_COMMENT_REQUEST: {
