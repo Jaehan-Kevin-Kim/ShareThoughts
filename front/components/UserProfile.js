@@ -1,16 +1,20 @@
-import React, { useCallback } from "react";
-import { Card, Avatar, Button } from "antd";
-import PropTypes from "prop-types";
+import { Avatar, Button, Card } from "antd";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutRequestAction } from "../reducers/user";
+import { logout } from "../features/user/userService";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
   const { me, logOutLoading } = useSelector((state) => state.user);
 
+  useEffect(() => {
+    console.log("me", me);
+  }, [me]);
+
   const onLogout = useCallback(() => {
     // setIsLoggedIn(false);
-    dispatch(logoutRequestAction());
+    dispatch(logout());
+    // dispatch(logoutRequestAction());
   }, []);
 
   return (
@@ -19,18 +23,24 @@ const UserProfile = () => {
         actions={[
           <div key="posts">
             Posts
-            <br />{me.Posts.length}
+            <br />
+            {me.Posts.length}
           </div>,
           <div key="followings">
             Following
-            <br />{me.Followings.length}
+            <br />
+            {me.Followings.length}
           </div>,
           <div key="followers">
             Followers
-            <br />{me.Followers.length}
+            <br />
+            {me.Followers.length}
           </div>,
         ]}>
-        <Card.Meta avatar={<Avatar>{me.nickname[0]}</Avatar>} title={me.nickname} />
+        <Card.Meta
+          avatar={<Avatar>{me.nickname}</Avatar>}
+          title={me.nickname}
+        />
         <Button onClick={onLogout} loading={logOutLoading}>
           Logout
         </Button>

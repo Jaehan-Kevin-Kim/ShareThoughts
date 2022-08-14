@@ -1,15 +1,17 @@
-import { Button, Form, Input } from "antd";
-import React, { useCallback, useEffect } from "react";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/css";
+import { Button, Form, Input } from "antd";
+import PropTypes from "prop-types";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addComment } from "../features/post/postService";
 import useInput from "../hooks/useInput";
-import { ADD_COMMENT_REQUEST } from "../reducers/post";
 
 const CommentForm = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
-  const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
+  const { addCommentDone, addCommentLoading } = useSelector(
+    (state) => state.post,
+  );
   const [commentText, onChangeCommentText, setCommentText] = useInput("");
 
   useEffect(() => {
@@ -20,10 +22,7 @@ const CommentForm = ({ post }) => {
 
   const onSubmitComment = useCallback(() => {
     console.log(post.id, commentText);
-    dispatch({
-      type: ADD_COMMENT_REQUEST,
-      data: { content: commentText, postId: post.id, userId: id },
-    });
+    dispatch(addComment({ content: commentText, PostId: post.id, UserId: id }));
   }, [commentText, id]);
   return (
     <Form onFinish={onSubmitComment}>
@@ -33,7 +32,11 @@ const CommentForm = ({ post }) => {
           margin: 0;
           z-index: 1;
         `}>
-        <Input.TextArea value={commentText} onChange={onChangeCommentText} rows={4} />
+        <Input.TextArea
+          value={commentText}
+          onChange={onChangeCommentText}
+          rows={4}
+        />
         <Button
           className={css`
             float: right;

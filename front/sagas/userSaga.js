@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import { all, fork, call, takeLatest, put, delay } from "redux-saga/effects";
 import axios from "axios";
 import {

@@ -3,15 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
-import { LOAD_POSTS_REQUEST } from "../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import { loadPosts } from "../features/post/postService";
+import { loadMyInfo } from "../features/user/userService";
 
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePost, loadPostsLoading, retweetError } = useSelector(
-    (state) => state.post,
-  );
+  const { mainPosts, hasMorePost, loadPostsLoading, retweetError } =
+    useSelector((state) => state.post);
 
   useEffect(() => {
     if (retweetError) {
@@ -20,12 +19,15 @@ const Home = () => {
   }, [retweetError]);
 
   useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
+    dispatch(loadMyInfo());
+    dispatch(loadPosts());
+    // console.log("mainPosts", mainPosts);
+    // dispatch({
+    //   type: LOAD_MY_INFO_REQUEST,
+    // });
+    // dispatch({
+    //   type: LOAD_POSTS_REQUEST,
+    // });
   }, []);
 
   useEffect(() => {
@@ -43,10 +45,11 @@ const Home = () => {
         //아래는 loadPostRequest가 여러번 실행되는걸 막기위한 옵션 (!loadPostsLoading을 추가한 부분)
         if (hasMorePost && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch({
-            type: LOAD_POSTS_REQUEST,
-            lastId,
-          });
+          dispatch(loadPosts(lastId));
+          // dispatch({
+          //   type: LOAD_POSTS_REQUEST,
+          //   lastId,
+          // });
         }
       }
     }

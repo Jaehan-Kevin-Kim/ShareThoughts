@@ -1,10 +1,9 @@
-import { Card, List, Button } from "antd";
 import { StopOutlined } from "@ant-design/icons";
-import PropTypes from "prop-types";
 import { css } from "@emotion/css";
-import { useCallback } from "react";
+import { Button, Card, List } from "antd";
+import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { UNFOLLOW_REQUEST, REMOVE_FOLLOWER_REQUEST } from "../reducers/user";
+import { removeFollower, unfollow } from "../features/user/userService";
 
 const FollowList = ({ header, data }) => {
   const dispatch = useDispatch();
@@ -12,15 +11,17 @@ const FollowList = ({ header, data }) => {
   //아래의 경우는 고차함수로 인자가 넘어 왔을때 function을 처리 하는 방법
   const onCancel = (id) => () => {
     if (header === "Following List") {
-      dispatch({
-        type: UNFOLLOW_REQUEST,
-        data: id,
-      });
+      dispatch(unfollow(id));
+      // dispatch({
+      //   type: UNFOLLOW_REQUEST,
+      //   data: id,
+      // });
     } else {
-      dispatch({
-        type: REMOVE_FOLLOWER_REQUEST,
-        data: id,
-      });
+      dispatch(removeFollower(id));
+      // dispatch({
+      //   type: REMOVE_FOLLOWER_REQUEST,
+      //   data: id,
+      // });
     }
   };
 
@@ -46,7 +47,8 @@ const FollowList = ({ header, data }) => {
           className={css`
             margin-top: 20px;
           `}>
-          <Card actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}>
+          <Card
+            actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}>
             <Card.Meta description={item.nickname} />
           </Card>
         </List.Item>

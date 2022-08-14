@@ -1,5 +1,16 @@
-import produce from "immer";
+import { createSlice } from "@reduxjs/toolkit";
+import { _find } from "lodash/find";
+import { _remove } from "lodash/remove";
+import {
+  addComment,
+  addPost,
+  loadPosts,
+  removePost,
+  retweet,
+  uploadImages,
+} from "./postService";
 
+// initial state
 export const initialState = {
   mainPosts: [],
   imagePaths: [],
@@ -23,6 +34,124 @@ export const initialState = {
   retweetDone: false,
   retweetError: null,
 };
+
+const postSlice = createSlice({
+  name: "post",
+  initialState,
+  reducers: {
+    removeImage: (state, action) => {
+      state.imagePaths = state.imagePaths.filter(
+        (v, i) => i !== action.payload,
+      );
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // loadPosts reducer
+      .addCase(loadPosts.pending, (state) => {
+        state.loadPostsLoading = true;
+        state.loadPostsDone = false;
+        state.loadPostsError = null;
+      })
+      .addCase(loadPosts.fulfilled, (state, action) => {
+        state.loadPostsLoading = false;
+        state.loadPostsDone = true;
+        // state.mainPosts = _concat(state.mainPosts, action.payload);
+        state.mainPosts = state.mainPosts.concat(action.payload);
+        state.hasMorePost = action.payload.length === 10;
+        state.loadPostsError = null;
+      })
+      .addCase(loadPosts.rejected, (state, action) => {
+        state.loadPostsLoading = false;
+        state.loadPostsError = action.error.message;
+      })
+      // addPost reducer
+      .addCase(addPost.pending, (state) => {
+        state.addPostLoading = true;
+        state.addPostDone = false;
+        state.addPostError = null;
+      })
+      .addCase(addPost.fulfilled, (state, action) => {
+        state.addPostLoading = false;
+        state.addPostDone = true;
+        state.mainPosts.unshift(action.payload);
+        state.imagePaths = [];
+      })
+      .addCase(addPost.rejected, (state, action) => {
+        state.addPostLoading = false;
+        state.addPostError = action.error.message;
+      })
+      // remove reducer
+      .addCase(removePost.pending, (state) => {
+        state.removePostLoading = true;
+        state.removePostDone = false;
+        state.removePostError = null;
+      })
+      .addCase(removePost.fulfilled, (state, action) => {
+        state.removePostLoading = false;
+        state.removePostDone = true;
+        // _remove(state.mainPosts, { id: action.payload.postId });
+        state.mainPosts.filter((v) => v.id !== action.payload.postId);
+      })
+      .addCase(removePost.rejected, (state, action) => {
+        state.removePostLoading = false;
+        state.removePostError = action.error.message;
+      })
+      // addComment reducer
+      .addCase(addComment.pending, (state) => {
+        state.addCommentLoading = true;
+        state.addCommentDone = false;
+        state.addCommentError = null;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.addCommentLoading = false;
+        state.addCommentDone = true;
+        // const post = _find(state.mainPosts, { id: action.payload.postId });
+        console.log("action.paylaod: ", action.payload);
+        console.log("state.mainPosts: ", state.mainPosts);
+        const post = state.mainPosts.find(
+          (v) => v.id === action.payload.PostId,
+        );
+        console.log("post in add comment", post);
+        post.Comments.unshift(action.payload);
+      })
+      .addCase(addComment.rejected, (state, action) => {
+        state.addCommentLoading = false;
+        state.addCommentError = action.error.message;
+      })
+      // uploadImages reducer
+      .addCase(uploadImages.pending, (state) => {
+        state.uploadImagesLoading = true;
+        state.uploadImagesDone = false;
+        state.uploadImagesError = null;
+      })
+      .addCase(uploadImages.fulfilled, (state, action) => {
+        state.uploadImagesLoading = false;
+        state.uploadImagesDone = true;
+        state.imagePaths = action.payload;
+      })
+      .addCase(uploadImages.rejected, (state, action) => {
+        state.uploadImagesLoading = false;
+        state.uploadImagesError = action.error.message;
+      })
+      // Retweet reducer
+      .addCase(retweet.pending, (state) => {
+        state.retweetLoading = true;
+        state.retweetDone = false;
+        state.retweetError = null;
+      })
+      .addCase(retweet.fulfilled, (state, action) => {
+        state.retweetLoading = false;
+        state.retweetDone = true;
+        state.mainPosts.unshift(action.payload);
+      })
+      .addCase(retweet.rejected, (state, action) => {
+        state.retweetLoading = false;
+        state.retweetError = action.error.message;
+      });
+  },
+});
+export default postSlice;
 
 // export const generateDummyPost = (number) =>
 //   Array(number)
@@ -52,6 +181,9 @@ export const initialState = {
 //     }));
 
 // initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
+
+/*
+import produce from "immer";
 
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
@@ -245,3 +377,4 @@ const reducer = (state = initialState, action) =>
   });
 
 export default reducer;
+*/

@@ -1,18 +1,18 @@
+import styled from "@emotion/styled";
+import { Button, Checkbox, Form, Input } from "antd";
 import Head from "next/head";
 import Router from "next/router";
-import { Button, Form, Input, Checkbox } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "@emotion/styled";
 import AppLayout from "../components/AppLayout";
+import { signup } from "../features/user/userService";
 import useInput from "../hooks/useInput";
-import { SIGN_UP_REQUEST } from "../reducers/user";
 
 const ErrorMessage = styled.div`
   color: red;
 `;
 
-const signup = () => {
+const Signup = () => {
   const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNickname] = useInput("");
   const [password, onChangePassword] = useInput("");
@@ -23,7 +23,9 @@ const signup = () => {
   const [termError, setTermError] = useState(false);
 
   const dispatch = useDispatch();
-  const { signUpLoading, me, signUpDone, signUpError } = useSelector((state) => state.user);
+  const { signupLoading, me, signupDone, signupError } = useSelector(
+    (state) => state.user,
+  );
 
   useEffect(() => {
     if (me?.id) {
@@ -36,17 +38,18 @@ const signup = () => {
   // }
 
   useEffect(() => {
-    if (signUpDone) {
+    console.log("signupDone: ", signupDone);
+    if (signupDone) {
       Router.replace("/");
     }
-  }, [signUpDone]);
+  }, [signupDone]);
 
   useEffect(() => {
-    if (signUpError) {
-      // console.log(signUpError);
-      alert(signUpError);
+    if (signupError) {
+      // console.log(signupError);
+      alert(signupError);
     }
-  }, [signUpError]);
+  }, [signupError]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -75,10 +78,11 @@ const signup = () => {
       return setTermError(true);
     }
     console.log(email, nickname, password);
-    dispatch({
-      type: SIGN_UP_REQUEST,
-      data: { email, password, nickname },
-    });
+    return dispatch(signup({ email, password, nickname }));
+    // dispatch({
+    //   type: SIGN_UP_REQUEST,
+    //   data: { email, password, nickname },
+    // });
   }, [email, password, passwordCheck, term]);
 
   return (
@@ -90,11 +94,22 @@ const signup = () => {
         <Form onFinish={onSubmit}>
           <div>
             <label htmlFor="user-email">Email</label> <br />
-            <Input name="user-email" type="email" value={email} required onChange={onChangeEmail} />
+            <Input
+              name="user-email"
+              type="email"
+              value={email}
+              required
+              onChange={onChangeEmail}
+            />
           </div>
           <div>
             <label htmlFor="user-nickname">Nick Name</label> <br />
-            <Input name="user-nickname" value={nickname} required onChange={onChangeNickname} />
+            <Input
+              name="user-nickname"
+              value={nickname}
+              required
+              onChange={onChangeNickname}
+            />
           </div>
           <div>
             <label htmlFor="user-password">Password</label> <br />
@@ -116,20 +131,26 @@ const signup = () => {
               onChange={onChangePasswordCheck}
             />
             {passwordLengthError && (
-              <ErrorMessage>Password should be longer than 8 characters!</ErrorMessage>
+              <ErrorMessage>
+                Password should be longer than 8 characters!
+              </ErrorMessage>
             )}
-            {passwordError && <ErrorMessage>Password is not matched!</ErrorMessage>}
+            {passwordError && (
+              <ErrorMessage>Password is not matched!</ErrorMessage>
+            )}
           </div>
           <div>
             <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>
               Do you agree to the terms and conditions for use?
             </Checkbox>
             {termError && (
-              <ErrorMessage>You have to agree to the terms and conditions.</ErrorMessage>
+              <ErrorMessage>
+                You have to agree to the terms and conditions.
+              </ErrorMessage>
             )}
           </div>
           <div style={{ marginTop: "10px" }}>
-            <Button type="primary" htmlType="submit" loading={signUpLoading}>
+            <Button type="primary" htmlType="submit" loading={signupLoading}>
               Sign Up
             </Button>
           </div>
@@ -139,4 +160,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;

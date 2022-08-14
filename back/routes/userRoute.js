@@ -151,12 +151,14 @@ router.patch("/:userId/follow", async (req, res, next) => {
 // DELETE /user/1/follow
 router.delete("/:userId/follow", async (req, res, next) => {
   try {
-    const me = await User.findOne({ where: { id: req.user.id } });
+    // const me = await User.findOne({ where: { id: req.user.id } });
+    const me = await User.findOne({ where: { id: req.params.userId } });
     if (!me) {
       res.status(403).send("User is not exist for following.");
     }
     //아래는 내가 unfollow 버튼 누르면 그 사람의 follwer인 내가 remove를 하기 때문에 removeFollowers 가 됨.
-    await me.removeFollowers(req.params.userId);
+    // await me.removeFollowers(req.params.userId);
+    await me.removeFollowers(req.user.id);
     res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
   } catch (error) {
     console.error(error);

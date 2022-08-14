@@ -1,8 +1,10 @@
-import { Input, Form, Button } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import React, { useCallback, useState, useRef, useEffect } from "react";
+import { Button, Form, Input } from "antd";
+import React, { useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost, uploadImages } from "../features/post/postService";
+import postSlice from "../features/post/postSlice";
 import useInput from "../hooks/useInput";
-import { addPost, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE, ADD_POST_REQUEST } from "../reducers/post";
+// import { ADD_POST_REQUEST } from "../reducers/post";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -30,18 +32,20 @@ const PostForm = () => {
       //아래 append()안에 들어가는 'image'는 backend에서 upload.array()안에 받는 'image', 아래 input file에서 name으로 준 'image' 와 이름이 똑같아야지 정상 동작 함.
       imageFormData.append("image", f);
     });
-    dispatch({
-      type: UPLOAD_IMAGES_REQUEST,
-      data: imageFormData,
-    });
+    dispatch(uploadImages, imageFormData);
+    // dispatch({
+    //   type: UPLOAD_IMAGES_REQUEST,
+    //   data: imageFormData,
+    // });
   }, []);
 
   const onRemoveImage = useCallback(
     (index) => () => {
-      dispatch({
-        type: REMOVE_IMAGE,
-        data: index,
-      });
+      dispatch(postSlice.actions.removeImage(index));
+      // dispatch({
+      //   type: REMOVE_IMAGE,
+      //   data: index,
+      // });
     },
     [],
   );
@@ -57,16 +61,20 @@ const PostForm = () => {
       formData.append("image", p);
     });
     formData.append("content", text);
-    return dispatch({
-      type: ADD_POST_REQUEST,
-      data: formData,
-    });
+    return dispatch(addPost(formData));
+    // return dispatch({
+    //   type: ADD_POST_REQUEST,
+    //   data: formData,
+    // });
     //위의 경우는 image가 있기 때문에 formData로 안보내고 json으로 보내도 됨. (data:{imagePaths, content:text}), 이런 형태로 해도 됨.
   }, [text, imagePaths]);
 
   return (
     <>
-      <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
+      <Form
+        style={{ margin: "10px 0 20px" }}
+        encType="multipart/form-data"
+        onFinish={onSubmit}>
         <Input.TextArea
           value={text}
           onChange={onChangeText}
@@ -90,7 +98,11 @@ const PostForm = () => {
         <div>
           {imagePaths.map((v, i) => (
             <div key={v} style={{ display: "inline-block" }}>
-              <img src={`http://localhost:3065/${v}`} style={{ width: "200px" }} alt={v} />
+              <img
+                src={`http://localhost:3065/${v}`}
+                style={{ width: "200px" }}
+                alt={v}
+              />
               <div>
                 <Button onClick={onRemoveImage(i)}>Remove</Button>
               </div>

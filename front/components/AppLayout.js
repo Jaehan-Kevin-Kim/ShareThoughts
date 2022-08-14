@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import Link from "next/link";
-import { Input, Menu, Row, Col } from "antd";
-import "antd/dist/antd.css";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/destructuring-assignment */
 import styled from "@emotion/styled";
+import { Col, Input, Menu, Row } from "antd";
+import "antd/dist/antd.css";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React from "react";
 import { useSelector } from "react-redux";
 import { createGlobalStyle } from "styled-components";
-import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
+import UserProfile from "./UserProfile";
 
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
@@ -40,20 +42,20 @@ const AppLayout = (props) => {
     <div>
       <Global />
       <Menu mode="horizontal">
-        <Menu.Item>
+        <Menu.Item key="ShareThoughts">
           <Link href="/">
             <a>ShareThoughts</a>
           </Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="Profile">
           <Link href="/profile">
             <a>Profile</a>
           </Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="Search">
           <SearchInput enterButton />
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="Signup">
           <Link href="/signup">
             <a>Sign Up</a>
           </Link>
@@ -67,7 +69,10 @@ const AppLayout = (props) => {
           {props.children}
         </Col>
         <Col xs={24} md={6} lg={4}>
-          <a href="https://kevin-kim.netlify.app/" target="_blank" rel="noreferrer noopener">
+          <a
+            href="https://kevin-kim.netlify.app/"
+            target="_blank"
+            rel="noreferrer noopener">
             Made by Kevin
           </a>
         </Col>

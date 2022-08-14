@@ -1,26 +1,29 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Card, Popover, Button, Avatar, List, Comment } from "antd";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+/* eslint-disable no-unused-vars */
 import {
   EllipsisOutlined,
   HeartOutlined,
+  HeartTwoTone,
   MessageOutlined,
   RetweetOutlined,
-  HeartTwoTone,
 } from "@ant-design/icons";
-import PostImages from "./PostImages";
+import { Avatar, Button, Card, Comment, List, Popover } from "antd";
+import PropTypes from "prop-types";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { removePost, retweet } from "../features/post/postService";
 import CommentForm from "./CommentForm";
-import PostCardContent from "./PostCardContent";
-import { REMOVE_POST_REQUEST, RETWEET_REQUEST } from "../reducers/post";
 import FollowButton from "./FollowButton";
+import PostCardContent from "./PostCardContent";
+import PostImages from "./PostImages";
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { me } = useSelector((state) => state.user);
-  const { removePostLoading, retweetError } = useSelector((state) => state.post);
+  const { removePostLoading, retweetError } = useSelector(
+    (state) => state.post,
+  );
   const id = me?.id;
 
   const onToggleLike = useCallback(() => {
@@ -35,20 +38,23 @@ const PostCard = ({ post }) => {
     if (!id) {
       return alert("Login is required");
     }
-    return dispatch({
-      type: RETWEET_REQUEST,
-      data: post.id,
-    });
+    return dispatch(retweet(post.id));
+    // return dispatch({
+    //   type: RETWEET_REQUEST,
+    //   data: post.id,
+    // });
   }, [id]);
 
   const onRemovePost = useCallback(() => {
     if (!id) {
       return alert("Login is required");
     }
-    return dispatch({
-      type: REMOVE_POST_REQUEST,
-      data: post.id,
-    });
+    console.log("removePostid: ", post.id);
+    return dispatch(removePost({ postId: post.id }));
+    // return dispatch({
+    //   type: REMOVE_POST_REQUEST,
+    //   data: post.id,
+    // });
   }, []);
   return (
     <div style={{ marginBottom: 20 }}>
@@ -57,7 +63,11 @@ const PostCard = ({ post }) => {
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
-            <HeartTwoTone twoToneColor="#AF0000" key="heartTwoTone" onClick={onToggleLike} />
+            <HeartTwoTone
+              twoToneColor="#AF0000"
+              key="heartTwoTone"
+              onClick={onToggleLike}
+            />
           ) : (
             <HeartOutlined key="heart" onClick={onToggleLike} />
           ),
@@ -70,7 +80,10 @@ const PostCard = ({ post }) => {
                 {id && post.User.id === id ? (
                   <>
                     <Button>Modify</Button>
-                    <Button type="danger" onClick={onRemovePost} loading={removePostLoading}>
+                    <Button
+                      type="danger"
+                      onClick={onRemovePost}
+                      loading={removePostLoading}>
                       Delete
                     </Button>
                     <Button>Report</Button>
@@ -86,7 +99,12 @@ const PostCard = ({ post }) => {
         title={post.RetweetId ? `Retweet by ${post.User.nickname}.` : null}
         extra={id && <FollowButton post={post} />}>
         {post.RetweetId && post.Retweet ? (
-          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+          <Card
+            cover={
+              post.Retweet.Images[0] && (
+                <PostImages images={post.Retweet.Images} />
+              )
+            }>
             <Card.Meta
               avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
               title={post.User.nickname}

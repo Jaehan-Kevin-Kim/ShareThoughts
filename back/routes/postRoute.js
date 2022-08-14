@@ -78,7 +78,10 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
       where: { id: post.id },
       include: [
         { model: Image }, //위 post.addImages로 해줬던 값들이 여기 들어가서 post.images로 가져올 수 있음
-        { model: Comment, include: [{ model: User, attributes: ["id", "nickname"] }] },
+        {
+          model: Comment,
+          include: [{ model: User, attributes: ["id", "nickname"] }],
+        },
         { model: User, attributes: ["id", "nickname"] },
       ],
     });
@@ -96,7 +99,9 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
       where: { id: req.params.postId },
     });
     if (!post) {
-      return res.status(403).send("You cannot post a comment on the not exist post.");
+      return res
+        .status(403)
+        .send("You cannot post a comment on the not exist post.");
     }
     const comment = await Comment.create({
       content: req.body.content,
@@ -129,12 +134,17 @@ router.post("/:postId/retweet", isLoggedIn, async (req, res, next) => {
       ],
     });
     if (!post) {
-      return res.status(403).send("You cannot post a comment on the not exist post.");
+      return res
+        .status(403)
+        .send("You cannot post a comment on the not exist post.");
     }
 
     //확인해야 할것 : 리트윗 하려는게 본인게시글인 경우 || 해당 게시글이 retweet 된 게시글인 경우 && 다른 유저가 본인의 글을 retweet한것을 다시 본인이 리트윗 하는 경우
     //두번쨰 post.Retweet~ 이 조건문을 위해서 위에서 Retweet값을 include해서 post를 찾았음.
-    if (req.user.id === post.UserId || (post.Retweet && post.Retweet.UserId === req.user.id)) {
+    if (
+      req.user.id === post.UserId ||
+      (post.Retweet && post.Retweet.UserId === req.user.id)
+    ) {
       return res.status(403).send("You cannot retweet your own post");
     }
 
@@ -209,13 +219,15 @@ router.post("/:postId/retweet", isLoggedIn, async (req, res, next) => {
 //DELETE /post/10
 router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   try {
+    console.log("req.params.postId: ", req.params.postId);
+    typeof req.params.postId;
     await Post.destroy({
       where: {
         id: req.params.postId,
         UserId: req.user.id,
       },
     });
-    res.status(200).json({ PostId: parseInt(reqs.params.postId, 10) });
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
   } catch (error) {
     console.error(error);
     next(error);

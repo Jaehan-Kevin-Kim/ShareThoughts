@@ -1,3 +1,234 @@
+import { createSlice } from "@reduxjs/toolkit";
+import { _remove } from "lodash/remove";
+import {
+  changeNickname,
+  follow,
+  loadFollowers,
+  loadFollowings,
+  loadMyInfo,
+  login,
+  logout,
+  removeFollower,
+  signup,
+  unfollow,
+} from "./userService";
+
+export const initialState = {
+  loadMyInfoLoading: false, // 로그인 시도 중
+  loadMyInfoDone: false,
+  loadMyInfoError: false,
+  logInLoading: false, // 로그인 시도 중
+  logInDone: false,
+  logInError: false,
+  logOutLoading: false, // 로그아웃 시도 중
+  logOutDone: false,
+  logOutError: null,
+  signUpLoading: false, // 회원가입 시도 중
+  signUpDone: false,
+  signUpError: null,
+  changeNicknameLoading: false, // Nickname 변경 시도 중
+  changeNicknameDone: false,
+  changeNicknameError: null,
+  followLoading: false,
+  followDone: false,
+  followError: null,
+  unfollowLoading: false,
+  unfollowDone: false,
+  unfollowError: null,
+  loadFollowingsLoading: false,
+  loadFollowingsDone: false,
+  loadFollowingsError: null,
+  loadFollwersLoading: false,
+  loadFollwersDone: false,
+  loadFollwersError: null,
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
+  me: null,
+  signUpData: {},
+  loginData: {},
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    addPostToMe(state, action) {
+      state.me.Posts.unshift({ id: action.payload });
+    },
+    removePostOfMe(state, action) {
+      _remove(state.me.Posts, (v) => v.id === action.payload);
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // loadMyInfo reducer
+      .addCase(loadMyInfo.pending, (state) => {
+        state.loadMyInfoLoading = true;
+        state.loadMyInfoDone = false;
+        state.loadMyInfoError = null;
+      })
+      .addCase(loadMyInfo.fulfilled, (state, action) => {
+        state.loadMyInfoLoading = false;
+        state.loadMyInfoDone = true;
+        state.loadMyInfoError = null;
+        state.me = action.payload;
+      })
+      .addCase(loadMyInfo.rejected, (state, action) => {
+        state.loadMyInfoLoading = false;
+        state.loadMyInfoError = action.error.message;
+      })
+      // login reducer
+      .addCase(login.pending, (state) => {
+        state.loginLoading = true;
+        state.loginDone = false;
+        state.loginError = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loginLoading = false;
+        state.loginDone = true;
+        state.me = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loginLoading = false;
+        state.loginError = action.error.message;
+      })
+      // logout reducer
+      .addCase(logout.pending, (state) => {
+        state.logoutLoading = true;
+        state.logoutDone = false;
+        state.loginDone = true;
+        state.logoutError = null;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.logoutLoading = false;
+        state.logoutDone = true;
+        state.logInDone = false;
+        state.me = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.logoutLoading = false;
+        state.logoutError = action.error.message;
+      })
+      // follow reducer
+      .addCase(follow.pending, (state) => {
+        state.followLoading = true;
+        state.followDone = false;
+        state.followError = null;
+      })
+      .addCase(follow.fulfilled, (state, action) => {
+        state.followLoading = false;
+        state.followDone = true;
+        state.me.Followings.push({ id: action.payload.UserId });
+      })
+      .addCase(follow.rejected, (state, action) => {
+        state.followLoading = false;
+        state.followError = action.error.message;
+      })
+      // unfollow reducer
+      .addCase(unfollow.pending, (state) => {
+        state.unfollowLoading = true;
+        state.unfollowDone = false;
+        state.unfollowError = null;
+      })
+      .addCase(unfollow.fulfilled, (state, action) => {
+        state.unfollowLoading = false;
+        state.unfollowDone = true;
+        console.log("unfollow action", action.payload);
+        // _remove(state.me.Followings, {
+        //   id: action.payload.UserId,
+        // });
+        state.me.Followings = state.me.Followings.filter(
+          (v) => v.UserId !== action.payload.UserId,
+        );
+      })
+      .addCase(unfollow.rejected, (state, action) => {
+        state.unfollowLoading = false;
+        state.unfollowError = action.error.message;
+      })
+      // loadFollowings reducer
+      .addCase(loadFollowings.pending, (state) => {
+        state.loadFollowingsLoading = true;
+        state.loadFollowingsDone = false;
+        state.loadFollowingsError = null;
+      })
+      .addCase(loadFollowings.fulfilled, (state, action) => {
+        state.loadFollowingsLoading = false;
+        state.loadFollowingsDone = true;
+        state.me.nickname = action.payload.nickname;
+      })
+      .addCase(loadFollowings.rejected, (state, action) => {
+        state.loadFollowingsLoading = false;
+        state.loadFollowingsError = action.error.message;
+      })
+      // loadFollowers reducer
+      .addCase(loadFollowers.pending, (state) => {
+        state.loadFollowersLoading = true;
+        state.loadFollowersDone = false;
+        state.loadFollowersError = null;
+      })
+      .addCase(loadFollowers.fulfilled, (state, action) => {
+        state.loadFollowersLoading = false;
+        state.loadFollowersDone = true;
+        state.me.Followers = action.payload;
+      })
+      .addCase(loadFollowers.rejected, (state, action) => {
+        state.loadFollowersLoading = false;
+        state.loadFollowersError = action.error.message;
+      })
+      // removeFollower reducer
+      .addCase(removeFollower.pending, (state) => {
+        state.removeFollowerLoading = true;
+        state.removeFollowerDone = false;
+        state.removeFollowerError = null;
+      })
+      .addCase(removeFollower.fulfilled, (state, action) => {
+        state.removeFollowerLoading = false;
+        state.removeFollowerDone = true;
+        state.me.Followers = _remove(state.me.Followers, {
+          id: action.state.userId,
+        });
+      })
+      .addCase(removeFollower.rejected, (state, action) => {
+        state.removeFollowerLoading = false;
+        state.removeFollowerError = action.error.message;
+      })
+      // signup reducer
+      .addCase(signup.pending, (state) => {
+        state.signupLoading = true;
+        state.signupDone = false;
+        state.signupError = null;
+      })
+      .addCase(signup.fulfilled, (state) => {
+        state.signupLoading = false;
+        state.signupDone = true;
+      })
+      .addCase(signup.rejected, (state, action) => {
+        state.signupLoading = false;
+        state.signupError = action.error.message;
+      })
+      // chnageNickname reducer
+      .addCase(changeNickname.pending, (state) => {
+        state.changeNicknameLoading = true;
+        state.changeNicknameDone = false;
+        state.changeNicknameError = null;
+      })
+      .addCase(changeNickname.fulfilled, (state, action) => {
+        state.changeNicknameLoading = false;
+        state.changeNicknameDone = true;
+        console.log("change nickname action.payload: ", action.payload);
+        state.me.nickname = action.payload.nickname;
+      })
+      .addCase(changeNickname.rejected, (state, action) => {
+        state.changeNicknameLoading = false;
+        state.changeNicknameError = action.error.message;
+      });
+  },
+});
+
+export default userSlice;
+
+/**
 import axios from "axios";
 import produce from "immer";
 export const initialState = {
@@ -36,28 +267,7 @@ export const initialState = {
   loginData: {},
 };
 
-/*
-export const loginAction = (data) => {
-  return (dispatch, getState) => {
-    const state = getState(); // initial state
-    dispatch(loginRequestAction());
-    axios
-      .post("/api/login")
-      .then((res) => {
-        dispatch(loginSuccessAction(res.data));
-      })
-      .catch((err) => {
-        dispatch(loginFailureAction(err));
-      });
-  };
-};
-*/
-// export const loginAction = (data) => {
-//   return {
-//     type: "LOG_IN",
-//     data,
-//   };
-// };
+
 
 export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
 export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
@@ -344,3 +554,4 @@ const reducer = (state = initialState, action) =>
   });
 
 export default reducer;
+ */
