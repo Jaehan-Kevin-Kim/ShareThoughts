@@ -13,9 +13,9 @@ router.get("/", async (req, res, next) => {
       //초기 loading이 아닐 때 (초기 로딩은 값이 0 이기 때문에 false가 됨)
       where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
       //lastId보다 작은 이라는 조건문을 작성 해야 함. => 이렇게 작성하면 id가 lastId보다 작은 이라는 형태의 조건문이 완성 됨.
-      console.log("where.id: ", where.id);
+      // console.log("where.id: ", where.id);
     }
-    console.log("where", where);
+    // console.log("where", where);
 
     const posts = await Post.findAll({
       where,

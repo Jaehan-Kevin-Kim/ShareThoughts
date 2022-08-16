@@ -7,6 +7,7 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 // GET /user
 router.get("/", async (req, res, next) => {
+  console.log(req.headers);
   try {
     if (req.user) {
       const fullUserWithoutPassword = await User.findOne({
@@ -26,6 +27,40 @@ router.get("/", async (req, res, next) => {
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 특정 사용자 가져오기
+// GET /user/:userId
+router.get("/:userId", async (req, res, next) => {
+  console.log(req.headers);
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: {
+        id: req.params.userId,
+      },
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        { model: User, as: "Followings", attributes: ["id"] },
+        { model: User, as: "Followers", attributes: ["id"] },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length; // 개인정보 침해 예방
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json("The user is not exist.");
     }
   } catch (error) {
     console.error(error);
@@ -93,7 +128,7 @@ router.post("/", isNotLoggedIn, async (req, res, next) => {
         email: req.body.email,
       },
     });
-    console.log("existUser", existUser);
+    // console.log("existUser", existUser);
     if (existUser) {
       //반드시 응답은 한번 만 보내야 하기 때문에 응답 시 return을 붙이기 (만약 res.send 두번 보내게 되면 "can't set headers already sent"라는 error message가 출력 됨. 혹은 if/else로 조건문 만들어서 return을 안쓰는 방법도 있음.)
       return res.status(403).send("This email is already registered");

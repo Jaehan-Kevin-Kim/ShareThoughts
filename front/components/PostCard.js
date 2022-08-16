@@ -20,7 +20,9 @@ const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { me } = useSelector((state) => state.user);
-  const { removePostLoading, retweetError } = useSelector((state) => state.post);
+  const { removePostLoading, retweetError } = useSelector(
+    (state) => state.post,
+  );
   const id = me?.id;
 
   const onToggleLike = useCallback(() => {
@@ -49,7 +51,7 @@ const PostCard = ({ post }) => {
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
@@ -57,7 +59,11 @@ const PostCard = ({ post }) => {
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
-            <HeartTwoTone twoToneColor="#AF0000" key="heartTwoTone" onClick={onToggleLike} />
+            <HeartTwoTone
+              twoToneColor="#AF0000"
+              key="heartTwoTone"
+              onClick={onToggleLike}
+            />
           ) : (
             <HeartOutlined key="heart" onClick={onToggleLike} />
           ),
@@ -70,7 +76,10 @@ const PostCard = ({ post }) => {
                 {id && post.User.id === id ? (
                   <>
                     <Button>Modify</Button>
-                    <Button type="danger" onClick={onRemovePost} loading={removePostLoading}>
+                    <Button
+                      type="danger"
+                      onClick={onRemovePost}
+                      loading={removePostLoading}>
                       Delete
                     </Button>
                     <Button>Report</Button>
@@ -86,7 +95,12 @@ const PostCard = ({ post }) => {
         title={post.RetweetId ? `Retweet by ${post.User.nickname}.` : null}
         extra={id && <FollowButton post={post} />}>
         {post.RetweetId && post.Retweet ? (
-          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+          <Card
+            cover={
+              post.Retweet.Images[0] && (
+                <PostImages images={post.Retweet.Images} />
+              )
+            }>
             <Card.Meta
               avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
               title={post.User.nickname}

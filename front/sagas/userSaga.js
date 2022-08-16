@@ -31,17 +31,21 @@ import {
   REMOVE_FOLLOWER_REQUEST,
   REMOVE_FOLLOWER_SUCCESS,
   REMOVE_FOLLOWER_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
 } from "../reducers/user";
 
 function loadMyInfoAPI() {
   return axios.get("/user");
 }
 
-function* loadMyInfo(action) {
+function* loadMyInfo() {
   try {
     // console.log("saga loadMyInfo");
     // console.log(action);
-    const result = yield call(loadMyInfoAPI, action.data);
+    // const result = yield call(loadMyInfoAPI, action.data);
+    const result = yield call(loadMyInfoAPI);
     // yield delay(1000);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
@@ -52,6 +56,29 @@ function* loadMyInfo(action) {
     console.error(error);
     yield put({
       type: LOAD_MY_INFO_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+function loadUserAPI(data) {
+  return axios.get(`/user/${data}`);
+}
+
+function* loadUser(action) {
+  try {
+    // console.log("saga loadUser");
+    // console.log(action);
+    const result = yield call(loadUserAPI, action.data);
+    // yield delay(1000);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      // data.action.data,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_USER_FAILURE,
       error: error.response.data,
     });
   }
@@ -251,6 +278,9 @@ function* removeFollower(action) {
 function* watchLoadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo); //take: take안에 들어있는 action이 실행 될 때 까지 기다림: 해당 action이 실행 되면 function이 실행 됨.
 }
+function* watchLoadUser() {
+  yield takeLatest(LOAD_USER_REQUEST, loadUser); //take: take안에 들어있는 action이 실행 될 때 까지 기다림: 해당 action이 실행 되면 function이 실행 됨.
+}
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn); //take: take안에 들어있는 action이 실행 될 때 까지 기다림: 해당 action이 실행 되면 function이 실행 됨.
 }
@@ -282,6 +312,7 @@ function* watchRemoveFollower() {
 export default function* userSaga() {
   yield all([
     fork(watchLoadMyInfo),
+    fork(watchLoadUser),
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp),

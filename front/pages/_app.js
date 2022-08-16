@@ -5,20 +5,19 @@ import Head from "next/head";
 import wrapper from "../store/configureStore";
 // import { Provider } from "react-redux";
 
-const App = ({ Component }) => {
-  return (
-    <>
-      <Head>
-        <meta charSet="utf-8" />
-        <title>Share Thoughts</title>
-      </Head>
-      <Component />
-    </>
-  );
-};
+const ShareThought = ({ Component }) => 
+(
+  <>
+    <Head>
+      <meta charSet="utf-8" />
+      <title>Share Thoughts</title>
+    </Head>
+    <Component />
+  </>)
 
-App.propTypes = {
+
+ShareThought.propTypes = {
   Component: PropTypes.elementType.isRequired,
 };
 
-export default wrapper.withRedux(App);
+export default wrapper.withRedux(ShareThought);
