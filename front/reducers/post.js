@@ -2,11 +2,15 @@ import produce from "immer";
 
 export const initialState = {
   mainPosts: [],
+  singlePost: null,
   imagePaths: [],
   hasMorePost: true,
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -56,6 +60,10 @@ export const initialState = {
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
 export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -134,6 +142,25 @@ const reducer = (state = initialState, action) =>
         draft.loadPostsError = action.error;
         break;
       }
+      case LOAD_POST_REQUEST: {
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      }
+      case LOAD_POST_SUCCESS: {
+        console.log("action.data", action.data);
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
+        // draft.hasMorePost = action.data.length === 10;
+        break;
+      }
+      case LOAD_POST_FAILURE: {
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
+        break;
+      }
       case ADD_POST_REQUEST: {
         draft.addPostLoading = true;
         draft.addPostDone = false;
@@ -162,7 +189,9 @@ const reducer = (state = initialState, action) =>
       case REMOVE_POST_SUCCESS: {
         draft.removePostDone = true;
         draft.removePostLoading = false;
-        const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.PostId);
+        const postIndex = state.mainPosts.findIndex(
+          (v) => v.id === action.data.PostId,
+        );
         console.log("postIndex", postIndex);
         draft.mainPosts.splice(postIndex, 1);
         break;
