@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-const { User, Post } = require("../models");
+const { Op } = require("sequelize"); //to implement less than (Op: Operator)
+const { User, Post, Comment, Image } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 // GET /user
@@ -28,6 +29,67 @@ router.get("/", async (req, res, next) => {
     } else {
       res.status(200).json(null);
     }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 특정 사용자의 게시글 가져오기
+// GET /user/1/posts
+router.get("/:userId/posts", async (req, res, next) => {
+  try {
+    const where = { UserId: req.params.userId };
+    if (parseInt(req.query.lastId, 10)) {
+      // console.log("Last Id: ", req.query.lastId);
+      //초기 loading이 아닐 때 (초기 로딩은 값이 0 이기 때문에 false가 됨)
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+      //lastId보다 작은 이라는 조건문을 작성 해야 함. => 이렇게 작성하면 id가 lastId보다 작은 이라는 형태의 조건문이 완성 됨.
+      // console.log("where.id: ", where.id);
+    }
+    // console.log("where", where);
+
+    const posts = await Post.findAll({
+      where,
+      limit: 10, //요청이 발생 했을때 10개만 가져오라는 명령어
+      order: [
+        ["createdAt", "DESC"],
+        [Comment, "createdAt", "DESC"],
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Post,
+          as: "Retweet",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
+    // console.log("posts", posts);
+    res.status(200).json(posts);
   } catch (error) {
     console.error(error);
     next(error);
