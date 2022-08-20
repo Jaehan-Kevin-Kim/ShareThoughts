@@ -19,6 +19,10 @@ const Post = () => {
     console.log("singlePost: ", singlePost);
   }, []);
 
+  // if (router.isFallback) {
+  //   return <div> Loading... </div>;
+  // }
+
   return (
     <AppLayout>
       <Head>
@@ -35,6 +39,16 @@ const Post = () => {
   );
 };
 
+// export async function getStaticPaths() {
+//     // const result = await axios.get('/post/list');
+//     return {
+//       paths: [{ params: { id: "12" } }, { params: { id: "14" } }],
+//       fallback: true,
+//     };
+
+// }
+
+// export const getStaticProps = wrapper.getStaticProps(async (context) => {
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
     const cookie = context.req ? context.req.headers.cookie : "";
