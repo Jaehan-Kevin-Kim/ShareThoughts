@@ -1,12 +1,11 @@
-import { Card, List, Button } from "antd";
 import { StopOutlined } from "@ant-design/icons";
-import PropTypes from "prop-types";
 import { css } from "@emotion/css";
-import { useCallback } from "react";
+import { Button, Card, List } from "antd";
+import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { UNFOLLOW_REQUEST, REMOVE_FOLLOWER_REQUEST } from "../reducers/user";
+import { REMOVE_FOLLOWER_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
 
-const FollowList = ({ header, data }) => {
+const FollowList = ({ header, data, onClickMore, loading }) => {
   const dispatch = useDispatch();
 
   //아래의 경우는 고차함수로 인자가 넘어 왔을때 function을 처리 하는 방법
@@ -36,7 +35,9 @@ const FollowList = ({ header, data }) => {
             text-align: center;
             margin: 10px 0;
           `}>
-          <Button>More...</Button>
+          <Button onClick={onClickMore} loading={loading}>
+            More...
+          </Button>
         </div>
       }
       bordered
@@ -46,7 +47,8 @@ const FollowList = ({ header, data }) => {
           className={css`
             margin-top: 20px;
           `}>
-          <Card actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}>
+          <Card
+            actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}>
             <Card.Meta description={item.nickname} />
           </Card>
         </List.Item>
@@ -59,6 +61,8 @@ const FollowList = ({ header, data }) => {
 FollowList.propTypes = {
   header: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
+  onClickMore: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default FollowList;

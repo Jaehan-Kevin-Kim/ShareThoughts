@@ -35,101 +35,6 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// 특정 사용자의 게시글 가져오기
-// GET /user/1/posts
-router.get("/:userId/posts", async (req, res, next) => {
-  try {
-    const where = { UserId: req.params.userId };
-    if (parseInt(req.query.lastId, 10)) {
-      // console.log("Last Id: ", req.query.lastId);
-      //초기 loading이 아닐 때 (초기 로딩은 값이 0 이기 때문에 false가 됨)
-      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
-      //lastId보다 작은 이라는 조건문을 작성 해야 함. => 이렇게 작성하면 id가 lastId보다 작은 이라는 형태의 조건문이 완성 됨.
-      // console.log("where.id: ", where.id);
-    }
-    // console.log("where", where);
-
-    const posts = await Post.findAll({
-      where,
-      limit: 10, //요청이 발생 했을때 10개만 가져오라는 명령어
-      order: [
-        ["createdAt", "DESC"],
-        [Comment, "createdAt", "DESC"],
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ["id", "nickname"],
-        },
-        {
-          model: Post,
-          as: "Retweet",
-          include: [
-            {
-              model: User,
-              attributes: ["id", "nickname"],
-            },
-            {
-              model: Image,
-            },
-          ],
-        },
-        {
-          model: Image,
-        },
-        {
-          model: Comment,
-          include: [
-            {
-              model: User,
-              attributes: ["id", "nickname"],
-            },
-          ],
-        },
-      ],
-    });
-    // console.log("posts", posts);
-    res.status(200).json(posts);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-// 특정 사용자 가져오기
-// GET /user/:userId
-router.get("/:userId", async (req, res, next) => {
-  console.log(req.headers);
-  try {
-    const fullUserWithoutPassword = await User.findOne({
-      where: {
-        id: req.params.userId,
-      },
-      attributes: { exclude: ["password"] },
-      include: [
-        {
-          model: Post,
-          attributes: ["id"],
-        },
-        { model: User, as: "Followings", attributes: ["id"] },
-        { model: User, as: "Followers", attributes: ["id"] },
-      ],
-    });
-    if (fullUserWithoutPassword) {
-      const data = fullUserWithoutPassword.toJSON();
-      data.Posts = data.Posts.length; // 개인정보 침해 예방
-      data.Followers = data.Followers.length;
-      data.Followings = data.Followings.length;
-      res.status(200).json(data);
-    } else {
-      res.status(404).json("The user is not exist.");
-    }
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
 // Post /user/login
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
@@ -229,6 +134,134 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   }
 });
 
+// GET /user/followers
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+  try {
+    const me = await User.findOne({
+      where: { id: req.user.id },
+    });
+    const followers = await me.getFollowers({
+      limit: parseInt(req.query.limit, 10),
+    });
+    console.log("followers", followers);
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// GET /user/followings
+router.get("/followings", async (req, res, next) => {
+  try {
+    const me = await User.findOne({
+      where: { id: req.user.id },
+    });
+    const followings = await me.getFollowings({
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 특정 사용자 가져오기
+// GET /user/:userId
+router.get("/:userId", async (req, res, next) => {
+  console.log(req.headers);
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: {
+        id: req.params.userId,
+      },
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        { model: User, as: "Followings", attributes: ["id"] },
+        { model: User, as: "Followers", attributes: ["id"] },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length; // 개인정보 침해 예방
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json("The user is not exist.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 특정 사용자의 게시글 가져오기
+// GET /user/1/posts
+router.get("/:userId/posts", async (req, res, next) => {
+  try {
+    const where = { UserId: req.params.userId };
+    if (parseInt(req.query.lastId, 10)) {
+      // console.log("Last Id: ", req.query.lastId);
+      //초기 loading이 아닐 때 (초기 로딩은 값이 0 이기 때문에 false가 됨)
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+      //lastId보다 작은 이라는 조건문을 작성 해야 함. => 이렇게 작성하면 id가 lastId보다 작은 이라는 형태의 조건문이 완성 됨.
+      // console.log("where.id: ", where.id);
+    }
+    // console.log("where", where);
+
+    const posts = await Post.findAll({
+      where,
+      limit: 10, //요청이 발생 했을때 10개만 가져오라는 명령어
+      order: [
+        ["createdAt", "DESC"],
+        [Comment, "createdAt", "DESC"],
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Post,
+          as: "Retweet",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
+    // console.log("posts", posts);
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 // PATCH /user/1/follow
 router.patch("/:userId/follow", async (req, res, next) => {
   try {
@@ -260,6 +293,7 @@ router.delete("/:userId/follow", async (req, res, next) => {
     next(error);
   }
 });
+
 // DELETE /user/follower/1
 router.delete("/follower/:userId", async (req, res, next) => {
   try {
@@ -270,35 +304,6 @@ router.delete("/follower/:userId", async (req, res, next) => {
     //아래는 내가 unfollow 버튼 누르면 그 사람의 follwer인 내가 remove를 하기 때문에 removeFollowers 가 됨.
     await existUser.removeFollowers(req.user.id);
     res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-// GET /user/followers
-router.get("/followers", async (req, res, next) => {
-  try {
-    const me = await User.findOne({
-      where: { id: req.user.id },
-    });
-    const followers = await me.getFollowers();
-    console.log("followers", followers);
-    res.status(200).json(followers);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-// GET /user/followings
-router.get("/followings", async (req, res, next) => {
-  try {
-    const me = await User.findOne({
-      where: { id: req.user.id },
-    });
-    const followings = await me.getFollowings();
-    res.status(200).json(followings);
   } catch (error) {
     console.error(error);
     next(error);
