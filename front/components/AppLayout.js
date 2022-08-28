@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import Link from "next/link";
-import { Input, Menu, Row, Col } from "antd";
-import "antd/dist/antd.css";
 import styled from "@emotion/styled";
+import { Col, Input, Menu, Row } from "antd";
+import "antd/dist/antd.css";
+import Link from "next/link";
+import Router from "next/router";
+import PropTypes from "prop-types";
+import React, { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { createGlobalStyle } from "styled-components";
-import UserProfile from "./UserProfile";
+import useInput from "../hooks/useInput";
 import LoginForm from "./LoginForm";
+import UserProfile from "./UserProfile";
 
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
@@ -31,10 +33,15 @@ const Global = createGlobalStyle`
 `;
 const AppLayout = (props) => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchInput, onChangeSearchInput] = useInput("");
   const { me, logInDone } = useSelector((state) => state.user);
   // const { logInDone } = useSelector((state) => state.user);
   // console.log("me", me);
   // console.log("loginDone", logInDone);
+
+  const onSearchClick = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
   return (
     <div>
@@ -51,7 +58,12 @@ const AppLayout = (props) => {
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <SearchInput enterButton />
+          <SearchInput
+            enterButton
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearchClick}
+          />
         </Menu.Item>
         <Menu.Item>
           <Link href="/signup">
@@ -67,7 +79,10 @@ const AppLayout = (props) => {
           {props.children}
         </Col>
         <Col xs={24} md={6} lg={4}>
-          <a href="https://kevin-kim.netlify.app/" target="_blank" rel="noreferrer noopener">
+          <a
+            href="https://kevin-kim.netlify.app/"
+            target="_blank"
+            rel="noreferrer noopener">
             Made by Kevin
           </a>
         </Col>
