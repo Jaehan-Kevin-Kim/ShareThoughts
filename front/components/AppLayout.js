@@ -65,11 +65,11 @@ const AppLayout = (props) => {
             onSearch={onSearchClick}
           />
         </Menu.Item>
-        <Menu.Item>
+        {/* <Menu.Item>
           <Link href="/signup">
             <a>Sign Up</a>
           </Link>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6} lg={4}>

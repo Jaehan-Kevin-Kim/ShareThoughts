@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+
 import {
   EllipsisOutlined,
   HeartOutlined,
@@ -15,6 +17,8 @@ import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import { REMOVE_POST_REQUEST, RETWEET_REQUEST } from "../reducers/post";
 import FollowButton from "./FollowButton";
+
+// moment.locale("ko");
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -102,6 +106,9 @@ const PostCard = ({ post }) => {
                 <PostImages images={post.Retweet.Images} />
               )
             }>
+            <div style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </div>
             <Card.Meta
               avatar={
                 <Link href={`/user/${post.Retweet.User.id}`}>
@@ -115,17 +122,23 @@ const PostCard = ({ post }) => {
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={
-              <Link href={`/user/${post.User.id}`}>
-                <a>
-                  <Avatar>{post.User.nickname[0]}</Avatar>
-                </a>
-              </Link>
-            }
-            title={post.User.nickname}
-            description={<PostCardContent postData={post.content} />}
-          />
+          <>
+            <div style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </div>
+
+            <Card.Meta
+              avatar={
+                <Link href={`/user/${post.User.id}`}>
+                  <a>
+                    <Avatar>{post.User.nickname[0]}</Avatar>
+                  </a>
+                </Link>
+              }
+              title={post.User.nickname}
+              description={<PostCardContent postData={post.content} />}
+            />
+          </>
         )}
 
         {/* <Buttons></Buttons> */}
