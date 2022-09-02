@@ -45,23 +45,15 @@ const About = () => {
   );
 };
 
-// export const getStaticProps = wrapper.getStaticProps(async (context) => {
-//   console.log("getStaticProps");
-//   context.store.dispatch({
-//     type: LOAD_USER_REQUEST,
-//     data: 1,
-//   });
-//   context.store.dispatch(END);
-//   await context.store.sagaTask.toPromise();
-// });
-
-export const getStaticProps = wrapper.getServerSideProps(async (context) => {
-  context.store.dispatch({
-    type: LOAD_USER_REQUEST,
-    data: 1,
-  });
-  context.store.dispatch(END);
-  await context.store.sagaTask.toPromise();
-});
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    context.store.dispatch({
+      type: LOAD_USER_REQUEST,
+      data: 1,
+    });
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+  },
+);
 
 export default About;
