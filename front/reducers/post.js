@@ -230,7 +230,7 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_SUCCESS: {
         draft.uploadImagesDone = true;
         draft.uploadImagesLoading = false;
-        draft.imagePaths = action.data; //backend에서 filename들을 보내줬고, 해당 filename들은 post.imagePaths에 front에서 저장 되도록 설정 함.
+        draft.imagePaths = draft.imagePaths.concat(action.data); //backend에서 filename들을 보내줬고, 해당 filename들은 post.imagePaths에 front에서 저장 되도록 설정 함.
         break;
       }
       case UPLOAD_IMAGES_FAILURE: {
