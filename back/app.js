@@ -39,7 +39,11 @@ if (process.env.NODE_ENV === "production") {
 app.use(
   cors({
     // origin: true,
-    origin: ["http://localhost:3050", "sharethought.com"], //원래는 origin: true로 사용했지만, localhost:3050으로 요청을 받았었다는 가정하에, 저 값을 놔두고, 추가로 추후에는 sharethought.com에서 요청을 받을 것이기 때문에 해당 값도 추가해 두기 (http or https 여부는 추후 결정될 것이므로 우선 붙이지 말기)
+    origin: [
+      "http://localhost:3050",
+      "sharethought.com",
+      "http://99.79.74.239",
+    ], //원래는 origin: true로 사용했지만, localhost:3050으로 요청을 받았었다는 가정하에, 저 값을 놔두고, 추가로 추후에는 sharethought.com에서 요청을 받을 것이기 때문에 해당 값도 추가해 두기 (http or https 여부는 추후 결정될 것이므로 우선 붙이지 말기)
     credentials: true,
   }),
 );
@@ -78,9 +82,15 @@ app.use("/hashtag", hashtagRouter);
 //next()함수 안에 뭐라도 내용이 들어있으면 바로 error 처리하는 middleware로 보내짐 (next(asdf)) => 기본적인 error 처리 middleware는 원래 자체에 존재 함. 위치는 app.listen 바로 위. 하지만 직접 특별한 처리를 위해 아래 위치에 적어 줄 수도 있음.
 // app.use((err,req,res,next)=>{})
 
-app.listen(3065, () => {
+/////// For production
+app.listen(80, () => {
   console.log("server is running!!");
 });
+
+/////// For development
+// app.listen(3065, () => {
+//   console.log("server is running!!");
+// });
 
 // app.get -> 가져오다(조회)
 // app.post -> 생성하다
