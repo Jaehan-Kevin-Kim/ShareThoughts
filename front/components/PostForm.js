@@ -14,6 +14,7 @@ const PostForm = () => {
   const dispatch = useDispatch();
   const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const [text, onChangeText, setText] = useInput("");
+  const prod = process.env.NODE_ENV === "production";
 
   useEffect(() => {
     if (addPostDone) {
@@ -100,7 +101,7 @@ const PostForm = () => {
           {imagePaths.map((v, i) => (
             <div key={v} style={{ display: "inline-block" }}>
               <img
-                src={`${backEndUrl}/${v}`}
+                src={prod ? v : `${backEndUrl}/${v}`}
                 style={{ width: "200px" }}
                 alt={v}
               />

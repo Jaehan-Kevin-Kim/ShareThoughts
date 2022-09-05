@@ -17,44 +17,49 @@ try {
   fs.mkdirSync("uploads");
 }
 
-/* 아래는 production 용 aws s3에 image 저장 */
-AWS.config.update({
-  accessKeyId: process.env.S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-  region: "ca-central-1",
-});
+const prod = process.env.NODE_ENV === "production";
 
-const upload = multer({
-  //storage: 어디다가 저장 할지?  multerS3: S3에 저장.
-  storage: multerS3({
-    s3: new AWS.S3(), /// 이렇게 하면 S3 권한을 얻은 것임
-    bucket: "sharethoughts", /// 이건 s3에서 설정했던 bucket 이름
-    key(req, file, cb) {
-      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`); // image를 저장하는 위치, 이름 설정 (original이라는 폴더안에 해당 설정대로 image가 저장 됨.)
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB -> file 크기 제한
-});
+let upload;
 
-/* 아래는 dev용 (backend server 컴퓨터에 바로 image 저장 됨.)
-const upload = multer({
-  //storage: 어디다가 저장 할지? diskStorage: 컴퓨터(하드디스크)에 저장.
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads");
-    },
-    //filename: 파일명 지정
-    filename(req, file, done) {
-      //파일명은 file.originalname에 들어 있음. (file 이름이 kevin.png인 경우 아래 내용 보기)
-      // path는 node에서 제공하는 것. (설치 필요 없음)
-      const ext = path.extname(file.originalname); // 확장자 추출 하는 코드(.png)
-      const basename = path.basename(file.originalname, ext); // 확장자 제외 나머지 파일이름 가져오는 코드 (kevin)
-      done(null, basename + "_" + new Date().getTime() + ext); // 이렇게 하면 kevin_21091232.png 로 저장 됨.
-    },
-  }),
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB -> file 크기 제한
-});
-*/
+if (prod) {
+  /* 아래는 production 용 aws s3에 image 저장 */
+  AWS.config.update({
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    region: "ca-central-1",
+  });
+
+  upload = multer({
+    //storage: 어디다가 저장 할지?  multerS3: S3에 저장.
+    storage: multerS3({
+      s3: new AWS.S3(), /// 이렇게 하면 S3 권한을 얻은 것임
+      bucket: "sharethoughts", /// 이건 s3에서 설정했던 bucket 이름
+      key(req, file, cb) {
+        cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`); // image를 저장하는 위치, 이름 설정 (original이라는 폴더안에 해당 설정대로 image가 저장 됨.)
+      },
+    }),
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB -> file 크기 제한
+  });
+} else {
+  /* 아래는 dev용 (backend server 컴퓨터에 바로 image 저장 됨.)*/
+  upload = multer({
+    //storage: 어디다가 저장 할지? diskStorage: 컴퓨터(하드디스크)에 저장.
+    storage: multer.diskStorage({
+      destination(req, file, done) {
+        done(null, "uploads");
+      },
+      //filename: 파일명 지정
+      filename(req, file, done) {
+        //파일명은 file.originalname에 들어 있음. (file 이름이 kevin.png인 경우 아래 내용 보기)
+        // path는 node에서 제공하는 것. (설치 필요 없음)
+        const ext = path.extname(file.originalname); // 확장자 추출 하는 코드(.png)
+        const basename = path.basename(file.originalname, ext); // 확장자 제외 나머지 파일이름 가져오는 코드 (kevin)
+        done(null, basename + "_" + new Date().getTime() + ext); // 이렇게 하면 kevin_21091232.png 로 저장 됨.
+      },
+    }),
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB -> file 크기 제한
+  });
+}
 
 //POST /post
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
@@ -302,8 +307,12 @@ router.delete("/:postId", isLoggedIn, async (req, res, next) => {
 //Post /post/images
 router.post("/images", isLoggedIn, upload.array("image"), (req, res, next) => {
   console.log(req.files); // upload.array("image")를 통해 이미 업로드 된 파일을 확인 할 수 있음.
-  res.json(req.files.map((v) => v.location)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드 // 기존 filename에서 location으로 변경 해 주기.
-  // res.json(req.files.map((v) => v.filename)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드
+
+  if (prod) {
+    res.json(req.files.map((v) => v.location)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드 // 기존 filename에서 location으로 변경 해 주기.
+  } else {
+    res.json(req.files.map((v) => v.filename)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드
+  }
 });
 
 module.exports = router;

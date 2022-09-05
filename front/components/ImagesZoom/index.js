@@ -10,11 +10,14 @@ import {
   Indicator,
   Global,
 } from "./styles";
+
 import { backEndUrl } from "../../config/config";
 
 const ImagesZoom = ({ images, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   console.log("images", images);
+  /* eslint-disable import/prefer-default-export */
+  const prod = process.env.NODE_ENV === "production";
 
   return (
     <Overlay>
@@ -34,7 +37,11 @@ const ImagesZoom = ({ images, onClose }) => {
             slidesToScroll={1}>
             {images.map((v) => (
               <ImgWrapper key={v.src}>
-                <img src={`${backEndUrl}/${v.src}`} alt={v.src} />
+                {prod ? (
+                  <img src={`${v.src}`} alt={v.src} />
+                ) : (
+                  <img src={`${backEndUrl}/${v.src}`} alt={v.src} />
+                )}
               </ImgWrapper>
             ))}
           </Slick>
