@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { Post, Comment, Image, User, Hashtag } = require("../models");
-const { isLoggedIn } = require("./middlewares");
 const fs = require("fs");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
+const { Post, Comment, Image, User, Hashtag } = require("../models");
+const { isLoggedIn } = require("./middlewares");
 
 try {
   //아래는 uploads라는 folder가 있는지 확인 하는 코드
