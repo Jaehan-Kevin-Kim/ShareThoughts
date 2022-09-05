@@ -41,7 +41,7 @@ app.use(
     // origin: true,
     origin: [
       "http://localhost:3050",
-      "sharethought.com",
+      "http://sharethoughts.online",
       "http://99.79.74.239",
     ], //원래는 origin: true로 사용했지만, localhost:3050으로 요청을 받았었다는 가정하에, 저 값을 놔두고, 추가로 추후에는 sharethought.com에서 요청을 받을 것이기 때문에 해당 값도 추가해 두기 (http or https 여부는 추후 결정될 것이므로 우선 붙이지 말기)
     credentials: true,
