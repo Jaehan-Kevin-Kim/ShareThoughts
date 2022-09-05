@@ -2,8 +2,9 @@ import { all, fork } from "@redux-saga/core/effects";
 import axios from "axios";
 import postSaga from "./postSaga";
 import userSaga from "./userSaga";
+import { backEndUrl } from "../config/config";
 
-axios.defaults.baseURL = "http://localhost:3065";
+axios.defaults.baseURL = backEndUrl;
 axios.defaults.withCredentials = true;
 
 export default function* rootSaga() {
@@ -13,6 +14,7 @@ export default function* rootSaga() {
 /*
 import { all, fork, call, take, put } from "redux-saga/effects";
 import { axios } from "axios";
+import { backEndUrl } from "./../config/config";
 
 //아래는 예외적으로 generator함수가 아니므로 *을 빼기
 function logInAPI(data) {

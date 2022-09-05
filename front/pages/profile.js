@@ -7,6 +7,7 @@ import useSWR from "swr";
 import AppLayout from "../components/AppLayout";
 import FollowList from "../components/FollowList";
 import NicknameEditForm from "../components/NicknameEditForm";
+import { backEndUrl } from "../config/config";
 
 const fetcher = (url) =>
   axios.get(url, { withCredentials: true }).then((result) => result.data);
@@ -15,16 +16,16 @@ const profile = () => {
   const [followingsLimit, setFollowingsLimit] = useState(3);
   const [followersLimit, setFollowersLimit] = useState(3);
   // const { data, error } = useSWR(
-  //   "http://localhost:3065/user/followers",
+  //   "${backEndUrl}/user/followers",
   //   fetcher,
   // );
 
   const { data: followingsData, error: followingError } = useSWR(
-    `http://localhost:3065/user/followings?limit=${followingsLimit}`,
+    `${backEndUrl}/user/followings?limit=${followingsLimit}`,
     fetcher,
   );
   const { data: followersData, error: followerError } = useSWR(
-    `http://localhost:3065/user/followers?limit=${followersLimit}`,
+    `${backEndUrl}/user/followers?limit=${followersLimit}`,
     fetcher,
   );
 

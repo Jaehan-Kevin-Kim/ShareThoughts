@@ -2,7 +2,13 @@ import { Input, Form, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import useInput from "../hooks/useInput";
-import { addPost, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE, ADD_POST_REQUEST } from "../reducers/post";
+import {
+  addPost,
+  UPLOAD_IMAGES_REQUEST,
+  REMOVE_IMAGE,
+  ADD_POST_REQUEST,
+} from "../reducers/post";
+import { backEndUrl } from "./../config/config";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -66,7 +72,10 @@ const PostForm = () => {
 
   return (
     <>
-      <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
+      <Form
+        style={{ margin: "10px 0 20px" }}
+        encType="multipart/form-data"
+        onFinish={onSubmit}>
         <Input.TextArea
           value={text}
           onChange={onChangeText}
@@ -90,7 +99,11 @@ const PostForm = () => {
         <div>
           {imagePaths.map((v, i) => (
             <div key={v} style={{ display: "inline-block" }}>
-              <img src={`http://localhost:3065/${v}`} style={{ width: "200px" }} alt={v} />
+              <img
+                src={`${backEndUrl}/${v}`}
+                style={{ width: "200px" }}
+                alt={v}
+              />
               <div>
                 <Button onClick={onRemoveImage(i)}>Remove</Button>
               </div>
