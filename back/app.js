@@ -32,10 +32,23 @@ if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined")); // combined는 더 정확한 정보를 줌 (접속자의 ip등도 포함): 만약 특정 ip 접속자가 디도스와 같은 공격을 하는 경우 차단 가능 함. 따라서 배포용은 combined로 실행하기
   app.use(hpp()); //hpp와 아래 helmet은 보안에 도움되는 package이므로 node에서 배포하는 경우는 무조건 이 두개는 필수라고 생각하고 넣어주기
   app.use(helmet()); //helmet과 위 hpp는 보안에 도움되는 package이므로 node에서 배포하는 경우는 무조건 이 두개는 필수라고 생각하고 넣어주기
+  app.use(
+    cors({
+      origin: ["http://sharethoughts.online"],
+      credentials: true,
+    }),
+  );
 } else {
   app.use(morgan("dev"));
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
 }
 
+/* 해당 설정을 위와 같이 개발시, 배포시로 나눠줘도 괜찮음 
 app.use(
   cors({
     // origin: true,
@@ -43,6 +56,7 @@ app.use(
     credentials: true,
   }),
 );
+*/
 
 app.use("/", express.static(path.join(__dirname, "uploads")));
 
@@ -84,15 +98,9 @@ app.use("/hashtag", hashtagRouter);
 //next()함수 안에 뭐라도 내용이 들어있으면 바로 error 처리하는 middleware로 보내짐 (next(asdf)) => 기본적인 error 처리 middleware는 원래 자체에 존재 함. 위치는 app.listen 바로 위. 하지만 직접 특별한 처리를 위해 아래 위치에 적어 줄 수도 있음.
 // app.use((err,req,res,next)=>{})
 
-/////// For production
 app.listen(process.env.NODE_ENV === "production" ? 80 : 3065, () => {
   console.log("server is running!!");
 });
-
-/////// For development
-// app.listen(3065, () => {
-//   console.log("server is running!!");
-// });
 
 // app.get -> 가져오다(조회)
 // app.post -> 생성하다

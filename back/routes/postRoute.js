@@ -5,6 +5,8 @@ const path = require("path");
 const { Post, Comment, Image, User, Hashtag } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 const fs = require("fs");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 
 try {
   //아래는 uploads라는 folder가 있는지 확인 하는 코드
@@ -15,6 +17,26 @@ try {
   fs.mkdirSync("uploads");
 }
 
+/* 아래는 production 용 aws s3에 image 저장 */
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: "ca-central-1",
+});
+
+const upload = multer({
+  //storage: 어디다가 저장 할지?  multerS3: S3에 저장.
+  storage: multerS3({
+    s3: new AWS.S3(), /// 이렇게 하면 S3 권한을 얻은 것임
+    bucket: "sharethoughts", /// 이건 s3에서 설정했던 bucket 이름
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`); // image를 저장하는 위치, 이름 설정 (original이라는 폴더안에 해당 설정대로 image가 저장 됨.)
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB -> file 크기 제한
+});
+
+/* 아래는 dev용 (backend server 컴퓨터에 바로 image 저장 됨.)
 const upload = multer({
   //storage: 어디다가 저장 할지? diskStorage: 컴퓨터(하드디스크)에 저장.
   storage: multer.diskStorage({
@@ -32,6 +54,7 @@ const upload = multer({
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB -> file 크기 제한
 });
+*/
 
 //POST /post
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
@@ -279,7 +302,8 @@ router.delete("/:postId", isLoggedIn, async (req, res, next) => {
 //Post /post/images
 router.post("/images", isLoggedIn, upload.array("image"), (req, res, next) => {
   console.log(req.files); // upload.array("image")를 통해 이미 업로드 된 파일을 확인 할 수 있음.
-  res.json(req.files.map((v) => v.filename)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드
+  res.json(req.files.map((v) => v.location)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드 // 기존 filename에서 location으로 변경 해 주기.
+  // res.json(req.files.map((v) => v.filename)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드
 });
 
 module.exports = router;
