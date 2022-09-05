@@ -39,11 +39,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(
   cors({
     // origin: true,
-    origin: [
-      "http://localhost:3050",
-      "http://sharethoughts.online",
-      "http://99.79.74.239",
-    ], //원래는 origin: true로 사용했지만, localhost:3050으로 요청을 받았었다는 가정하에, 저 값을 놔두고, 추가로 추후에는 sharethought.com에서 요청을 받을 것이기 때문에 해당 값도 추가해 두기 (http or https 여부는 추후 결정될 것이므로 우선 붙이지 말기)
+    origin: ["http://localhost:3050", "http://sharethoughts.online"], //원래는 origin: true로 사용했지만, localhost:3050으로 요청을 받았었다는 가정하에, 저 값을 놔두고, 추가로 추후에는 sharethought.com에서 요청을 받을 것이기 때문에 해당 값도 추가해 두기 (http or https 여부는 추후 결정될 것이므로 우선 붙이지 말기)
     credentials: true,
   }),
 );
@@ -61,6 +57,12 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+      /// cookie 관련 설정
+      httpOnly: true, //이거는 javascript로 조작 못하게 하는 설정
+      secure: false, //이거는 https 접속 시 true로 해 줘야 함
+      domain: process.env.NODE_ENV === "production" && ".sharethoughts.online", /// domain앞에 .을 붙여주면 sharethoughts.online과 api.sharethoughts.online 사이에 cookie 공유가 가능 해짐
+    },
   }),
 );
 app.use(passport.initialize());
@@ -83,7 +85,7 @@ app.use("/hashtag", hashtagRouter);
 // app.use((err,req,res,next)=>{})
 
 /////// For production
-app.listen(80, () => {
+app.listen(process.env.NODE_ENV === "production" ? 80 : 3065, () => {
   console.log("server is running!!");
 });
 
