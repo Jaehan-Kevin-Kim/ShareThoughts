@@ -39,14 +39,14 @@ const ImagesZoom = ({ images, onClose }) => {
               <ImgWrapper key={v.src}>
                 {prod ? (
                   <img
-                    src={`${v.src.replace(/\thumb\//, "/original/")}`}
-                    alt={v.src.replace(/\thumb\//, "/original/")}
+                    src={`${v.src.replace(/\thumb\//, "original/")}`} //// 다시 thumb을 original로 변경 하기
+                    alt={v.src.replace(/\thumb\//, "original/")}
+                    //   <img
+                    //   src={`${v.src}`}
+                    //   alt={v.src}
+                    // />  /// 이전 코드 (thumb만 받아들이는 코드)
                   />
                 ) : (
-                  //   <img
-                  //   src={`${v.src}`}
-                  //   alt={v.src}
-                  // />
                   <img src={`${backEndUrl}/${v.src}`} alt={v.src} />
                 )}
               </ImgWrapper>
