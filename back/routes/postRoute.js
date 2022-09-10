@@ -309,7 +309,10 @@ router.post("/images", isLoggedIn, upload.array("image"), (req, res, next) => {
   console.log(req.files); // upload.array("image")를 통해 이미 업로드 된 파일을 확인 할 수 있음.
 
   if (prod) {
-    res.json(req.files.map((v) => v.location)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드 // 기존 filename에서 location으로 변경 해 주기.
+    // res.json(req.files.map((v) => v.location)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드 // 기존 filename에서 location으로 변경 해 주기.
+    res.json(
+      req.files.map((v) => v.location.replace(/\original\//, "/thumb/")),
+    ); // backend에서 resizing 된 image를 front로 보내주기 위해 original이름을 포함 한 이미지 대신 이미지를 thumb이름을 포함한 이미지로 찾아서 front로 보내주기.
   } else {
     res.json(req.files.map((v) => v.filename)); // 해당 부분은 upload 된 image들의 파일 이름을 front로 다시 보내주는 코드
   }

@@ -38,8 +38,15 @@ const ImagesZoom = ({ images, onClose }) => {
             {images.map((v) => (
               <ImgWrapper key={v.src}>
                 {prod ? (
-                  <img src={`${v.src}`} alt={v.src} />
+                  <img
+                    src={`${v.src.replace(/\thumb\//, "/original/")}`}
+                    alt={v.src.replace(/\thumb\//, "/original/")}
+                  />
                 ) : (
+                  //   <img
+                  //   src={`${v.src}`}
+                  //   alt={v.src}
+                  // />
                   <img src={`${backEndUrl}/${v.src}`} alt={v.src} />
                 )}
               </ImgWrapper>
