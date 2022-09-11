@@ -99,12 +99,22 @@ const PostForm = () => {
         </div>
         <div>
           {imagePaths.map((v, i) => (
-            <div key={v} style={{ display: "inline-block" }}>
+            <div key={v} style={{ display: "inline-" }}>
               <img
-                src={prod ? v : `${backEndUrl}/${v}`}
+                src={
+                  prod
+                    ? v.replace(/\/thumb\//, "/original/")
+                    : // ? v
+                      `${backEndUrl}/block${v}`
+                }
                 style={{ width: "200px" }}
                 alt={v}
               />
+              {/* <img
+                src={prod ? v : `${backEndUrl}/${v}`}
+                style={{ width: "200px" }}
+                alt={v}
+              /> */}
               <div>
                 <Button onClick={onRemoveImage(i)}>Remove</Button>
               </div>
