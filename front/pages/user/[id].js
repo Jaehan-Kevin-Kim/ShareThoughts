@@ -55,6 +55,10 @@ const User = () => {
             property="og:description"
             content={`${userInfo.nickname}'s post.'`}
           />
+          <meta
+            property="og:url"
+            content={`http://sharethoughts.online/user/${id}`}
+          />
         </Head>
       )}
       {userInfo ? (

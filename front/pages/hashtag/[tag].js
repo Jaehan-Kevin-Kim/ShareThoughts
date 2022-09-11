@@ -49,11 +49,11 @@ const Hashtag = () => {
       {userInfo && (
         <Head>
           <title>{userInfo.nickname} post</title>
-          <meta name="description" content={`${userInfo.nickname}'s post.'`} />
-          <meta property="og:title" content={`${userInfo.nickname}'s post.'`} />
+          <meta name="description" content={`${userInfo.nickname}'s post.`} />
+          <meta property="og:title" content={`${userInfo.nickname}'s post.`} />
           <meta
             property="og:description"
-            content={`${userInfo.nickname}'s post.'`}
+            content={`${userInfo.nickname}'s post.`}
           />
         </Head>
       )}

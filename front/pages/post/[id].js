@@ -30,9 +30,17 @@ const Post = () => {
         <meta name="description" content={singlePost.content} />
         <meta
           property="og:title"
-          content={`${singlePost.User.nickname}'s post.'`}
+          content={`${singlePost.User.nickname}'s post.`}
         />
         <meta property="og:description" content={singlePost.content} />
+        <meta
+          property="og:image"
+          content={singlePost.Images[0] && singlePost.Images[0].src}
+        />
+        <meta
+          property="og:url"
+          content={`http://sharethoughts.online/post/${id}`}
+        />
       </Head>
       <PostCard post={singlePost} />
     </AppLayout>
