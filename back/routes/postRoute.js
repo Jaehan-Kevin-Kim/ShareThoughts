@@ -288,6 +288,49 @@ router.get("/:postId", async (req, res, next) => {
   }
 });
 
+//PATCH /post/10
+router.patch("/:postId", isLoggedIn, async (req, res, next) => {
+  const hashtags = req.body.content.match(/#[^\s#]+/g); //해당 코드는 post가 요청 된 경우 hashtag만 찾는 코드
+
+  try {
+    await Post.update(
+      {
+        content: req.body.content,
+      },
+      {
+        where: {
+          id: req.params.postId,
+          UserId: req.user.id,
+        },
+      },
+    );
+    //아래는 만약 hashtag가 있는경우, #를 제거한 값들을 Hashtag db에 등록해 주는 코드
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+    });
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } }),
+        ),
+      );
+
+      //위 result의 결과는 이런 형태가 됨. [[노드, true], [리액트, true]]
+      //따라서 아래의 경우 addHashtags뒤에 바로 addHashtags(result)가 아닌 아래처럼 반복문을 돌려 배열의 첫번째 값으로 등록을 해줘야 함.
+      await post.setHashtags(result.map((v) => v[0]));
+    }
+    res.status(200).json({
+      PostId: parseInt(req.params.postId, 10),
+      content: req.body.content,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //DELETE /post/10
 router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   try {
