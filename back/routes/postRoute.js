@@ -120,6 +120,30 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   }
 });
 
+//PATCH post/image/동적
+router.patch("/image/:src", isLoggedIn, async (req, res, next) => {
+  try {
+    await Image.update(
+      {
+        PostId: null,
+      },
+      {
+        where: {
+          src: req.params.src,
+        },
+      },
+    );
+    console.log("src: ", req.params.src, "postId: ", req.body.postId);
+    res.status(200).json({
+      src: req.params.src,
+      postId: req.body.postId,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //POST post/동적/comment
 router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   try {

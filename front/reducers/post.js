@@ -29,6 +29,9 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  removeImageLoading: false,
+  removeImageDone: false,
+  removeImageError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -101,6 +104,10 @@ export const UPDATE_POST_FAILURE = "UPDATE_POST_FAILURE";
 export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
 export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
 export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
+
+export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
+export const REMOVE_IMAGE_SUCCESS = "REMOVE_IMAGE_SUCCESS";
+export const REMOVE_IMAGE_FAILURE = "REMOVE_IMAGE_FAILURE";
 
 export const RETWEET_REQUEST = "RETWEET_REQUEST";
 export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
@@ -261,6 +268,33 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_FAILURE: {
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break;
+      }
+      case REMOVE_IMAGE_REQUEST: {
+        draft.removeImageLoading = true;
+        draft.removeImageDone = false;
+        draft.removeImageEror = null;
+        break;
+      }
+      case REMOVE_IMAGE_SUCCESS: {
+        draft.removeImageDone = true;
+        draft.removeImageLoading = false;
+        console.log("action.data: ", action.data);
+        const postIndex = draft.mainPosts.findIndex(
+          (v) => v.id === action.data.postId,
+        );
+        draft.mainPosts[postIndex].Images = draft.mainPosts[
+          postIndex
+        ].Images.filter((v) => v.src !== action.data.src);
+        // draft.mainPosts
+        //   .find((v) => v.id === action.data.postId)
+        //   .filter((v) => v.src !== action.data.src);
+        // draft.imagePaths = draft.imagePaths.concat(action.data); //backend에서 filename들을 보내줬고, 해당 filename들은 post.imagePaths에 front에서 저장 되도록 설정 함.
+        break;
+      }
+      case REMOVE_IMAGE_FAILURE: {
+        draft.removeImageLoading = false;
+        draft.removeImageError = action.error;
         break;
       }
       case RETWEET_REQUEST: {

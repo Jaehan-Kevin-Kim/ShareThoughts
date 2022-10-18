@@ -16,6 +16,7 @@ import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import {
+  REMOVE_IMAGE_REQUEST,
   REMOVE_POST_REQUEST,
   RETWEET_REQUEST,
   UPDATE_POST_REQUEST,
@@ -42,6 +43,19 @@ const PostCard = ({ post }) => {
   const onCancelChangePost = useCallback(() => {
     setEditMode(false);
   }, []);
+
+  const onRemoveImage = useCallback(
+    (src) => () => {
+      dispatch({
+        type: REMOVE_IMAGE_REQUEST,
+        data: {
+          postId: post.id,
+          src,
+        },
+      });
+    },
+    [post],
+  );
 
   const onUpdatePost = useCallback(
     (editText) => () => {
@@ -87,7 +101,15 @@ const PostCard = ({ post }) => {
   return (
     <div style={{ marginBottom: 20 }}>
       <Card
-        cover={post.Images[0] && <PostImages images={post.Images} />}
+        cover={
+          post.Images[0] && (
+            <PostImages
+              onRemoveImage={onRemoveImage}
+              editMode={editMode}
+              images={post.Images}
+            />
+          )
+        }
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (

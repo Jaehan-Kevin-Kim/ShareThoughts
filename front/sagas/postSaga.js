@@ -39,6 +39,9 @@ import {
   UPDATE_POST_FAILURE,
   UPDATE_POST_REQUEST,
   UPDATE_POST_SUCCESS,
+  REMOVE_IMAGE_REQUEST,
+  REMOVE_IMAGE_SUCCESS,
+  REMOVE_IMAGE_FAILURE,
 } from "../reducers/post";
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
@@ -243,6 +246,28 @@ function* uploadImages(action) {
     });
   }
 }
+
+function removeImageAPI(data) {
+  return axios.patch(`/post/image/${data.src}`, data); //해당은 formdata 보내는 요청. !!formdata는 이렇게 data그대로 보내야 함. 만약 {images:data} 이런식으로 보내면 json이 되어버려서 formdata 형식으로 안보내 짐!!
+}
+
+function* removeImage(action) {
+  try {
+    const result = yield call(removeImageAPI, action.data);
+    // yield delay(1000);
+    yield put({
+      type: REMOVE_IMAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: REMOVE_IMAGE_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
 function retweetAPI(data) {
   return axios.post(`/post/${data}/retweet`, data); //해당은 formdata 보내는 요청. !!formdata는 이렇게 data그대로 보내야 함. 만약 {images:data} 이런식으로 보내면 json이 되어버려서 formdata 형식으로 안보내 짐!!
 }
@@ -290,6 +315,9 @@ function* watchAddComment() {
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
+function* watchRemoveImage() {
+  yield takeLatest(REMOVE_IMAGE_REQUEST, removeImage);
+}
 function* watchRetweet() {
   yield takeLatest(RETWEET_REQUEST, retweet);
 }
@@ -307,6 +335,7 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchRemovePost),
     fork(watchUploadImages),
+    fork(watchRemoveImage),
     fork(watchRetweet),
     fork(watchUpdatePost),
   ]);
