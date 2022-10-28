@@ -4,6 +4,7 @@ export const initialState = {
   mainPosts: [],
   singlePost: null,
   imagePaths: [],
+  updateImagePaths: [],
   hasMorePost: true,
   loadPostsLoading: false,
   loadPostsDone: false,
@@ -29,6 +30,9 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  updateImagesLoading: false,
+  updateImagesDone: false,
+  updateImagesError: null,
   removeImageLoading: false,
   removeImageDone: false,
   removeImageError: null,
@@ -105,6 +109,10 @@ export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
 export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
 export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
 
+export const UPDATE_IMAGES_REQUEST = "UPDATE_IMAGES_REQUEST";
+export const UPDATE_IMAGES_SUCCESS = "UPDATE_IMAGES_SUCCESS";
+export const UPDATE_IMAGES_FAILURE = "UPDATE_IMAGES_FAILURE";
+
 export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
 export const REMOVE_IMAGE_SUCCESS = "REMOVE_IMAGE_SUCCESS";
 export const REMOVE_IMAGE_FAILURE = "REMOVE_IMAGE_FAILURE";
@@ -114,6 +122,8 @@ export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
 export const RETWEET_FAILURE = "RETWEET_FAILURE";
 
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
+export const REMOVE_UPDATEIMAGE = "REMOVE_UPDATEIMAGE";
+export const REMOVE_UPDATEIMAGEALL = "REMOVE_UPDATEIMAGEALL";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
@@ -245,7 +255,9 @@ const reducer = (state = initialState, action) =>
         draft.updatePostDone = true;
         draft.updatePostLoading = false;
         draft.mainPosts.find((v) => v.id === action.data.PostId).content =
-          action.data.content;
+          action.data.body.content;
+        draft.mainPosts.find((v) => v.id === action.data.PostId).Images =
+          action.data.body.Images;
         break;
       }
       case UPDATE_POST_FAILURE: {
@@ -268,6 +280,23 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_FAILURE: {
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break;
+      }
+      case UPDATE_IMAGES_REQUEST: {
+        draft.updateImagesLoading = true;
+        draft.updateImagesDone = false;
+        draft.updateImagesEror = null;
+        break;
+      }
+      case UPDATE_IMAGES_SUCCESS: {
+        draft.updateImagesDone = true;
+        draft.updateImagesLoading = false;
+        draft.updateImagePaths = draft.updateImagePaths.concat(action.data); //backend에서 filename들을 보내줬고, 해당 filename들은 post.imagePaths에 front에서 저장 되도록 설정 함.
+        break;
+      }
+      case UPDATE_IMAGES_FAILURE: {
+        draft.updateImagesLoading = false;
+        draft.updateImagesError = action.error;
         break;
       }
       case REMOVE_IMAGE_REQUEST: {
@@ -345,6 +374,16 @@ const reducer = (state = initialState, action) =>
       }
       case REMOVE_IMAGE: {
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+        break;
+      }
+      case REMOVE_UPDATEIMAGE: {
+        draft.updateImagePaths = draft.updateImagePaths.filter(
+          (v, i) => i !== action.data,
+        );
+        break;
+      }
+      case REMOVE_UPDATEIMAGEALL: {
+        draft.updateImagePaths = [];
         break;
       }
       default:

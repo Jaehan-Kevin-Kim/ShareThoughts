@@ -63,6 +63,7 @@ if (prod) {
 
 //POST /post
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
+  console.log("req.body: ", req.body);
   try {
     const hashtags = req.body.content.match(/#[^\s#]+/g); //해당 코드는 post가 요청 된 경우 hashtag만 찾는 코드
     const post = await Post.create({
@@ -313,9 +314,10 @@ router.get("/:postId", async (req, res, next) => {
 });
 
 //PATCH /post/10
-router.patch("/:postId", isLoggedIn, async (req, res, next) => {
+router.patch("/:postId", isLoggedIn, upload.none(), async (req, res, next) => {
+  console.log("req.body: ", req.body);
+  console.log("req.params.postId");
   const hashtags = req.body.content.match(/#[^\s#]+/g); //해당 코드는 post가 요청 된 경우 hashtag만 찾는 코드
-
   try {
     await Post.update(
       {
@@ -345,9 +347,31 @@ router.patch("/:postId", isLoggedIn, async (req, res, next) => {
       //따라서 아래의 경우 addHashtags뒤에 바로 addHashtags(result)가 아닌 아래처럼 반복문을 돌려 배열의 첫번째 값으로 등록을 해줘야 함.
       await post.setHashtags(result.map((v) => v[0]));
     }
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image })),
+        );
+        console.log("images: ", images);
+        await post.addImages(images); // 이렇게 addImages 해주는 것이 image table에서 postId를 기재하게 해 주는 동작임
+      } else {
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image); // 이렇게 addImages 해주는 것이 image table에서 postId가 작성되게 해 주는 코드임 (post.addImages라서 순서가 안 맞는 것 같지만, 이렇게 해야지 image table에서 해당 이미지에 postId가 추가 됨)
+        //만약 add테이블이름을 안 하고 싶은 경우는 comment.create() 했던것 처럼 create 안에 직접적인 Id 이름들을 적어주면 됨.
+      }
+    }
+
+    const postWithImage = await Post.findOne({
+      where: { id: post.id },
+      include: [{ model: Image }],
+    });
     res.status(200).json({
       PostId: parseInt(req.params.postId, 10),
-      content: req.body.content,
+      // content: req.body.content,
+      // body: req.body,
+      // body: post,
+      body: postWithImage,
+      // content: req.body.content,
     });
   } catch (error) {
     console.error(error);

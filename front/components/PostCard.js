@@ -58,15 +58,24 @@ const PostCard = ({ post }) => {
   );
 
   const onUpdatePost = useCallback(
-    (editText) => () => {
+    (formData) => {
+      console.log("formData: ", formData);
+      for (let key of formData.keys()) {
+        console.log(`${key}: ${formData.get(key)}`);
+      }
+
+      for (let value of formData.values()) {
+        console.log(value);
+      }
+      console.log("click");
       dispatch({
         type: UPDATE_POST_REQUEST,
         data: {
           postId: post.id,
-          content: editText,
+          // content: editText,
+          formData,
         },
       });
-      // onCancelChangePost();
     },
     [post],
   );

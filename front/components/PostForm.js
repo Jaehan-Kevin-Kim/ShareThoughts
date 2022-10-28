@@ -99,13 +99,13 @@ const PostForm = () => {
         </div>
         <div>
           {imagePaths.map((v, i) => (
-            <div key={v} style={{ display: "inline-" }}>
+            <div key={v} style={{ display: "inline-block" }}>
               <img
                 src={
                   prod
                     ? v.replace(/\/thumb\//, "/original/")
                     : // ? v
-                      `${backEndUrl}/block${v}`
+                      `${backEndUrl}/${v}`
                 }
                 style={{ width: "200px" }}
                 alt={v}

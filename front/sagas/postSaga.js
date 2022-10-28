@@ -42,6 +42,9 @@ import {
   REMOVE_IMAGE_REQUEST,
   REMOVE_IMAGE_SUCCESS,
   REMOVE_IMAGE_FAILURE,
+  UPDATE_IMAGES_REQUEST,
+  UPDATE_IMAGES_SUCCESS,
+  UPDATE_IMAGES_FAILURE,
 } from "../reducers/post";
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
@@ -184,12 +187,13 @@ function* removePost(action) {
 }
 
 function updatePostAPI(data) {
-  return axios.patch(`/post/${data.postId}`, data);
+  return axios.patch(`/post/${data.postId}`, data.formData);
 }
 
 function* updatePost(action) {
   try {
     const result = yield call(updatePostAPI, action.data);
+    console.log("result: ", result);
     yield put({
       type: UPDATE_POST_SUCCESS,
       data: result.data,
@@ -242,6 +246,27 @@ function* uploadImages(action) {
     console.error(error);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
+function updateImagesAPI(data) {
+  return axios.post("/post/images", data); //해당은 formdata 보내는 요청. !!formdata는 이렇게 data그대로 보내야 함. 만약 {images:data} 이런식으로 보내면 json이 되어버려서 formdata 형식으로 안보내 짐!!
+}
+
+function* updateImages(action) {
+  try {
+    const result = yield call(updateImagesAPI, action.data);
+    // yield delay(1000);
+    yield put({
+      type: UPDATE_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: UPDATE_IMAGES_FAILURE,
       error: error.response.data,
     });
   }
@@ -315,6 +340,9 @@ function* watchAddComment() {
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
+function* watchUpdateImages() {
+  yield takeLatest(UPDATE_IMAGES_REQUEST, updateImages);
+}
 function* watchRemoveImage() {
   yield takeLatest(REMOVE_IMAGE_REQUEST, removeImage);
 }
@@ -335,6 +363,7 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchRemovePost),
     fork(watchUploadImages),
+    fork(watchUpdateImages),
     fork(watchRemoveImage),
     fork(watchRetweet),
     fork(watchUpdatePost),
