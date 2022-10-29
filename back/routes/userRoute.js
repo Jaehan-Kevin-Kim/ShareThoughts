@@ -310,4 +310,53 @@ router.delete("/follower/:userId", async (req, res, next) => {
   }
 });
 
+//POST /user/like/:postId
+router.post("/like/:postId", isLoggedIn, async (req, res, next) => {
+  // console.log(req.body);
+  // console.log("user: ", req.user);
+  try {
+    const user = await User.findOne({
+      where: { id: req.user.id },
+    });
+
+    if (!user) {
+      return res.status(403).send("You cannot give a Like with not exist user");
+    }
+
+    // await user.addLiked(req.params.postId);
+    // 위 처럼 작성 해도 되고, 혹은 아래와 같이 간단하게 한줄로 작성 가능 함. (이미 req.user로 user값을 가지고 왔기 때문에, 아래와 같이 사용 가능)
+    await req.user.addLiked(req.params.postId);
+
+    res.status(200).json({ UserId: user.id, PostId: req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//DELETE /user/unlike/:postId
+router.delete("/unlike/:postId", isLoggedIn, async (req, res, next) => {
+  // console.log(req.body);
+  // console.log("user: ", req.user);
+
+  try {
+    // const user = await User.findOne({
+    //   where: { id: req.user.id },
+    // });
+
+    // if (!user) {
+    //   return res.status(403).send("You cannot remove a Like to non exist post");
+    // }
+
+    // console.log("user: ", user);
+    // console.log("req.user: ", req.user);
+
+    await req.user.removeLiked(req.params.postId);
+    res.status(200).json({ UserId: req.user.id, PostId: req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

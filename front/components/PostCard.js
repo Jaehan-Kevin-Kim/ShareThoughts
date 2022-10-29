@@ -16,12 +16,14 @@ import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import {
+  ADD_LIKE_REQUEST,
   REMOVE_IMAGE_REQUEST,
   REMOVE_POST_REQUEST,
   RETWEET_REQUEST,
   UPDATE_POST_REQUEST,
 } from "../reducers/post";
 import FollowButton from "./FollowButton";
+import { REMOVE_LIKE_REQUEST } from "./../reducers/post";
 
 // moment.locale("ko");
 
@@ -35,6 +37,20 @@ const PostCard = ({ post }) => {
     (state) => state.post,
   );
   const id = me?.id;
+
+  useEffect(() => {
+    console.log("post in postCard: ", post);
+    const { Likers } = post;
+    console.log("Likers: ", Likers);
+    console.log("Likers.length: ", Likers.length);
+    if (me && Likers.length > 0) {
+      Likers.forEach((v) => {
+        if (v.id === me.id) {
+          setLiked(true);
+        }
+      });
+    }
+  }, [me]);
 
   const onChangePost = useCallback(() => {
     setEditMode(true);
@@ -60,13 +76,13 @@ const PostCard = ({ post }) => {
   const onUpdatePost = useCallback(
     (formData) => {
       console.log("formData: ", formData);
-      for (let key of formData.keys()) {
-        console.log(`${key}: ${formData.get(key)}`);
-      }
+      // for (let key of formData.keys()) {
+      //   console.log(`${key}: ${formData.get(key)}`);
+      // }
 
-      for (let value of formData.values()) {
-        console.log(value);
-      }
+      // for (let value of formData.values()) {
+      //   console.log(value);
+      // }
       console.log("click");
       dispatch({
         type: UPDATE_POST_REQUEST,
@@ -81,7 +97,23 @@ const PostCard = ({ post }) => {
   );
 
   const onToggleLike = useCallback(() => {
+    if (!me) {
+      return alert("Login is required to give a Like!");
+    }
+
     setLiked((prev) => !prev);
+    console.log("liked: ", liked);
+    if (!liked) {
+      dispatch({
+        type: ADD_LIKE_REQUEST,
+        data: post.id,
+      });
+    } else {
+      dispatch({
+        type: REMOVE_LIKE_REQUEST,
+        data: post.id,
+      });
+    }
   }, [liked]);
 
   const onToggleComment = useCallback(() => {
@@ -258,6 +290,7 @@ PostCard.propTypes = {
     Images: PropTypes.arrayOf(PropTypes.object),
     RetweetId: PropTypes.number,
     Retweet: PropTypes.objectOf(PropTypes.any),
+    Likers: PropTypes.objectOf(PropTypes.any),
   }).isRequired,
 };
 

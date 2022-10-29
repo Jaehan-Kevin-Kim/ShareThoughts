@@ -45,6 +45,12 @@ import {
   UPDATE_IMAGES_REQUEST,
   UPDATE_IMAGES_SUCCESS,
   UPDATE_IMAGES_FAILURE,
+  ADD_LIKE_REQUEST,
+  ADD_LIKE_SUCCESS,
+  ADD_LIKE_FAILURE,
+  REMOVE_LIKE_REQUEST,
+  REMOVE_LIKE_SUCCESS,
+  REMOVE_LIKE_FAILURE,
 } from "../reducers/post";
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
@@ -314,6 +320,48 @@ function* retweet(action) {
   }
 }
 
+function addLikeAPI(data) {
+  return axios.post(`/post/like/${data}`);
+}
+
+function* addLike(action) {
+  try {
+    const result = yield call(addLikeAPI, action.data);
+
+    yield put({
+      type: ADD_LIKE_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: ADD_LIKE_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
+function removeLikeAPI(data) {
+  return axios.delete(`/post/unlike/${data}`);
+}
+
+function* removeLike(action) {
+  try {
+    const result = yield call(removeLikeAPI, action.data);
+
+    yield put({
+      type: REMOVE_LIKE_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: REMOVE_LIKE_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -352,6 +400,12 @@ function* watchRetweet() {
 function* watchUpdatePost() {
   yield takeLatest(UPDATE_POST_REQUEST, updatePost);
 }
+function* watchAddLike() {
+  yield takeLatest(ADD_LIKE_REQUEST, addLike);
+}
+function* watchRemoveLike() {
+  yield takeLatest(REMOVE_LIKE_REQUEST, removeLike);
+}
 
 export default function* postSaga() {
   yield all([
@@ -367,5 +421,7 @@ export default function* postSaga() {
     fork(watchRemoveImage),
     fork(watchRetweet),
     fork(watchUpdatePost),
+    fork(watchAddLike),
+    fork(watchRemoveLike),
   ]);
 }

@@ -42,6 +42,12 @@ export const initialState = {
   retweetLoading: false,
   retweetDone: false,
   retweetError: null,
+  addLikeLoading: false,
+  addLikeDone: false,
+  addLikeError: null,
+  removeLikeLoading: false,
+  removeLikeDone: false,
+  removeLikeError: null,
 };
 
 // export const generateDummyPost = (number) =>
@@ -124,6 +130,14 @@ export const RETWEET_FAILURE = "RETWEET_FAILURE";
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
 export const REMOVE_UPDATEIMAGE = "REMOVE_UPDATEIMAGE";
 export const REMOVE_UPDATEIMAGEALL = "REMOVE_UPDATEIMAGEALL";
+
+export const ADD_LIKE_REQUEST = "ADD_LIKE_REQUEST";
+export const ADD_LIKE_SUCCESS = "ADD_LIKE_SUCCESS";
+export const ADD_LIKE_FAILURE = "ADD_LIKE_FAILURE";
+
+export const REMOVE_LIKE_REQUEST = "REMOVE_LIKE_REQUEST";
+export const REMOVE_LIKE_SUCCESS = "REMOVE_LIKE_SUCCESS";
+export const REMOVE_LIKE_FAILURE = "REMOVE_LIKE_FAILURE";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,

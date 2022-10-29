@@ -407,4 +407,46 @@ router.post("/images", isLoggedIn, upload.array("image"), (req, res, next) => {
   }
 });
 
+//POST /post/like/:postId
+router.post("/like/:postId", isLoggedIn, async (req, res, next) => {
+  // console.log(req.body);
+  // console.log("user: ", req.user);
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+
+    if (!post) {
+      return res.status(403).send("You cannot give a Like to non exist post");
+    }
+
+    await post.addLikers(req.user.id);
+    res.status(200).json({ UserId: req.user.id, PostId: req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//DELETE /post/unlike/:postId
+router.delete("/unlike/:postId", isLoggedIn, async (req, res, next) => {
+  // console.log(req.body);
+  // console.log("user: ", req.user);
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+
+    if (!post) {
+      return res.status(403).send("You cannot remove a Like to non exist post");
+    }
+
+    await post.removeLikers(req.user.id);
+    res.status(200).json({ UserId: req.user.id, PostId: req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;
