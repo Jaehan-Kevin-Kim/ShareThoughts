@@ -49,6 +49,13 @@ router.get("/", async (req, res, next) => {
           model: User,
           as: "Likers",
           attributes: ["id", "nickname"],
+          // include: [
+          //   {
+          //     model: User,
+          //     as: "Like",
+          //     attributes: ["UserId", "PostId"],
+          //   },
+          // ],
         },
         {
           model: Comment,

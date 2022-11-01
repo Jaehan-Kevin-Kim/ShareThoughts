@@ -33,9 +33,8 @@ const PostCard = ({ post }) => {
   const [editMode, setEditMode] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { me } = useSelector((state) => state.user);
-  const { removePostLoading, retweetError } = useSelector(
-    (state) => state.post,
-  );
+  const { removePostLoading, retweetError, addLikeDone, removeLikeDone } =
+    useSelector((state) => state.post);
   const id = me?.id;
 
   useEffect(() => {
@@ -43,14 +42,19 @@ const PostCard = ({ post }) => {
     const { Likers } = post;
     console.log("Likers: ", Likers);
     console.log("Likers.length: ", Likers.length);
-    if (me && Likers.length > 0) {
+    // 아래 조건문 변경 하기
+    if (me && Likers?.length > 0) {
       Likers.forEach((v) => {
         if (v.id === me.id) {
           setLiked(true);
+        } else {
+          setLiked(false);
         }
       });
+    } else {
+      setLiked(false);
     }
-  }, [me]);
+  }, [me, liked, addLikeDone, removeLikeDone]);
 
   const onChangePost = useCallback(() => {
     setEditMode(true);
@@ -101,7 +105,7 @@ const PostCard = ({ post }) => {
       return alert("Login is required to give a Like!");
     }
 
-    setLiked((prev) => !prev);
+    // setLiked((prev) => !prev);
     console.log("liked: ", liked);
     if (!liked) {
       dispatch({

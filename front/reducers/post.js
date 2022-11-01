@@ -313,6 +313,106 @@ const reducer = (state = initialState, action) =>
         draft.updateImagesError = action.error;
         break;
       }
+      case ADD_LIKE_REQUEST: {
+        draft.addLikeLoading = true;
+        draft.addLikeDone = false;
+        draft.addLikeEror = null;
+        break;
+      }
+      case ADD_LIKE_SUCCESS: {
+        draft.addLikeDone = true;
+        draft.addLikeLoading = false;
+        const postIndex = draft.mainPosts.findIndex(
+          (v) => v.id === parseInt(action.data.PostId, 10),
+        );
+        // console.log("postIndex: ", postIndex);
+        // console.log("action.data: ", action.data);
+        // console.log(
+        //   "draft.mainPosts ",
+        //   draft.mainPosts[parseInt(postIndex, 10)],
+        // );
+        // console.log("전: ", draft.mainPosts[postIndex]?.Likers);
+
+        if (draft.mainPosts[postIndex]?.Likers) {
+          draft.mainPosts[postIndex].Likers.push({
+            id: action.data.User.id,
+            nickname: action.data.User.nickname,
+            Like: { UserId: action.data.User.id, PostId: action.data.PostId },
+          });
+        } else {
+          draft.mainPosts[postIndex].push({
+            Likers: {
+              id: action.data.User.id,
+              nickname: action.data.User.nickname,
+              Like: { UserId: action.User.id, PostId: action.data.PostId },
+            },
+          });
+        }
+
+        // draft.mainPosts[postIndex].Likers.filter(
+        //   (v) => v.id !== action.data.UserId,
+        // );
+        // console.log("후: ", draft.mainPosts[postIndex].Likers);
+        // console.log("likers last check: ", initialState.mainPosts[postIndex]);
+        break;
+      }
+      case ADD_LIKE_FAILURE: {
+        draft.addLikeLoading = false;
+        draft.addLikeError = action.error;
+        break;
+      }
+      case REMOVE_LIKE_REQUEST: {
+        draft.removeLikeLoading = true;
+        draft.removeLikeDone = false;
+        draft.removeLikeEror = null;
+        break;
+      }
+      case REMOVE_LIKE_SUCCESS: {
+        draft.removeLikeDone = true;
+        draft.removeLikeLoading = false;
+        const postIndex = draft.mainPosts.findIndex(
+          (v) => v.id === parseInt(action.data.PostId, 10),
+        );
+
+        draft.mainPosts[postIndex].Likers = draft.mainPosts[
+          postIndex
+        ].Likers.filter((v) => v.id !== action.data.UserId);
+        // console.log("postIndex: ", postIndex);
+        // console.log("action.data: ", action.data);
+        // console.log(
+        //   "draft.mainPosts ",
+        //   draft.mainPosts[parseInt(postIndex, 10)],
+        // );
+        // console.log("전: ", draft.mainPosts[postIndex]?.Likers);
+
+        // if (draft.mainPosts[postIndex]?.Likers) {
+        //   draft.mainPosts[postIndex].Likers.push({
+        //     id: action.data.User.id,
+        //     nickname: action.data.User.nickname,
+        //     Like: { UserId: action.data.User.id, PostId: action.data.PostId },
+        //   });
+        // } else {
+        //   draft.mainPosts[postIndex].push({
+        //     Likers: {
+        //       id: action.data.User.id,
+        //       nickname: action.data.User.nickname,
+        //       Like: { UserId: action.User.id, PostId: action.data.PostId },
+        //     },
+        //   });
+        // }
+
+        // draft.mainPosts[postIndex].Likers.filter(
+        //   (v) => v.id !== action.data.UserId,
+        // );
+        // console.log("후: ", draft.mainPosts[postIndex].Likers);
+        // console.log("likers last check: ", initialState.mainPosts[postIndex]);
+        break;
+      }
+      case REMOVE_LIKE_FAILURE: {
+        draft.removeLikeLoading = false;
+        draft.removeLikeError = action.error;
+        break;
+      }
       case REMOVE_IMAGE_REQUEST: {
         draft.removeImageLoading = true;
         draft.removeImageDone = false;
@@ -333,6 +433,7 @@ const reducer = (state = initialState, action) =>
         //   .find((v) => v.id === action.data.postId)
         //   .filter((v) => v.src !== action.data.src);
         // draft.imagePaths = draft.imagePaths.concat(action.data); //backend에서 filename들을 보내줬고, 해당 filename들은 post.imagePaths에 front에서 저장 되도록 설정 함.
+
         break;
       }
       case REMOVE_IMAGE_FAILURE: {

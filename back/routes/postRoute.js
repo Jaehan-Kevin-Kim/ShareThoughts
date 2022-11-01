@@ -421,7 +421,18 @@ router.post("/like/:postId", isLoggedIn, async (req, res, next) => {
     }
 
     await post.addLikers(req.user.id);
-    res.status(200).json({ UserId: req.user.id, PostId: req.params.postId });
+
+    const returnUserInfo = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      attributes: ["id", "email", "nickname"],
+    });
+    res.status(200).json({
+      // UserId: req.user.id,
+      PostId: req.params.postId,
+      User: returnUserInfo,
+    });
   } catch (error) {
     console.error(error);
     next(error);
