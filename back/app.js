@@ -9,6 +9,7 @@ const postRouter = require("./routes/postRoute");
 const postsRouter = require("./routes/postsRoute");
 const userRouter = require("./routes/userRoute");
 const hashtagRouter = require("./routes/hashtagRoute");
+const reportRouter = require("./routes/reportRoute");
 const db = require("./models");
 const passport = require("passport");
 const helmet = require("helmet");
@@ -94,6 +95,7 @@ app.use("/post", postRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
 app.use("/hashtag", hashtagRouter);
+app.use("/report", reportRouter);
 
 //next()함수 안에 뭐라도 내용이 들어있으면 바로 error 처리하는 middleware로 보내짐 (next(asdf)) => 기본적인 error 처리 middleware는 원래 자체에 존재 함. 위치는 app.listen 바로 위. 하지만 직접 특별한 처리를 위해 아래 위치에 적어 줄 수도 있음.
 // app.use((err,req,res,next)=>{})

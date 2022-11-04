@@ -39,6 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       as: "Followings",
       foreignKey: "FollowerId",
     });
+    db.User.hasMany(db.Report, { as: "PostUser" });
+    db.User.hasMany(db.Report, { as: "ReportUser" });
   };
 
   return User;

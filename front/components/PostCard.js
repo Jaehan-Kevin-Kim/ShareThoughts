@@ -1,8 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Card, Popover, Button, Avatar, List, Comment } from "antd";
+import {
+  Card,
+  Popover,
+  Button,
+  Avatar,
+  List,
+  Comment,
+  Modal,
+  Input,
+} from "antd";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import styled from "@emotion/styled";
 
 import {
   EllipsisOutlined,
@@ -21,20 +31,47 @@ import {
   REMOVE_POST_REQUEST,
   RETWEET_REQUEST,
   UPDATE_POST_REQUEST,
+  REMOVE_LIKE_REQUEST,
+  ADD_REPORT_REQUEST,
+  POST_APPEAL_REQUEST,
 } from "../reducers/post";
 import FollowButton from "./FollowButton";
-import { REMOVE_LIKE_REQUEST } from "./../reducers/post";
+import useInput from "../hooks/useInput";
 
-// moment.locale("ko");
+// 아래 게시글 순서를 강제로 변경함 (나중에 report 됬을 때 masking 하기 위해서, 그리고 보기도 더 좋음)
+const CardItem = styled(Card)`
+  display: grid !important;
+  .ant-card-body {
+    order: 1 !important;
+  }
+  .ant-card-cover {
+    order: 2 !important;
+  }
+  .ant-card-actions {
+    order: 3 !important;
+  }
+`;
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const [openAppealModal, setOpenAppealModal] = useState(false);
+  const [openReportModal, setOpenReportModal] = useState(false);
+  const [reasonText, onChangeReasonText, setReasonText] = useInput("");
+  const [appealText, onChangeAppealText, setAppealText] = useInput("");
+
   const { me } = useSelector((state) => state.user);
-  const { removePostLoading, retweetError, addLikeDone, removeLikeDone } =
-    useSelector((state) => state.post);
+  const {
+    removePostLoading,
+    retweetError,
+    addLikeDone,
+    removeLikeDone,
+    addReportDone,
+    addReportError,
+    loadReportsDone,
+  } = useSelector((state) => state.post);
   const id = me?.id;
 
   useEffect(() => {
@@ -55,6 +92,18 @@ const PostCard = ({ post }) => {
       setLiked(false);
     }
   }, [me, liked, addLikeDone, removeLikeDone]);
+
+  // useEffect(() => {
+  //   if (addReportDone) {
+  //     alert("Your valuable report has been submitted successfully.");
+  //   }
+  // }, [addReportError]);
+
+  useEffect(() => {
+    if (addReportError || addReportDone) {
+      setOpenReportModal(false);
+    }
+  }, [addReportError, addReportDone]);
 
   const onChangePost = useCallback(() => {
     setEditMode(true);
@@ -143,144 +192,252 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
   }, [id]);
+
+  const onOpenAppealModal = useCallback(() => {
+    setOpenAppealModal(true);
+  }, [openAppealModal]);
+
+  const onClickAppealModalSubmit = useCallback(() => {
+    // setOpenAppealModal(true);
+    console.log("appealText: ", appealText);
+    if (!appealText || appealText.split(" ").join("").length < 30) {
+      console.log("not satisfied");
+      return alert("Please write at least 30 letters for the appeal letter");
+    }
+
+    setAppealText("");
+    setOpenAppealModal(false);
+    return dispatch({
+      type: POST_APPEAL_REQUEST,
+      data: {
+        postId: post.id,
+        appeal: appealText,
+      },
+    });
+  }, [openAppealModal, appealText]);
+
+  const onClickAppealModalCancel = useCallback(() => {
+    setOpenAppealModal(false);
+    setAppealText("");
+  }, [openAppealModal]);
+
+  const onOpenReportModal = useCallback(() => {
+    if (!id) {
+      return alert("Login is required");
+    }
+
+    if (post.User.id === id) {
+      return alert("You cannot submit a report for your own Post.");
+    }
+    return setOpenReportModal(true);
+  }, [openReportModal]);
+
+  const onClickReportModalSubmit = useCallback(() => {
+    // setOpenAppealModal(true);
+    if (!reasonText || !reasonText.trim()) {
+      return alert("Please write a reason why you are reporting this post");
+    }
+
+    setReasonText("");
+    // setOpenReportModal(false);
+    return dispatch({
+      type: ADD_REPORT_REQUEST,
+      data: { postId: post.id, reason: reasonText },
+    });
+  }, [openReportModal, reasonText]);
+
+  const onClickReportModalCancel = useCallback(() => {
+    setOpenReportModal(false);
+    setReasonText("");
+  }, [openReportModal]);
+
   return (
-    <div style={{ marginBottom: 20 }}>
-      <Card
-        cover={
-          post.Images[0] && (
-            <PostImages
-              onRemoveImage={onRemoveImage}
-              editMode={editMode}
-              images={post.Images}
-            />
-          )
-        }
-        actions={[
-          <RetweetOutlined key="retweet" onClick={onRetweet} />,
-          liked ? (
-            <HeartTwoTone
-              twoToneColor="#AF0000"
-              key="heartTwoTone"
-              onClick={onToggleLike}
-            />
+    <>
+      <Modal
+        title="Write an appeal letter"
+        visible={openAppealModal}
+        okText="Submit"
+        onOk={onClickAppealModalSubmit}
+        onCancel={onClickAppealModalCancel}
+        // okButtonProps={{ disabled: true }}
+        // cancelButtonProps={{ disabled: true }}
+      >
+        <Input.TextArea
+          value={appealText}
+          onChange={onChangeAppealText}
+          maxLength={140}
+          rows={4}
+          placeholder="Write your appeal letter here at least with 30 letters..."
+        />
+      </Modal>
+      <Modal
+        title="Report this post"
+        visible={openReportModal}
+        okText="Submit"
+        onOk={onClickReportModalSubmit}
+        onCancel={onClickReportModalCancel}
+        // okButtonProps={{ disabled: true }}
+        // cancelButtonProps={{ disabled: true }}
+      >
+        <Input.TextArea
+          value={reasonText}
+          onChange={onChangeReasonText}
+          maxLength={140}
+          rows={4}
+          placeholder="Please write here why you are reporting this post."
+        />
+      </Modal>
+
+      <div style={{ marginBottom: 20 }}>
+        <CardItem
+          cover={
+            !post.lockStatus &&
+            post.Images[0] && (
+              <PostImages
+                onRemoveImage={onRemoveImage}
+                editMode={editMode}
+                images={post.Images}
+              />
+            )
+          }
+          actions={[
+            <RetweetOutlined key="retweet" onClick={onRetweet} />,
+            liked ? (
+              <HeartTwoTone
+                twoToneColor="#AF0000"
+                key="heartTwoTone"
+                onClick={onToggleLike}
+              />
+            ) : (
+              <HeartOutlined key="heart" onClick={onToggleLike} />
+            ),
+            <MessageOutlined key="message" onClick={onToggleComment} />,
+
+            <Popover
+              key="popover"
+              content={
+                <Button.Group>
+                  {id && post.User.id === id ? (
+                    <>
+                      {!post.RetweetId && (
+                        <Button onClick={onChangePost}>Modify</Button>
+                      )}
+                      <Button
+                        type="danger"
+                        onClick={onRemovePost}
+                        loading={removePostLoading}>
+                        Delete
+                      </Button>
+                      <Button onClick={onOpenReportModal}>Report</Button>
+                      {post.lockStatus && post.User.id === id && (
+                        <Button type="primary" onClick={onOpenAppealModal}>
+                          Appeal
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    <Button onClick={onOpenReportModal}>Report</Button>
+                  )}
+                </Button.Group>
+              }>
+              <EllipsisOutlined />
+            </Popover>,
+          ]}
+          title={post.RetweetId ? `Retweet by ${post.User.nickname}.` : null}
+          extra={id && <FollowButton post={post} />}>
+          {post.RetweetId && post.Retweet ? (
+            <Card
+              cover={
+                !post.lockStatus &&
+                post.Retweet.Images[0] && (
+                  <PostImages images={post.Retweet.Images} />
+                )
+              }>
+              <div style={{ float: "right" }}>
+                {moment(post.createdAt).format("YYYY.MM.DD")}
+              </div>
+              <Card.Meta
+                avatar={
+                  <Link href={`/user/${post.Retweet.User.id}`}>
+                    <a>
+                      <Avatar>{post.User.nickname[0]}</Avatar>
+                    </a>
+                  </Link>
+                }
+                title={post.User.nickname}
+                description={
+                  <PostCardContent
+                    lockStatus={post.lockStatus}
+                    postData={post.Retweet.content}
+                    onCancelChangePost={onCancelChangePost}
+                    onUpdatePost={onUpdatePost}
+                    reports={post.Reports}
+                  />
+                }
+              />
+            </Card>
           ) : (
-            <HeartOutlined key="heart" onClick={onToggleLike} />
-          ),
-          <MessageOutlined key="message" onClick={onToggleComment} />,
+            <>
+              <div style={{ float: "right" }}>
+                {moment(post.createdAt).format("YYYY.MM.DD")}
+              </div>
 
-          <Popover
-            key="popover"
-            content={
-              <Button.Group>
-                {id && post.User.id === id ? (
-                  <>
-                    {!post.RetweetId && (
-                      <Button onClick={onChangePost}>Modify</Button>
-                    )}
-                    <Button
-                      type="danger"
-                      onClick={onRemovePost}
-                      loading={removePostLoading}>
-                      Delete
-                    </Button>
-                    <Button>Report</Button>
-                  </>
-                ) : (
-                  <Button>Report </Button>
-                )}
-              </Button.Group>
-            }>
-            <EllipsisOutlined />
-          </Popover>,
-        ]}
-        title={post.RetweetId ? `Retweet by ${post.User.nickname}.` : null}
-        extra={id && <FollowButton post={post} />}>
-        {post.RetweetId && post.Retweet ? (
-          <Card
-            cover={
-              post.Retweet.Images[0] && (
-                <PostImages images={post.Retweet.Images} />
-              )
-            }>
-            <div style={{ float: "right" }}>
-              {moment(post.createdAt).format("YYYY.MM.DD")}
-            </div>
-            <Card.Meta
-              avatar={
-                <Link href={`/user/${post.Retweet.User.id}`}>
-                  <a>
-                    <Avatar>{post.User.nickname[0]}</Avatar>
-                  </a>
-                </Link>
-              }
-              title={post.User.nickname}
-              description={
-                <PostCardContent
-                  postData={post.Retweet.content}
-                  onCancelChangePost={onCancelChangePost}
-                  onUpdatePost={onUpdatePost}
-                />
-              }
-            />
-          </Card>
-        ) : (
-          <>
-            <div style={{ float: "right" }}>
-              {moment(post.createdAt).format("YYYY.MM.DD")}
-            </div>
+              <Card.Meta
+                avatar={
+                  <Link href={`/user/${post.User.id}`}>
+                    <a>
+                      <Avatar>{post.User.nickname[0]}</Avatar>
+                    </a>
+                  </Link>
+                }
+                title={post.User.nickname}
+                description={
+                  <PostCardContent
+                    lockStatus={post.lockStatus}
+                    editMode={editMode}
+                    onCancelChangePost={onCancelChangePost}
+                    postData={post.content}
+                    post={post}
+                    onUpdatePost={onUpdatePost}
+                    reports={post.Reports}
+                    onOpenAppealModal={onOpenAppealModal}
+                  />
+                }
+              />
+            </>
+          )}
 
-            <Card.Meta
-              avatar={
-                <Link href={`/user/${post.User.id}`}>
-                  <a>
-                    <Avatar>{post.User.nickname[0]}</Avatar>
-                  </a>
-                </Link>
-              }
-              title={post.User.nickname}
-              description={
-                <PostCardContent
-                  editMode={editMode}
-                  onCancelChangePost={onCancelChangePost}
-                  postData={post.content}
-                  post={post}
-                  onUpdatePost={onUpdatePost}
-                />
-              }
-            />
-          </>
-        )}
-
-        {/* <Buttons></Buttons> */}
-        {/* <CommentForm />
+          {/* <Buttons></Buttons> */}
+          {/* <CommentForm />
       <Comments /> */}
-      </Card>
-      {commentFormOpened && (
-        <div>
-          <CommentForm post={post} />{" "}
-          <List
-            header={`${post.Comments.length} comments`}
-            itemLayout="horizontal"
-            dataSource={post.Comments}
-            renderItem={(item) => (
-              <li>
-                <Comment
-                  author={item.User.nickname}
-                  avatar={
-                    <Link href={`/user/${item.User.id}`}>
-                      <a>
-                        <Avatar>{item.User.nickname[0]}</Avatar>
-                      </a>
-                    </Link>
-                  }
-                  content={item.content}
-                />
-              </li>
-            )}
-          />
-        </div>
-      )}
-    </div>
+        </CardItem>
+        {commentFormOpened && (
+          <div>
+            <CommentForm post={post} />{" "}
+            <List
+              header={`${post.Comments.length} comments`}
+              itemLayout="horizontal"
+              dataSource={post.Comments}
+              renderItem={(item) => (
+                <li>
+                  <Comment
+                    author={item.User.nickname}
+                    avatar={
+                      <Link href={`/user/${item.User.id}`}>
+                        <a>
+                          <Avatar>{item.User.nickname[0]}</Avatar>
+                        </a>
+                      </Link>
+                    }
+                    content={item.content}
+                  />
+                </li>
+              )}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -295,6 +452,8 @@ PostCard.propTypes = {
     RetweetId: PropTypes.number,
     Retweet: PropTypes.objectOf(PropTypes.any),
     Likers: PropTypes.objectOf(PropTypes.any),
+    Reports: PropTypes.objectOf(PropTypes.any),
+    lockStatus: PropTypes.bool,
   }).isRequired,
 };
 

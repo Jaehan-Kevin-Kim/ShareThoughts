@@ -48,6 +48,15 @@ export const initialState = {
   removeLikeLoading: false,
   removeLikeDone: false,
   removeLikeError: null,
+  addReportLoading: false,
+  addReportDone: false,
+  addReportError: null,
+  loadReportsLoading: false,
+  loadReportsDone: false,
+  loadReportsError: null,
+  postAppealLoading: false,
+  postAppealDone: false,
+  postAppealError: null,
 };
 
 // export const generateDummyPost = (number) =>
@@ -138,6 +147,18 @@ export const ADD_LIKE_FAILURE = "ADD_LIKE_FAILURE";
 export const REMOVE_LIKE_REQUEST = "REMOVE_LIKE_REQUEST";
 export const REMOVE_LIKE_SUCCESS = "REMOVE_LIKE_SUCCESS";
 export const REMOVE_LIKE_FAILURE = "REMOVE_LIKE_FAILURE";
+
+export const ADD_REPORT_REQUEST = "ADD_REPORT_REQUEST";
+export const ADD_REPORT_SUCCESS = "ADD_REPORT_SUCCESS";
+export const ADD_REPORT_FAILURE = "ADD_REPORT_FAILURE";
+
+export const LOAD_REPORTS_REQUEST = "LOAD_REPORTS_REQUEST";
+export const LOAD_REPORTS_SUCCESS = "LOAD_REPORTS_SUCCESS";
+export const LOAD_REPORTS_FAILURE = "LOAD_REPORTS_FAILURE";
+
+export const POST_APPEAL_REQUEST = "POST_APPEAL_REQUEST";
+export const POST_APPEAL_SUCCESS = "POST_APPEAL_SUCCESS";
+export const POST_APPEAL_FAILURE = "POST_APPEAL_FAILURE";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
@@ -487,6 +508,72 @@ const reducer = (state = initialState, action) =>
         draft.addCommentError = action.error;
         break;
       }
+
+      case ADD_REPORT_REQUEST: {
+        draft.addReportLoading = true;
+        draft.addReportDone = false;
+        draft.addReportError = null;
+        break;
+      }
+
+      case ADD_REPORT_SUCCESS: {
+        draft.addReportLoading = false;
+        draft.addReportDone = true;
+        draft.addReportError = null;
+        console.log("action.data: ", action.data);
+        break;
+      }
+
+      case ADD_REPORT_FAILURE: {
+        draft.addReportLoading = false;
+        draft.addReportError = action.error;
+        console.log("action.error: ", action.error);
+        break;
+      }
+
+      case LOAD_REPORTS_REQUEST: {
+        draft.loadReportsLoading = true;
+        draft.loadReportsDone = false;
+        draft.loadReportsError = null;
+        break;
+      }
+
+      case LOAD_REPORTS_SUCCESS: {
+        draft.loadReportsLoading = false;
+        draft.loadReportsDone = true;
+        draft.loadReportsError = null;
+        break;
+      }
+
+      case LOAD_REPORTS_FAILURE: {
+        draft.loadReportsLoading = false;
+        draft.loadReportsError = action.error;
+        break;
+      }
+      case POST_APPEAL_REQUEST: {
+        draft.postAppealLoading = true;
+        draft.postAppealDone = false;
+        draft.postAppealError = null;
+        break;
+      }
+
+      case POST_APPEAL_SUCCESS: {
+        draft.postAppealLoading = false;
+        draft.postAppealDone = true;
+        draft.postAppealError = null;
+        draft.mainPosts.find((v) => v.id === action.data.id).appeal =
+          action.data.appeal;
+
+        // console.log("action.data.appeal: ", action.data.appeal);
+        break;
+      }
+
+      case POST_APPEAL_FAILURE: {
+        draft.postAppealLoading = false;
+        draft.postAppealError = action.error;
+        break;
+      }
+
       case REMOVE_IMAGE: {
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break;

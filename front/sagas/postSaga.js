@@ -51,6 +51,15 @@ import {
   REMOVE_LIKE_REQUEST,
   REMOVE_LIKE_SUCCESS,
   REMOVE_LIKE_FAILURE,
+  LOAD_REPORTS_REQUEST,
+  ADD_REPORT_REQUEST,
+  ADD_REPORT_FAILURE,
+  ADD_REPORT_SUCCESS,
+  LOAD_REPORTS_FAILURE,
+  LOAD_REPORTS_SUCCESS,
+  POST_APPEAL_REQUEST,
+  POST_APPEAL_SUCCESS,
+  POST_APPEAL_FAILURE,
 } from "../reducers/post";
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
@@ -362,6 +371,69 @@ function* removeLike(action) {
   }
 }
 
+function addReportAPI(data) {
+  return axios.post(`/report/${data.postId}`, data);
+}
+
+function* addReport(action) {
+  try {
+    const result = yield call(addReportAPI, action.data);
+
+    yield put({
+      type: ADD_REPORT_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: ADD_REPORT_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
+function loadReportsAPI(data) {
+  return axios.get(`/report/${data.postId}`);
+}
+
+function* loadReports(action) {
+  try {
+    const result = yield call(loadReportsAPI, action.data);
+
+    yield put({
+      type: LOAD_REPORTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: LOAD_REPORTS_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
+function postAppealAPI(data) {
+  return axios.patch(`/post/appeal/${data.postId}`, data);
+}
+
+function* postAppeal(action) {
+  try {
+    const result = yield call(postAppealAPI, action.data);
+
+    yield put({
+      type: POST_APPEAL_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    yield put({
+      type: POST_APPEAL_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -406,6 +478,15 @@ function* watchAddLike() {
 function* watchRemoveLike() {
   yield takeLatest(REMOVE_LIKE_REQUEST, removeLike);
 }
+function* watchAddReport() {
+  yield takeLatest(ADD_REPORT_REQUEST, addReport);
+}
+function* watchLoadReports() {
+  yield takeLatest(LOAD_REPORTS_REQUEST, loadReports);
+}
+function* watchPostAppeal() {
+  yield takeLatest(POST_APPEAL_REQUEST, postAppeal);
+}
 
 export default function* postSaga() {
   yield all([
@@ -423,5 +504,8 @@ export default function* postSaga() {
     fork(watchUpdatePost),
     fork(watchAddLike),
     fork(watchRemoveLike),
+    fork(watchAddReport),
+    fork(watchLoadReports),
+    fork(watchPostAppeal),
   ]);
 }

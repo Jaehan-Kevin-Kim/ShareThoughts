@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { END } from "redux-saga";
+import { Modal } from "antd";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
@@ -11,15 +12,32 @@ import wrapper from "../store/configureStore";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePost, loadPostsLoading, retweetError } =
-    useSelector((state) => state.post);
+  const {
+    mainPosts,
+    hasMorePost,
+    loadPostsLoading,
+    retweetError,
+    addReportDone,
+    addReportError,
+  } = useSelector((state) => state.post);
 
   useEffect(() => {
     if (retweetError) {
       alert(retweetError);
     }
-  }, [retweetError]);
+
+    if (addReportDone) {
+      alert("Your valuable report has been submitted successfully.");
+    }
+
+    if (addReportError) {
+      console.log("addReportError: ", addReportError);
+      alert(addReportError);
+    }
+  }, [retweetError, addReportDone, addReportError]);
 
   useEffect(() => {
     function onScroll() {

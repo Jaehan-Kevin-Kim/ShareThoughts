@@ -2,7 +2,7 @@ const express = require("express");
 const { Op } = require("sequelize"); //to implement less than (Op: Operator)
 
 const router = express.Router();
-const { Post, User, Image, Comment } = require("../models");
+const { Post, User, Image, Comment, Report } = require("../models");
 
 // GET /posts
 router.get("/", async (req, res, next) => {
@@ -65,6 +65,9 @@ router.get("/", async (req, res, next) => {
               attributes: ["id", "nickname"],
             },
           ],
+        },
+        {
+          model: Report,
         },
       ],
     });

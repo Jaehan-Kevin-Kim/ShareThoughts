@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
-const { Post, Comment, Image, User, Hashtag } = require("../models");
+const { Post, Comment, Image, User, Hashtag, Report } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 
 try {
@@ -304,6 +304,9 @@ router.get("/:postId", async (req, res, next) => {
           as: "Likers",
           attributes: ["id"],
         },
+        {
+          model: Report,
+        },
       ],
     });
     res.status(200).json(fullPost);
@@ -454,6 +457,41 @@ router.delete("/unlike/:postId", isLoggedIn, async (req, res, next) => {
 
     await post.removeLikers(req.user.id);
     res.status(200).json({ UserId: req.user.id, PostId: req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+//PATCH /post/appeal/:postId
+router.patch("/appeal/:postId", async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+
+    if (req.user.id !== post.UserId) {
+      return res
+        .status(403)
+        .send("Only post's owner can write an appeal letter for their posts.");
+    }
+
+    await Post.update(
+      {
+        appeal: req.body.appeal,
+      },
+      {
+        where: {
+          id: req.params.postId,
+        },
+      },
+    );
+
+    const updatedPost = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+
+    res.status(200).json(updatedPost);
   } catch (error) {
     console.error(error);
     next(error);

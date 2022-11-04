@@ -1,10 +1,19 @@
 import { PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import React, { useCallback, useState } from "react";
+import styled from "@emotion/styled";
+
 import { backEndUrl } from "../config/config";
 import ImagesZoom from "./ImagesZoom";
 import { CloseBtn } from "./ImagesZoom/styles";
 import { Button } from "antd";
+
+const Image = styled.img`
+  max-width: 800px;
+  max-height: 350px;
+  margin: auto auto;
+  object-fit: contain;
+`;
 
 const PostImages = ({ images, editMode, onRemoveImage }) => {
   const [showImagesZoom, setShowImagesZoom] = useState(false);
@@ -28,7 +37,6 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
             role="presentation"
             style={{
               display: "inline-block",
-              width: "100%",
               position: "relative",
             }}
             // onClick={(e) => e.stopPropagation}
@@ -51,7 +59,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
               }}
             />
             {/* </div> */}
-            <img
+            <Image
               role="presentation"
               width="100%"
               src={prod ? `${images[0].src}` : `${backEndUrl}/${images[0].src}`}
@@ -60,7 +68,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
             />
           </div>
         ) : (
-          <img
+          <Image
             role="presentation"
             src={prod ? `${images[0].src}` : `${backEndUrl}/${images[0].src}`}
             alt={images[0].src}
@@ -95,7 +103,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
                 }}
               />
               {/* </div> */}
-              <img
+              <Image
                 role="presentation"
                 width="100%"
                 src={
@@ -123,7 +131,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
                 }}
               />
               {/* </div> */}
-              <img
+              <Image
                 role="presentation"
                 width="100%"
                 src={
@@ -136,14 +144,14 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
           </>
         ) : (
           <>
-            <img
+            <Image
               role="presentation"
               style={{ width: "50%", display: "inline-block" }}
               src={prod ? `${images[0].src}` : `${backEndUrl}/${images[0].src}`}
               alt={images[0].src}
               onClick={onZoom}
             />
-            <img
+            <Image
               role="presentation"
               style={{ width: "50%", display: "inline-block" }}
               src={prod ? `${images[1].src}` : `${backEndUrl}/${images[1].src}`}
@@ -179,7 +187,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
               }}
             />
             {/* </div> */}
-            <img
+            <Image
               role="presentation"
               // width="100%"
               src={prod ? `${images[0].src}` : `${backEndUrl}/${images[0].src}`}
@@ -188,7 +196,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
             />
           </div>
         ) : (
-          <img
+          <Image
             role="presentation"
             width="50%"
             src={prod ? `${images[0].src}` : `${backEndUrl}/${images[0].src}`}
@@ -197,7 +205,7 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
           />
         )}
 
-        {/* <img
+        {/* <Image
           role="presentation"
           width="50%"
           src={prod ? `${images[0].src}` : `${backEndUrl}/${images[0].src}`}
