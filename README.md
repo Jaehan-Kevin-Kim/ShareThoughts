@@ -41,5 +41,6 @@ npm i
 ````
 npm run dev
 ````
+5. Open a browser and connect to **http://localhost:3050/**
 
-## Enjoy :)
+## Enjoy the application :)
