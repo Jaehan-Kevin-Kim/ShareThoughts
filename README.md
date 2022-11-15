@@ -1,4 +1,4 @@
-### ShareThoughts
+# ShareThoughts
 ## Application
 The url for this application is **http://sharethoughts.online/**. However, the website is temporary not running due to EC2 servers are temporary stopped. Please let me know, if you want to access to the website. 
 
