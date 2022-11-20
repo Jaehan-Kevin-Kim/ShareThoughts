@@ -1,6 +1,13 @@
 # ShareThoughts
+
 ## Application
 The url for this application is **http://sharethoughts.online/**. However, the website is temporary not running due to EC2 servers are temporary stopped. Please let me know, if you want to access to the website. 
+
+
+#### Realtime social media and social networking service full stack application.
+
+## Used Tech specs
+#### Javascript, React.js, Next.js, Redux, Redux-Saga, Node.js, Ant.Design, Emotion, Express.js, MySQL, Sequelize, Passport, and AWS
 
 ## Run Back-End Application
 1. Open Terminal
