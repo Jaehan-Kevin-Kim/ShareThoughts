@@ -279,7 +279,7 @@ PostCardContent.propTypes = {
   editMode: PropTypes.bool,
   post: PropTypes.object,
   lockStatus: PropTypes.bool.isRequired,
-  reports: PropTypes.objectOf(PropTypes.any).isRequired,
+  reports: PropTypes.objectOf(PropTypes.any),
   onOpenAppealModal: PropTypes.func,
 };
 
@@ -287,6 +287,7 @@ PostCardContent.defaultProps = {
   editMode: false,
   post: undefined,
   onOpenAppealModal: undefined,
+  reports: undefined,
 };
 
 export default PostCardContent;

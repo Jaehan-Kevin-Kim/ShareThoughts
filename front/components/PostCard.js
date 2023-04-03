@@ -78,7 +78,7 @@ const PostCard = ({ post }) => {
     console.log("post in postCard: ", post);
     const { Likers } = post;
     console.log("Likers: ", Likers);
-    console.log("Likers.length: ", Likers.length);
+    console.log("Likers.length: ", Likers?.length);
     // 아래 조건문 변경 하기
     if (me && Likers?.length > 0) {
       Likers.forEach((v) => {
