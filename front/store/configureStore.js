@@ -5,11 +5,11 @@
 
 // import reducer from "../reducers";
 // import rootSaga from "../sagas";
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 // import logger from "redux-logger";
-import rootReducer from "../features/index";
 import logger from "redux-logger";
+import rootReducer from "../features/index";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -34,13 +34,10 @@ const serverState = getServerState();
 console.log("serverState: ", serverState);
 
 const makeStore = () => {
-  const middleware = getDefaultMiddleware();
-  if (isDev) {
-    middleware.push(logger);
-  }
+  // const middleware = getDefaultMiddleware();
   const store = configureStore({
     reducer: rootReducer,
-    middleware,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     devTools: isDev,
     preloadedState: serverState, //SSR
   });
