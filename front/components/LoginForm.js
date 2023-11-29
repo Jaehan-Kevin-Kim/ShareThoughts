@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { css, cx } from "@emotion/css";
 import { useDispatch, useSelector } from "react-redux";
 import { loginRequestAction } from "../reducers/user";
+import { login } from "../features/user/userService";
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -43,8 +44,8 @@ const LoginForm = () => {
 
   const onSubmitForm = useCallback(() => {
     console.log(email, password);
-    dispatch(loginRequestAction({ email, password }));
-    // setIsLoggedIn(true);
+    // dispatch(loginRequestAction({ email, password }));
+    dispatch(login({ email, password }));
   }, [email, password]);
 
   return (
@@ -56,7 +57,13 @@ const LoginForm = () => {
       <div>
         <label htmlFor="user-email">User Email</label>
         <FormItem style={{ margin: 0 }}>
-          <Input name="user-email" type="email" value={email} onChange={onChangeEmail} required />
+          <Input
+            name="user-email"
+            type="email"
+            value={email}
+            onChange={onChangeEmail}
+            required
+          />
         </FormItem>
       </div>
       <div>

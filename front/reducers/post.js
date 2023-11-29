@@ -165,12 +165,10 @@ export const addPost = (data) => ({
   data,
 });
 
-export const addComment = (data) => {
-  return {
-    type: ADD_COMMENT_REQUEST,
-    data,
-  };
-};
+export const addComment = (data) => ({
+  type: ADD_COMMENT_REQUEST,
+  data,
+});
 
 // const dummyPost = (data) => ({
 //   id: data.id,

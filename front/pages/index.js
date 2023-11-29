@@ -88,15 +88,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
       axios.defaults.headers.Cookie = cookie;
     }
     // console.log("context check: ", context);
-    context.store.dispatch({
+    await context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
     });
-    context.store.dispatch({
+    await context.store.dispatch({
       type: LOAD_POSTS_REQUEST,
     });
 
-    context.store.dispatch(END);
-    await context.store.sagaTask.toPromise();
+    await context.store.dispatch(END);
+    // await context.store.sagaTask.toPromise();
   },
 );
 

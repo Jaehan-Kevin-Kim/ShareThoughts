@@ -13,16 +13,6 @@ import rootReducer from "../features/index";
 
 const isDev = process.env.NODE_ENV === "development";
 
-// const loggerMiddleware =
-//   (store) =>
-//   (next) =>
-//   (action) => {
-//     console.log(action);
-//     return next(action);
-//   };
-
-// configuration code for redux-toolkit
-
 function getServerState() {
   return typeof document !== "undefined"
     ? JSON.parse(document.querySelector("#__NEXT_DATA__").textContent)?.props
