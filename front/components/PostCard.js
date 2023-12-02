@@ -167,6 +167,8 @@ const PostCard = ({ post }) => {
         data: post.id,
       });
     }
+
+    return null;
   }, [liked]);
 
   const onToggleComment = useCallback(() => {
