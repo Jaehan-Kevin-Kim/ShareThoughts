@@ -9,6 +9,8 @@ import { LOAD_POST_REQUEST } from "../../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import wrapper from "../../store/configureStore";
 import PostCard from "../../components/PostCard";
+import { loadMyInfo } from "../../features/user/userService";
+import { loadPost } from "../../features/post/postService";
 
 const Post = () => {
   const { singlePost } = useSelector((state) => state.post);
@@ -56,17 +58,21 @@ export const getServerSideProps = wrapper.getServerSideProps(
       axios.defaults.headers.Cookie = cookie;
     }
 
-    context.store.dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-    context.store.dispatch({
-      type: LOAD_POST_REQUEST,
-      data: context.params.id,
-      // or data: context.query.id
-    });
+    await context.store.dispatch(loadMyInfo());
 
-    context.store.dispatch(END);
-    await context.store.sagaTask.toPromise();
+    await context.store.dispatch(loadPost(context.params.id));
+
+    // context.store.dispatch({
+    //   type: LOAD_MY_INFO_REQUEST,
+    // });
+    // context.store.dispatch({
+    //   type: LOAD_POST_REQUEST,
+    //   data: context.params.id,
+    //   // or data: context.query.id
+    // });
+
+    // context.store.dispatch(END);
+    // await context.store.sagaTask.toPromise();
   },
 );
 

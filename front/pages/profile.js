@@ -1,13 +1,15 @@
 import axios from "axios";
 import Head from "next/head";
 import Router from "next/router";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import useSWR from "swr";
 import AppLayout from "../components/AppLayout";
 import FollowList from "../components/FollowList";
 import NicknameEditForm from "../components/NicknameEditForm";
 import { backEndUrl } from "../config/config";
+import wrapper from "../store/configureStore";
+import { loadMyInfo } from "../features/user/userService";
 
 const fetcher = (url) =>
   axios.get(url, { withCredentials: true }).then((result) => result.data);
@@ -90,5 +92,24 @@ const profile = () => {
     </>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.coolkie : "";
+      axios.defaults.headers.Cookie = "";
+      // 쿠키가 브라우저에 있는 경우만 넣어서 실행
+      // (주의, 아래 조건이 없다면 다른 사람으로 로그인 될 수도 있음)
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+      await store.dispatch(loadMyInfo());
+
+      return {
+        props: {},
+      };
+    },
+);
 
 export default profile;

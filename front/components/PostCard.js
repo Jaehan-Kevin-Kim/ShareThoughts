@@ -37,6 +37,16 @@ import {
 } from "../reducers/post";
 import FollowButton from "./FollowButton";
 import useInput from "../hooks/useInput";
+import {
+  addLike,
+  addReport,
+  postAppeal,
+  removeImage,
+  removeLike,
+  removePost,
+  retweet,
+  updatePost,
+} from "../features/post/postService";
 
 // 아래 게시글 순서를 강제로 변경함 (나중에 report 됬을 때 masking 하기 위해서, 그리고 보기도 더 좋음)
 const CardItem = styled(Card)`
@@ -115,13 +125,14 @@ const PostCard = ({ post }) => {
 
   const onRemoveImage = useCallback(
     (src) => () => {
-      dispatch({
-        type: REMOVE_IMAGE_REQUEST,
-        data: {
-          postId: post.id,
-          src,
-        },
-      });
+      dispatch(removeImage({ postId: post.id, src }));
+      // dispatch({
+      //   type: REMOVE_IMAGE_REQUEST,
+      //   data: {
+      //     postId: post.id,
+      //     src,
+      //   },
+      // });
     },
     [post],
   );
@@ -137,14 +148,15 @@ const PostCard = ({ post }) => {
       //   console.log(value);
       // }
       console.log("click");
-      dispatch({
-        type: UPDATE_POST_REQUEST,
-        data: {
-          postId: post.id,
-          // content: editText,
-          formData,
-        },
-      });
+      dispatch(updatePost({ postId: post.id, formData }));
+      // dispatch({
+      //   type: UPDATE_POST_REQUEST,
+      //   data: {
+      //     postId: post.id,
+      //     // content: editText,
+      //     formData,
+      //   },
+      // });
     },
     [post],
   );
@@ -157,15 +169,17 @@ const PostCard = ({ post }) => {
     // setLiked((prev) => !prev);
     console.log("liked: ", liked);
     if (!liked) {
-      dispatch({
-        type: ADD_LIKE_REQUEST,
-        data: post.id,
-      });
+      dispatch(addLike(post.id));
+      // dispatch({
+      //   type: ADD_LIKE_REQUEST,
+      //   data: post.id,
+      // });
     } else {
-      dispatch({
-        type: REMOVE_LIKE_REQUEST,
-        data: post.id,
-      });
+      dispatch(removeLike(post.id));
+      // dispatch({
+      //   type: REMOVE_LIKE_REQUEST,
+      //   data: post.id,
+      // });
     }
 
     return null;
@@ -179,20 +193,18 @@ const PostCard = ({ post }) => {
     if (!id) {
       return alert("Login is required");
     }
-    return dispatch({
-      type: RETWEET_REQUEST,
-      data: post.id,
-    });
+    return dispatch(retweet(post.id));
+    // return dispatch({
+    //   type: RETWEET_REQUEST,
+    //   data: post.id,
+    // });
   }, [id]);
 
   const onRemovePost = useCallback(() => {
     if (!id) {
       return alert("Login is required");
     }
-    return dispatch({
-      type: REMOVE_POST_REQUEST,
-      data: post.id,
-    });
+    return dispatch(removePost(post.id));
   }, [id]);
 
   const onOpenAppealModal = useCallback(() => {
@@ -209,13 +221,7 @@ const PostCard = ({ post }) => {
 
     setAppealText("");
     setOpenAppealModal(false);
-    return dispatch({
-      type: POST_APPEAL_REQUEST,
-      data: {
-        postId: post.id,
-        appeal: appealText,
-      },
-    });
+    return dispatch(postAppeal({ postId: post.id, appeal: appealText }));
   }, [openAppealModal, appealText]);
 
   const onClickAppealModalCancel = useCallback(() => {
@@ -242,10 +248,7 @@ const PostCard = ({ post }) => {
 
     setReasonText("");
     // setOpenReportModal(false);
-    return dispatch({
-      type: ADD_REPORT_REQUEST,
-      data: { postId: post.id, reason: reasonText },
-    });
+    return dispatch(addReport({ postId: post.id, reason: reasonText }));
   }, [openReportModal, reasonText]);
 
   const onClickReportModalCancel = useCallback(() => {

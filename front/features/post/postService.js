@@ -2,8 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import _ from "lodash";
 import axios from "axios";
 
-const loadUserPostsThrottle = async (id, lastId) => {
-  const response = await axios.get(`/user/${id}/posts?lastId=${lastId || 0}`);
+const loadUserPostsThrottle = async (data, lastId) => {
+  const response = await axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
   return response.data;
 };
 
@@ -12,9 +12,9 @@ export const loadUserPosts = createAsyncThunk(
   _.throttle(loadUserPostsThrottle, 5000),
 );
 
-const loadHashtagPostsThrottle = async (id, lastId) => {
+const loadHashtagPostsThrottle = async (data, lastId) => {
   const response = await axios.get(
-    `/hashtag/${encodeURIComponent(id)}?lastId=${lastId || 0}`,
+    `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`,
   );
   return response.data;
 };
@@ -75,6 +75,14 @@ export const removeImage = createAsyncThunk(
   },
 );
 
+export const updateImages = createAsyncThunk(
+  "post/updateImages",
+  async (data) => {
+    const response = await axios.post("/post/images", data);
+    return response.data;
+  },
+);
+
 export const retweet = createAsyncThunk("post/retweet", async (data) => {
   const response = await axios.post(`/post/${data}/retweet`, data);
   return response.data;
@@ -93,5 +101,15 @@ export const removeLike = createAsyncThunk("post/removeLike", async (data) => {
 // Report API
 export const addReport = createAsyncThunk("post/addReport", async (data) => {
   const response = await axios.post(`/report/${data.postId}`, data);
+  return response.data;
+});
+
+export const loadReport = createAsyncThunk("post/loadReport", async (data) => {
+  const response = await axios.get(`/report/${data.postId}`, data);
+  return response.data;
+});
+
+export const postAppeal = createAsyncThunk("post/postAppeal", async (data) => {
+  const response = await axios.patch(`/post/appeal/${data.postId}`, data);
   return response.data;
 });

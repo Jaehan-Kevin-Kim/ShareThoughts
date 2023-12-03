@@ -7,11 +7,14 @@ import {
   loadHashtagPosts,
   loadPost,
   loadPosts,
+  loadReport,
   loadUserPosts,
+  postAppeal,
   removeImage,
   removeLike,
   removePost,
   retweet,
+  updateImages,
   updatePost,
   uploadImages,
 } from "./postService";
@@ -81,6 +84,14 @@ const postSlice = createSlice({
   reducers: {
     removeImage(state, action) {
       state.imagePaths.filter((image, index) => index !== action.payload);
+    },
+    removeUpdateImage(state, action) {
+      state.updateImagePaths = state.updateImagePaths.filter(
+        (v, i) => i !== action.payload,
+      );
+    },
+    removeUpdateImageAll(state, action) {
+      state.updateImagePaths = [];
     },
   },
   extraReducers: (builder) => {
@@ -169,7 +180,7 @@ const postSlice = createSlice({
         state.mainPosts.unshift(action.payload);
         state.imagePaths = [];
       })
-      .addCase(removePost.rejected, (state, action) => {
+      .addCase(addPost.rejected, (state, action) => {
         state.removePostLoading = false;
         state.removePostError = action.error;
       })
@@ -266,7 +277,7 @@ const postSlice = createSlice({
         state.removeImageError = null;
         // state.imagePaths = state.imagePaths.concnat(action.payload);
         const postIndex = state.mainPosts.findIndex(
-          (post) => post.id === action.payload.pstId,
+          (post) => post.id === action.payload.postId,
         );
         state.mainPosts[postIndex].Images = state.mainPosts[
           postIndex
@@ -275,6 +286,24 @@ const postSlice = createSlice({
       .addCase(removeImage.rejected, (state, action) => {
         state.removeImageLoading = false;
         state.removeImageError = action.error;
+      })
+
+      .addCase(updateImages.pending, (state) => {
+        state.updateImagesLoading = true;
+        state.updateImagesDone = false;
+        state.updateImagesError = null;
+      })
+      .addCase(updateImages.fulfilled, (state, action) => {
+        console.log("fulfilled", action.payload);
+        state.updateImagesLoading = false;
+        state.updateImagesDone = true;
+        state.updateImagesError = null;
+        // state.imagePaths = state.imagePaths.concnat(action.payload);
+        state.updateImagePaths = state.updateImagePaths.concat(action.payload);
+      })
+      .addCase(updateImages.rejected, (state, action) => {
+        state.updateImagesLoading = false;
+        state.updateImagesError = action.error;
       })
 
       .addCase(retweet.pending, (state) => {
@@ -373,6 +402,46 @@ const postSlice = createSlice({
       .addCase(addReport.rejected, (state, action) => {
         state.addReport.Loading = false;
         state.addReport.Error = action.error;
+      })
+
+      .addCase(loadReport.pending, (state) => {
+        state.loadReport.Loading = true;
+        state.loadReport.Done = false;
+        state.loadReport.Error = null;
+      })
+      .addCase(loadReport.fulfilled, (state, action) => {
+        console.log("fulfilled", action.payload);
+        state.loadReport.Loading = false;
+        state.loadReport.Done = true;
+        state.loadReport.Error = null;
+        // const post = state.mainPosts.find(post=>post.id === action.payload.PostId);
+        // post.Likers = post.Likers.filter(liker => liker.id !== action.payload.UserId);
+        // haven't implemented for add report front-end part yet?
+      })
+      .addCase(loadReport.rejected, (state, action) => {
+        state.loadReport.Loading = false;
+        state.loadReport.Error = action.error;
+      })
+
+      .addCase(postAppeal.pending, (state) => {
+        state.postAppeal.Loading = true;
+        state.postAppeal.Done = false;
+        state.postAppeal.Error = null;
+      })
+      .addCase(postAppeal.fulfilled, (state, action) => {
+        console.log("fulfilled", action.payload);
+        state.postAppeal.Loading = false;
+        state.postAppeal.Done = true;
+        state.postAppeal.Error = null;
+        state.mainPosts.find((post) => post.id === action.payload.id).appeal =
+          action.payload.appeal;
+        // const post = state.mainPosts.find(post=>post.id === action.payload.PostId);
+        // post.Likers = post.Likers.filter(liker => liker.id !== action.payload.UserId);
+        // haven't implemented for add report front-end part yet?
+      })
+      .addCase(postAppeal.rejected, (state, action) => {
+        state.postAppeal.Loading = false;
+        state.postAppeal.Error = action.error;
       });
   },
 });
