@@ -1,42 +1,27 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  Card,
-  Popover,
-  Button,
-  Avatar,
-  List,
-  Comment,
-  Modal,
-  Input,
-} from "antd";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
 import styled from "@emotion/styled";
+import {
+  Avatar,
+  Button,
+  Card,
+  Comment,
+  Input,
+  List,
+  Modal,
+  Popover,
+} from "antd";
+import moment from "moment";
+import PropTypes from "prop-types";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   EllipsisOutlined,
   HeartOutlined,
+  HeartTwoTone,
   MessageOutlined,
   RetweetOutlined,
-  HeartTwoTone,
 } from "@ant-design/icons";
 import Link from "next/link";
-import PostImages from "./PostImages";
-import CommentForm from "./CommentForm";
-import PostCardContent from "./PostCardContent";
-import {
-  ADD_LIKE_REQUEST,
-  REMOVE_IMAGE_REQUEST,
-  REMOVE_POST_REQUEST,
-  RETWEET_REQUEST,
-  UPDATE_POST_REQUEST,
-  REMOVE_LIKE_REQUEST,
-  ADD_REPORT_REQUEST,
-  POST_APPEAL_REQUEST,
-} from "../reducers/post";
-import FollowButton from "./FollowButton";
-import useInput from "../hooks/useInput";
 import {
   addLike,
   addReport,
@@ -47,6 +32,11 @@ import {
   retweet,
   updatePost,
 } from "../features/post/postService";
+import useInput from "../hooks/useInput";
+import CommentForm from "./CommentForm";
+import FollowButton from "./FollowButton";
+import PostCardContent from "./PostCardContent";
+import PostImages from "./PostImages";
 
 // 아래 게시글 순서를 강제로 변경함 (나중에 report 됬을 때 masking 하기 위해서, 그리고 보기도 더 좋음)
 const CardItem = styled(Card)`

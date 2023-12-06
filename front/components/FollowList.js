@@ -3,8 +3,7 @@ import { css } from "@emotion/css";
 import { Button, Card, List } from "antd";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { REMOVE_FOLLOWER_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
-import { removeFollower, unfollow } from "./../features/user/userService";
+import { removeFollower, unfollow } from "../features/user/userService";
 
 const FollowList = ({ header, data, onClickMore, loading }) => {
   const dispatch = useDispatch();

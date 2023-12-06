@@ -3,13 +3,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { END } from "redux-saga";
 
 import axios from "axios";
 import AppLayout from "../../components/AppLayout";
 import PostCard from "../../components/PostCard";
-import { LOAD_HASHTAG_POSTS_REQUEST } from "../../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import wrapper from "../../store/configureStore";
 import { loadHashtagPosts } from "../../features/post/postService";
 import { loadMyInfo } from "../../features/user/userService";

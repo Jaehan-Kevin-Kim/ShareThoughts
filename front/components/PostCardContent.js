@@ -5,11 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { backEndUrl } from "../config/config";
-import {
-  REMOVE_UPDATEIMAGE,
-  REMOVE_UPDATEIMAGEALL,
-  UPDATE_IMAGES_REQUEST,
-} from "../reducers/post";
 import postSlice from "../features/post/postSlice";
 import { updateImages } from "../features/post/postService";
 
@@ -258,6 +253,7 @@ const PostCardContent = ({
             postData.split(regex).map((v, i) => {
               if (v.match(regex)) {
                 return (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Link key={i} href={`/hashtag/${v.slice(1)}`}>
                     <a>{v}</a>
                   </Link>

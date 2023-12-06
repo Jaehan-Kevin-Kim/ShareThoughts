@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useRef } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch } from "react-redux";
-import { addPost } from "../reducers/post";
 
 const test = () => {
   const [text, setText] = useState("");
@@ -25,8 +24,14 @@ const test = () => {
     // dispatch({ type: "ADD_POST" });
   }, []);
   return (
-    <Form style={{ margin: "10px 0 20px" }} onFinish={onSubmit} encType="multipart/form-data">
-      <Input.TextArea maxLength={140} onChange={onChangeText} placeholder="Write a post in here...">
+    <Form
+      style={{ margin: "10px 0 20px" }}
+      onFinish={onSubmit}
+      encType="multipart/form-data">
+      <Input.TextArea
+        maxLength={140}
+        onChange={onChangeText}
+        placeholder="Write a post in here...">
         {" "}
         value={text}
       </Input.TextArea>

@@ -1,12 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { END } from "redux-saga";
 import { useSelector } from "react-redux";
 import Head from "next/head";
 import React, { useEffect } from "react";
 import AppLayout from "../../components/AppLayout";
-import { LOAD_POST_REQUEST } from "../../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import wrapper from "../../store/configureStore";
 import PostCard from "../../components/PostCard";
 import { loadMyInfo } from "../../features/user/userService";

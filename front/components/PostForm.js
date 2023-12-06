@@ -1,15 +1,13 @@
-import { Input, Form, Button } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import useInput from "../hooks/useInput";
+import { Button, Form, Input } from "antd";
+import React, { useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addPost,
-  UPLOAD_IMAGES_REQUEST,
-  REMOVE_IMAGE,
-  ADD_POST_REQUEST,
-} from "../reducers/post";
-import { backEndUrl } from "./../config/config";
-import { removeImage, uploadImages } from "../features/post/postService";
+  removeImage,
+  uploadImages,
+} from "../features/post/postService";
+import useInput from "../hooks/useInput";
+import { backEndUrl } from "../config/config";
 
 const PostForm = () => {
   const dispatch = useDispatch();

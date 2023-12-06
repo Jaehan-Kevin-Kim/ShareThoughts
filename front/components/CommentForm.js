@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/css";
 import useInput from "../hooks/useInput";
-import { ADD_COMMENT_REQUEST } from "../reducers/post";
-import postSlice from "../features/post/postSlice";
 import { addComment } from "../features/post/postService";
 
 const CommentForm = ({ post }) => {

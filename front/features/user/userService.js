@@ -31,6 +31,7 @@ export const loadUser = createAsyncThunk(
 );
 
 export const login = createAsyncThunk("user/login", async (data) => {
+  // const response = await axios.post("http://localhost:3065/user/login", data);
   const response = await axios.post("/user/login", data);
   return response.data;
 });

@@ -2,8 +2,7 @@ import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
-import { follow, unfollow } from "./../features/user/userService";
+import { follow, unfollow } from "../features/user/userService";
 
 const FollowButton = ({ post }) => {
   const dispatch = useDispatch();

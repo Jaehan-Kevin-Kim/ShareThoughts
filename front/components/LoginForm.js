@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 // import { css, jsx } from "@emotion/react";
 import { css, cx } from "@emotion/css";
 import { useDispatch, useSelector } from "react-redux";
-import { loginRequestAction } from "../reducers/user";
 import { login } from "../features/user/userService";
 
 const ButtonWrapper = styled.div`

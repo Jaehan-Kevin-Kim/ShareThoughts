@@ -1,16 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { END } from "redux-saga";
-import { Modal } from "antd";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
-import { LOAD_POSTS_REQUEST } from "../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import wrapper from "../store/configureStore";
 import { loadPosts } from "../features/post/postService";
 import { loadMyInfo } from "../features/user/userService";
+import wrapper from "../store/configureStore";
 
 const Home = () => {
   const dispatch = useDispatch();
