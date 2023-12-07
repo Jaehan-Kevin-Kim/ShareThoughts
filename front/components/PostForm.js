@@ -1,14 +1,13 @@
-import { Input, Form, Button } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import useInput from "../hooks/useInput";
+import { Button, Form, Input } from "antd";
+import React, { useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addPost,
-  UPLOAD_IMAGES_REQUEST,
-  REMOVE_IMAGE,
-  ADD_POST_REQUEST,
-} from "../reducers/post";
-import { backEndUrl } from "./../config/config";
+  removeImage,
+  uploadImages,
+} from "../features/post/postService";
+import useInput from "../hooks/useInput";
+import { backEndUrl } from "../config/config";
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -37,18 +36,12 @@ const PostForm = () => {
       //아래 append()안에 들어가는 'image'는 backend에서 upload.array()안에 받는 'image', 아래 input file에서 name으로 준 'image' 와 이름이 똑같아야지 정상 동작 함.
       imageFormData.append("image", f);
     });
-    dispatch({
-      type: UPLOAD_IMAGES_REQUEST,
-      data: imageFormData,
-    });
+    dispatch(uploadImages(imageFormData));
   }, []);
 
   const onRemoveImage = useCallback(
     (index) => () => {
-      dispatch({
-        type: REMOVE_IMAGE,
-        data: index,
-      });
+      dispatch(removeImage(index));
     },
     [],
   );
@@ -64,10 +57,7 @@ const PostForm = () => {
       formData.append("image", p);
     });
     formData.append("content", text);
-    return dispatch({
-      type: ADD_POST_REQUEST,
-      data: formData,
-    });
+    return dispatch(addPost(formData));
     //위의 경우는 image가 있기 때문에 formData로 안보내고 json으로 보내도 됨. (data:{imagePaths, content:text}), 이런 형태로 해도 됨.
   }, [text, imagePaths]);
 

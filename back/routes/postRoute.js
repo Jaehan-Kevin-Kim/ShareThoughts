@@ -316,7 +316,7 @@ router.get("/:postId", async (req, res, next) => {
   }
 });
 
-//PATCH /post/10
+//PATCH /post/10  : UPDATE POST
 router.patch("/:postId", isLoggedIn, upload.none(), async (req, res, next) => {
   console.log("req.body: ", req.body);
   console.log("req.params.postId");

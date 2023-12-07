@@ -1,9 +1,8 @@
-import React, { useCallback } from "react";
-import { Card, Avatar, Button } from "antd";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+import { Avatar, Button, Card } from "antd";
 import Link from "next/link";
-import { logoutRequestAction } from "../reducers/user";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../features/user/userService";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -11,7 +10,7 @@ const UserProfile = () => {
 
   const onLogout = useCallback(() => {
     // setIsLoggedIn(false);
-    dispatch(logoutRequestAction());
+    dispatch(logout());
   }, []);
 
   return (
@@ -39,11 +38,11 @@ const UserProfile = () => {
           <div key="followers">
             <Link href="/profile">
               <a>
-            Followers
-            <br />
-            {me.Followers.length}
-                </a>
-                </Link>
+                Followers
+                <br />
+                {me.Followers.length}
+              </a>
+            </Link>
           </div>,
         ]}>
         <Card.Meta

@@ -5,11 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { backEndUrl } from "../config/config";
-import {
-  REMOVE_UPDATEIMAGE,
-  REMOVE_UPDATEIMAGEALL,
-  UPDATE_IMAGES_REQUEST,
-} from "../reducers/post";
+import postSlice from "../features/post/postSlice";
+import { updateImages } from "../features/post/postService";
 
 //Hashtag checker with regular expression
 const PostCardContent = ({
@@ -63,12 +60,7 @@ const PostCardContent = ({
 
   const onRemoveImage = useCallback(
     (index) => () => {
-      // console.log("updateImagePaths: ", updateImagePaths);
-      // console.log("index: ", index);
-      dispatch({
-        type: REMOVE_UPDATEIMAGE,
-        data: index,
-      });
+      dispatch(postSlice.actions.removeUpdateImage(index));
     },
     [],
   );
@@ -86,10 +78,12 @@ const PostCardContent = ({
       imageFormData.append("image", file);
     });
 
-    dispatch({
-      type: UPDATE_IMAGES_REQUEST,
-      data: imageFormData,
-    });
+    dispatch(updateImages(imageFormData));
+
+    // dispatch({
+    //   type: UPDATE_IMAGES_REQUEST,
+    //   data: imageFormData,
+    // });
 
     // [].forEach.call(e.target.files, (f) => {
     //   //아래 append()안에 들어가는 'image'는 backend에서 upload.array()안에 받는 'image', 아래 input file에서 name으로 준 'image' 와 이름이 똑같아야지 정상 동작 함.
@@ -114,9 +108,10 @@ const PostCardContent = ({
 
   const onCancelUpdatePost = useCallback(() => {
     console.log("cancel Change Post");
-    dispatch({
-      type: REMOVE_UPDATEIMAGEALL,
-    });
+    dispatch(postSlice.actions.removeUpdateImage());
+    // dispatch({
+    //   type: REMOVE_UPDATEIMAGEALL,
+    // });
     onCancelChangePost();
   }, []);
 
@@ -258,6 +253,7 @@ const PostCardContent = ({
             postData.split(regex).map((v, i) => {
               if (v.match(regex)) {
                 return (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Link key={i} href={`/hashtag/${v.slice(1)}`}>
                     <a>{v}</a>
                   </Link>

@@ -3,7 +3,7 @@ import { css } from "@emotion/css";
 import { Button, Card, List } from "antd";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { REMOVE_FOLLOWER_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
+import { removeFollower, unfollow } from "../features/user/userService";
 
 const FollowList = ({ header, data, onClickMore, loading }) => {
   const dispatch = useDispatch();
@@ -11,15 +11,9 @@ const FollowList = ({ header, data, onClickMore, loading }) => {
   //아래의 경우는 고차함수로 인자가 넘어 왔을때 function을 처리 하는 방법
   const onCancel = (id) => () => {
     if (header === "Following List") {
-      dispatch({
-        type: UNFOLLOW_REQUEST,
-        data: id,
-      });
+      dispatch(unfollow(id));
     } else {
-      dispatch({
-        type: REMOVE_FOLLOWER_REQUEST,
-        data: id,
-      });
+      dispatch(removeFollower(id));
     }
   };
 

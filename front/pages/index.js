@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { END } from "redux-saga";
-import { Modal } from "antd";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
-import { LOAD_POSTS_REQUEST } from "../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import { loadPosts } from "../features/post/postService";
+import { loadMyInfo } from "../features/user/userService";
 import wrapper from "../store/configureStore";
 
 const Home = () => {
@@ -54,10 +52,7 @@ const Home = () => {
         //아래는 loadPostRequest가 여러번 실행되는걸 막기위한 옵션 (!loadPostsLoading을 추가한 부분)
         if (hasMorePost && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch({
-            type: LOAD_POSTS_REQUEST,
-            lastId,
-          });
+          dispatch(loadPosts(lastId));
         }
       }
     }
@@ -88,15 +83,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
       axios.defaults.headers.Cookie = cookie;
     }
     // console.log("context check: ", context);
-    context.store.dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-    context.store.dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
 
-    context.store.dispatch(END);
-    await context.store.sagaTask.toPromise();
+    await context.store.dispatch(loadMyInfo());
+
+    await context.store.dispatch(loadPosts());
+
+    // await context.store.dispatch(END);
+    // await context.store.sagaTask.toPromise();
   },
 );
 
