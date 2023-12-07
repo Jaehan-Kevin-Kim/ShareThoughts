@@ -9,9 +9,11 @@ import {
   login,
   logout,
   removeFollower,
-  signup,
+  // signup,
+  signupUser,
   unfollow,
 } from "./userService";
+import { HYDRATE } from "next-redux-wrapper";
 
 export const initialState = {
   loadMyInfoLoading: false, // 로그인 시도 중
@@ -56,6 +58,10 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(HYDRATE, (state, action) => ({
+        ...state,
+        ...action.payload.post,
+      }))
       .addCase(loadMyInfo.pending, (state) => {
         state.loadMyInfoLoading = true;
         state.loadMyInfoDone = false;
@@ -122,21 +128,21 @@ const userSlice = createSlice({
         state.logoutError = action.error;
       })
 
-      .addCase(signup.pending, (state) => {
-        state.signupLoading = true;
-        state.signupDone = false;
-        state.signupError = null;
+      .addCase(signupUser.pending, (state) => {
+        state.signupUserLoading = true;
+        state.signupUserDone = false;
+        state.signupUserError = null;
       })
-      .addCase(signup.fulfilled, (state, action) => {
+      .addCase(signupUser.fulfilled, (state, action) => {
         console.log("fulfilled", action.payload);
-        state.signupLoading = false;
-        state.signupDone = true;
-        // state.signupError = null;
+        state.signupUserLoading = false;
+        state.signupUserDone = true;
+        // state.signupUserError = null;
         // state.me = null;
       })
-      .addCase(signup.rejected, (state, action) => {
-        state.signupLoading = false;
-        state.signupError = action.error;
+      .addCase(signupUser.rejected, (state, action) => {
+        state.signupUserLoading = false;
+        state.signupUserError = action.error;
       })
       .addCase(follow.pending, (state) => {
         state.followLoading = true;

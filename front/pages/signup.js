@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import Head from "next/head";
 import Router from "next/router";
 import { Button, Form, Input, Checkbox } from "antd";
@@ -6,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
+import { signupUser } from "../features/user/userService";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -76,10 +78,13 @@ const signup = () => {
       return setTermError(true);
     }
     console.log(email, nickname, password);
-    dispatch({
-      type: SIGN_UP_REQUEST,
-      data: { email, password, nickname },
-    });
+    dispatch(signup({ email, password, nickname }));
+
+    
+    // dispatch({
+    //   type: SIGN_UP_REQUEST,
+    //   data: { email, password, nickname },
+    // });
   }, [email, password, passwordCheck, term]);
 
   return (

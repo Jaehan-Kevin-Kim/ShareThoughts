@@ -84,9 +84,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
     // console.log("context check: ", context);
 
-    await context.store.dispatch(loadMyInfo);
+    await context.store.dispatch(loadMyInfo());
 
-    await context.store.dispatch(loadPosts);
+    await context.store.dispatch(loadPosts());
 
     // await context.store.dispatch(END);
     // await context.store.sagaTask.toPromise();

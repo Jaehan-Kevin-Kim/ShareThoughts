@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
+
 import {
   addComment,
   addLike,
@@ -96,6 +98,10 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(HYDRATE, (state, action) => ({
+        ...state,
+        ...action.payload.post,
+      }))
       .addCase(loadUserPosts.pending, (state) => {
         state.loadUserPostsLoading = true;
         state.loadUserPostsDone = false;
@@ -198,7 +204,8 @@ const postSlice = createSlice({
         const postIndex = state.mainPosts.findIndex(
           (post) => post.id === action.payload.PostId,
         );
-        state.mainPosts.splice(postIndex, 0);
+        console.log("postIndex: ", postIndex);
+        state.mainPosts.splice(postIndex, 1);
       })
       .addCase(removePost.rejected, (state, action) => {
         state.removePostLoading = false;
@@ -258,7 +265,7 @@ const postSlice = createSlice({
         state.uploadImagesLoading = false;
         state.uploadImagesDone = true;
         state.uploadImagesError = null;
-        state.imagePaths = state.imagePaths.concnat(action.payload);
+        state.imagePaths = state.imagePaths.concat(action.payload);
       })
       .addCase(uploadImages.rejected, (state, action) => {
         state.uploadImagesLoading = false;
