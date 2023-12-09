@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+/* eslint-disable import/no-unresolved */
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 import {
@@ -20,8 +21,68 @@ import {
   updatePost,
   uploadImages,
 } from "./postService";
+import { IPost } from "@typings/db";
 
-export const initialState = {
+interface PostState {
+  mainPosts: IPost[];
+  singlePost: IPost | null;
+  imagePaths: string[];
+  updateImagePaths: string[];
+  hasMorePost: boolean;
+  loadPostsLoading: false;
+  loadPostsDone: false;
+  loadPostsError: Error | null;
+  loadHashtagPostsLoading: false;
+  loadHashtagPostsDone: false;
+  loadHashtagPostsError: Error | null;
+  loadUserPostsLoading: false;
+  loadUserPostsDone: false;
+  loadUserPostsError: Error | null;
+  loadPostLoading: false;
+  loadPostDone: false;
+  loadPostError: Error | null;
+  updatePostLoading: false;
+  updatePostDone: false;
+  updatePostError: Error | null;
+  addPostLoading: false;
+  addPostDone: false;
+  addPostError: Error | null;
+  removePostLoading: false;
+  removePostDone: false;
+  removePostError: Error | null;
+  uploadImagesLoading: false;
+  uploadImagesDone: false;
+  uploadImagesError: Error | null;
+  updateImagesLoading: false;
+  updateImagesDone: false;
+  updateImagesError: Error | null;
+  removeImageLoading: false;
+  removeImageDone: false;
+  removeImageError: Error | null;
+  addCommentLoading: false;
+  addCommentDone: false;
+  addCommentError: Error | null;
+  retweetLoading: false;
+  retweetDone: false;
+  retweetError: Error | null;
+  addLikeLoading: false;
+  addLikeDone: false;
+  addLikeError: Error | null;
+  removeLikeLoading: false;
+  removeLikeDone: false;
+  removeLikeError: Error | null;
+  addReportLoading: false;
+  addReportDone: false;
+  addReportError: Error | null;
+  loadReportsLoading: false;
+  loadReportsDone: false;
+  loadReportsError: Error | null;
+  postAppealLoading: false;
+  postAppealDone: false;
+  postAppealError: Error | null;
+}
+
+export const initialState:PostState = {
   mainPosts: [],
   singlePost: null,
   imagePaths: [],
@@ -98,10 +159,10 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(HYDRATE, (state, action) => ({
-        ...state,
-        ...action.payload.post,
-      }))
+      // .addCase(HYDRATE, (state, action:PayloadAction<PostState>) => ({
+      //   ...state,
+      //   ...action.payload.post,
+      // }))
       .addCase(loadUserPosts.pending, (state) => {
         state.loadUserPostsLoading = true;
         state.loadUserPostsDone = false;

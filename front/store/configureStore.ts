@@ -1,10 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { Store, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 // import logger from "redux-logger";
 import logger from "redux-logger";
-import rootReducer from "../features/index";
+import rootReducer, { RootState } from "../features/index";
 
 const isDev = process.env.NODE_ENV === "development";
+// export type RootState = ReturnType<typeof rootReducer>;
 
 function getServerState() {
   return typeof document !== "undefined"
@@ -16,7 +17,7 @@ function getServerState() {
 const serverState = getServerState();
 console.log("serverState: ", serverState);
 
-const makeStore = () => {
+const makeStore: () => Store<RootState> = () => {
   // const middleware = getDefaultMiddleware();
   const store = configureStore({
     reducer: rootReducer,
@@ -27,6 +28,8 @@ const makeStore = () => {
 
   return store;
 };
+
+export type AppDispatch = ReturnType<typeof makeStore>["dispatch"];
 
 const wrapper = createWrapper(makeStore, {
   debug: isDev,
