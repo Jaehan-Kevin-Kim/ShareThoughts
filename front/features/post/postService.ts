@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import _ from "lodash";
 import axios from "axios";
 
-const loadUserPostsThrottle = async (data, lastId) => {
+const loadUserPostsThrottle = async (data: string, lastId: number) => {
   const response = await axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
   return response.data;
 };
@@ -12,7 +12,13 @@ export const loadUserPosts = createAsyncThunk(
   _.throttle(loadUserPostsThrottle, 5000),
 );
 
-const loadHashtagPostsThrottle = async (data, lastId) => {
+const loadHashtagPostsThrottle = async ({
+  data,
+  lastId,
+}: {
+  data: string;
+  lastId: number;
+}) => {
   const response = await axios.get(
     `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`,
   );
@@ -24,7 +30,7 @@ export const loadHashtagPosts = createAsyncThunk(
   _.throttle(loadHashtagPostsThrottle, 5000),
 );
 
-const loadPostsThrottle = async (lastId) => {
+const loadPostsThrottle = async (lastId: number) => {
   const response = await axios.get(`/posts?lastId=${lastId || 0}`);
   return response.data;
 };

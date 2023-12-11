@@ -2,7 +2,8 @@ import { Store, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 // import logger from "redux-logger";
 import logger from "redux-logger";
-import rootReducer, { RootState } from "../features/index";
+import rootReducer from "../features/index";
+import throttleMiddleware from "features/middleware/throttle";
 
 const isDev = process.env.NODE_ENV === "development";
 // export type RootState = ReturnType<typeof rootReducer>;
@@ -21,7 +22,8 @@ const makeStore: () => Store<RootState> = () => {
   // const middleware = getDefaultMiddleware();
   const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(logger).concat(throttleMiddleware),
     devTools: isDev,
     preloadedState: serverState, //SSR
   });
@@ -30,6 +32,7 @@ const makeStore: () => Store<RootState> = () => {
 };
 
 export type AppDispatch = ReturnType<typeof makeStore>["dispatch"];
+export type RootState = ReturnType<typeof rootReducer>;
 
 const wrapper = createWrapper(makeStore, {
   debug: isDev,

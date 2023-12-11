@@ -23,66 +23,66 @@ import {
 } from "./postService";
 import { IPost } from "@typings/db";
 
-interface PostState {
+export interface PostState {
   mainPosts: IPost[];
   singlePost: IPost | null;
   imagePaths: string[];
   updateImagePaths: string[];
   hasMorePost: boolean;
-  loadPostsLoading: false;
-  loadPostsDone: false;
+  loadPostsLoading: boolean;
+  loadPostsDone: boolean;
   loadPostsError: Error | null;
-  loadHashtagPostsLoading: false;
-  loadHashtagPostsDone: false;
+  loadHashtagPostsLoading: boolean;
+  loadHashtagPostsDone: boolean;
   loadHashtagPostsError: Error | null;
-  loadUserPostsLoading: false;
-  loadUserPostsDone: false;
+  loadUserPostsLoading: boolean;
+  loadUserPostsDone: boolean;
   loadUserPostsError: Error | null;
-  loadPostLoading: false;
-  loadPostDone: false;
+  loadPostLoading: boolean;
+  loadPostDone: boolean;
   loadPostError: Error | null;
-  updatePostLoading: false;
-  updatePostDone: false;
+  updatePostLoading: boolean;
+  updatePostDone: boolean;
   updatePostError: Error | null;
-  addPostLoading: false;
-  addPostDone: false;
+  addPostLoading: boolean;
+  addPostDone: boolean;
   addPostError: Error | null;
-  removePostLoading: false;
-  removePostDone: false;
+  removePostLoading: boolean;
+  removePostDone: boolean;
   removePostError: Error | null;
-  uploadImagesLoading: false;
-  uploadImagesDone: false;
+  uploadImagesLoading: boolean;
+  uploadImagesDone: boolean;
   uploadImagesError: Error | null;
-  updateImagesLoading: false;
-  updateImagesDone: false;
+  updateImagesLoading: boolean;
+  updateImagesDone: boolean;
   updateImagesError: Error | null;
-  removeImageLoading: false;
-  removeImageDone: false;
+  removeImageLoading: boolean;
+  removeImageDone: boolean;
   removeImageError: Error | null;
-  addCommentLoading: false;
-  addCommentDone: false;
+  addCommentLoading: boolean;
+  addCommentDone: boolean;
   addCommentError: Error | null;
-  retweetLoading: false;
-  retweetDone: false;
+  retweetLoading: boolean;
+  retweetDone: boolean;
   retweetError: Error | null;
-  addLikeLoading: false;
-  addLikeDone: false;
+  addLikeLoading: boolean;
+  addLikeDone: boolean;
   addLikeError: Error | null;
-  removeLikeLoading: false;
-  removeLikeDone: false;
+  removeLikeLoading: boolean;
+  removeLikeDone: boolean;
   removeLikeError: Error | null;
-  addReportLoading: false;
-  addReportDone: false;
+  addReportLoading: boolean;
+  addReportDone: boolean;
   addReportError: Error | null;
-  loadReportsLoading: false;
-  loadReportsDone: false;
+  loadReportsLoading: boolean;
+  loadReportsDone: boolean;
   loadReportsError: Error | null;
-  postAppealLoading: false;
-  postAppealDone: false;
+  postAppealLoading: boolean;
+  postAppealDone: boolean;
   postAppealError: Error | null;
 }
 
-export const initialState:PostState = {
+export const initialState: PostState = {
   mainPosts: [],
   singlePost: null,
   imagePaths: [],
