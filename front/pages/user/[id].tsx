@@ -10,11 +10,12 @@ import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/AppLayout";
 import { loadUserPosts } from "../../features/post/postService";
 import { loadMyInfo, loadUser } from "../../features/user/userService";
+import _ from "lodash";
 
 const User = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = router.query as { id: string };
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post,
   );
@@ -27,14 +28,27 @@ const User = () => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePosts && !loadPostsLoading) {
-          dispatch(
-            loadUserPosts({
-              lastId:
-                mainPosts[mainPosts.length - 1] &&
-                mainPosts[mainPosts.length - 1].id,
-              data: id,
-            }),
+          // dispatch(
+          //   loadUserPosts({
+          //     lastId:
+          //       mainPosts[mainPosts.length - 1] &&
+          //       mainPosts[mainPosts.length - 1].id,
+          //     data: id,
+          //   }),
+          // );
+          const throttleLoadUserPosts = _.throttle(
+            (dispatch, data: string, lastId: number) => {
+              dispatch(loadUserPosts({ data, lastId }));
+            },
           );
+
+          throttleLoadUserPosts(
+            dispatch,
+            id,
+            mainPosts[mainPosts.length - 1] &&
+              mainPosts[mainPosts.length - 1].id,
+          );
+
           // dispatch({
           //   type: LOAD_USER_POSTS_REQUEST,
           //   lastId:

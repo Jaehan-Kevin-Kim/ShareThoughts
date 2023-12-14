@@ -2,7 +2,7 @@ import { Store, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 // import logger from "redux-logger";
 import logger from "redux-logger";
-import rootReducer from "../features/index";
+import rootReducer, { RootState } from "../features/index";
 import throttleMiddleware from "features/middleware/throttle";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -18,12 +18,23 @@ function getServerState() {
 const serverState = getServerState();
 console.log("serverState: ", serverState);
 
-const makeStore: () => Store<RootState> = () => {
-  // const middleware = getDefaultMiddleware();
+// 원래 아래 동작하던 코드 이렇게 사용안해야 되는구나
+// const makeStore: () => Store<RootState> = () => {
+//   // const middleware = getDefaultMiddleware();
+//   const store = configureStore({
+//     reducer: rootReducer,
+//     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+//     devTools: isDev,
+//     preloadedState: serverState, //SSR
+//   });
+
+//   return store;
+// };
+
+export const makeStore = () => {
   const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(logger).concat(throttleMiddleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     devTools: isDev,
     preloadedState: serverState, //SSR
   });
@@ -31,8 +42,15 @@ const makeStore: () => Store<RootState> = () => {
   return store;
 };
 
-export type AppDispatch = ReturnType<typeof makeStore>["dispatch"];
-export type RootState = ReturnType<typeof rootReducer>;
+const store = makeStore();
+
+// export type AppDispatch = ReturnType<typeof makeStore>["dispatch"];
+// export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;
+
+// // Infer the `RootState` and `AppDispatch` types from the store itself
+// export type RootState = ReturnType<typeof store.getState>;
+// // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 
 const wrapper = createWrapper(makeStore, {
   debug: isDev,

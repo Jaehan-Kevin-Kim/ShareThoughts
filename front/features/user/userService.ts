@@ -30,11 +30,14 @@ export const loadUser = createAsyncThunk(
   },
 );
 
-export const login = createAsyncThunk("user/login", async (data) => {
-  // const response = await axios.post("http://localhost:3065/user/login", data);
-  const response = await axios.post("/user/login", data);
-  return response.data;
-});
+export const login = createAsyncThunk(
+  "user/login",
+  async ({ email, password }: { email: string; password: string }) => {
+    // const response = await axios.post("http://localhost:3065/user/login", data);
+    const response = await axios.post("/user/login", { email, password });
+    return response.data;
+  },
+);
 
 export const logout = createAsyncThunk("user/logout", async () => {
   const response = await axios.post("/user/logout");
@@ -46,20 +49,28 @@ export const signupUser = createAsyncThunk("user/signup", async (data) => {
   return response.data;
 });
 
-export const follow = createAsyncThunk("user/follow", async (data) => {
-  const response = await axios.patch(`/user/${data}/follow`);
-  return response.data;
-});
+export const follow = createAsyncThunk(
+  "user/follow",
+  async (userId: number) => {
+    const response = await axios.patch(`/user/${userId}/follow`);
+    return response.data;
+  },
+);
 
-export const unfollow = createAsyncThunk("user/unfollow", async (data) => {
-  const response = await axios.delete(`/user/${data}/follow`);
-  return response.data;
-});
+export const unfollow = createAsyncThunk(
+  "user/unfollow",
+  async (userId: number) => {
+    const response = await axios.delete(`/user/${userId}/follow`);
+    return response.data;
+  },
+);
 
 export const changeNickname = createAsyncThunk(
   "user/nickname",
-  async (data) => {
-    const response = await axios.patch("/user/nickname", { nickname: data });
+  async (nickname: string) => {
+    const response = await axios.patch("/user/nickname", {
+      nickname: nickname,
+    });
     return response.data;
   },
 );

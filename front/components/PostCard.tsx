@@ -1,18 +1,9 @@
 import styled from "@emotion/styled";
-import {
-  Avatar,
-  Button,
-  Card,
-  Comment,
-  Input,
-  List,
-  Modal,
-  Popover,
-} from "antd";
+import { Avatar, Button, Card, Input, List, Modal, Popover } from "antd";
+import { Comment } from "@ant-design/compatible";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import {
   EllipsisOutlined,
@@ -21,6 +12,7 @@ import {
   MessageOutlined,
   RetweetOutlined,
 } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import Link from "next/link";
 import {
   addLike,
@@ -37,6 +29,7 @@ import CommentForm from "./CommentForm";
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
+import { IComment } from "@typings/db";
 
 // 아래 게시글 순서를 강제로 변경함 (나중에 report 됬을 때 masking 하기 위해서, 그리고 보기도 더 좋음)
 const CardItem = styled(Card)`
@@ -53,7 +46,7 @@ const CardItem = styled(Card)`
 `;
 
 const PostCard = ({ post }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [liked, setLiked] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -62,7 +55,7 @@ const PostCard = ({ post }) => {
   const [reasonText, onChangeReasonText, setReasonText] = useInput("");
   const [appealText, onChangeAppealText, setAppealText] = useInput("");
 
-  const { me } = useSelector((state) => state.user);
+  const { me } = useAppSelector((state) => state.user);
   const {
     removePostLoading,
     retweetError,
@@ -71,7 +64,7 @@ const PostCard = ({ post }) => {
     addReportDone,
     addReportError,
     loadReportsDone,
-  } = useSelector((state) => state.post);
+  } = useAppSelector((state) => state.post);
   const id = me?.id;
 
   useEffect(() => {
@@ -115,7 +108,7 @@ const PostCard = ({ post }) => {
 
   const onRemoveImage = useCallback(
     (src) => () => {
-      dispatch(removeImage({ postId: post.id, src }));
+      dispatch(removeImage(src));
       // dispatch({
       //   type: REMOVE_IMAGE_REQUEST,
       //   data: {
@@ -318,7 +311,7 @@ const PostCard = ({ post }) => {
                         <Button onClick={onChangePost}>Modify</Button>
                       )}
                       <Button
-                        type="danger"
+                        danger
                         onClick={onRemovePost}
                         loading={removePostLoading}>
                         Delete
@@ -413,7 +406,7 @@ const PostCard = ({ post }) => {
               header={`${post.Comments.length} comments`}
               itemLayout="horizontal"
               dataSource={post.Comments}
-              renderItem={(item) => (
+              renderItem={(item: IComment) => (
                 <li>
                   <Comment
                     author={item.User.nickname}

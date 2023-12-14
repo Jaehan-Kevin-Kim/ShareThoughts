@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
-import { useDispatch, useSelector } from "react-redux";
 import { follow, unfollow } from "../features/user/userService";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 
 const FollowButton = ({ post }) => {
-  const dispatch = useDispatch();
-  const { me, followLoading, unfollowLoading } = useSelector(
+  const dispatch = useAppDispatch();
+  const { me, followLoading, unfollowLoading } = useAppSelector(
     (state) => state.user,
   );
 

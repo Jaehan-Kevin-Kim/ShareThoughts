@@ -7,12 +7,14 @@ import PostForm from "../components/PostForm";
 import { loadPosts } from "../features/post/postService";
 import { loadMyInfo } from "../features/user/userService";
 import wrapper from "../store/configureStore";
+import { useAppSelector } from "@hooks/reduxHooks";
+import _ from "lodash";
 
 const Home = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
-  const { me } = useSelector((state) => state.user);
+  const { me } = useAppSelector((state) => state.user);
   const {
     mainPosts,
     hasMorePost,
@@ -20,7 +22,7 @@ const Home = () => {
     retweetError,
     addReportDone,
     addReportError,
-  } = useSelector((state) => state.post);
+  } = useAppSelector((state) => state.post);
 
   useEffect(() => {
     if (retweetError) {
@@ -52,7 +54,14 @@ const Home = () => {
         //아래는 loadPostRequest가 여러번 실행되는걸 막기위한 옵션 (!loadPostsLoading을 추가한 부분)
         if (hasMorePost && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch(loadPosts(lastId));
+
+          const throttledLoadPosts = _.throttle((dispatch, lastId) => {
+            dispatch(loadPosts(lastId));
+          }, 5000);
+
+          throttledLoadPosts(dispatch, lastId);
+
+          // dispatch(loadPosts(lastId));
         }
       }
     }

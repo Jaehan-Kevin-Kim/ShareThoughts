@@ -1,12 +1,12 @@
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import { Button, Collapse, Input } from "antd";
+import moment from "moment";
 import Link from "next/link";
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { backEndUrl } from "../config/config";
-import postSlice from "../features/post/postSlice";
 import { updateImages } from "../features/post/postService";
+import postSlice from "../features/post/postSlice";
 
 //Hashtag checker with regular expression
 const PostCardContent = ({
@@ -19,15 +19,15 @@ const PostCardContent = ({
   reports,
   onOpenAppealModal,
 }) => {
-  const { updatePostLoading, updatePostDone } = useSelector(
+  const { updatePostLoading, updatePostDone } = useAppSelector(
     (state) => state.post,
   );
-  const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
-  const { updateImagePaths } = useSelector((state) => state.post);
+  const dispatch = useAppDispatch();
+  const { me } = useAppSelector((state) => state.user);
+  const { updateImagePaths } = useAppSelector((state) => state.post);
   const regex = /(#[^\s#]+)/g;
   const [editText, setEditText] = useState(postData);
-  const imageInput = useRef();
+  const imageInput = useRef<HTMLInputElement>(null);
 
   const prod = process.env.NODE_ENV === "production";
   const id = me?.id;
@@ -55,8 +55,11 @@ const PostCardContent = ({
   );
 
   const onClickImageUpload = useCallback(() => {
-    imageInput.current.click();
-  }, [imageInput.current]);
+    if (imageInput.current) {
+      imageInput.current.click();
+    }
+    // imageInput.current?.click();
+  }, [imageInput]);
 
   const onRemoveImage = useCallback(
     (index) => () => {
@@ -74,7 +77,7 @@ const PostCardContent = ({
 
     const imageFormData = new FormData();
 
-    Array.from(e.target.files).forEach((file) => {
+    Array.from(e.target.files).forEach((file: File) => {
       imageFormData.append("image", file);
     });
 
@@ -108,7 +111,7 @@ const PostCardContent = ({
 
   const onCancelUpdatePost = useCallback(() => {
     console.log("cancel Change Post");
-    dispatch(postSlice.actions.removeUpdateImage());
+    dispatch(postSlice.actions.removeUpdateImageAll());
     // dispatch({
     //   type: REMOVE_UPDATEIMAGEALL,
     // });
@@ -155,6 +158,7 @@ const PostCardContent = ({
           {id && id === post.UserId && (
             <Collapse>
               <Collapse.Panel
+                key={post.id}
                 header="See All Reports"
                 // showArrow={false}
               >
@@ -179,7 +183,8 @@ const PostCardContent = ({
                     marginLeft: "auto",
                     marginRight: 0,
                   }}
-                  type="danger">
+                  // type="danger"
+                  danger>
                   Write an appeal message
                 </Button>
               </Collapse.Panel>
@@ -216,7 +221,8 @@ const PostCardContent = ({
                   </Button>
 
                   <Button
-                    type="danger"
+                    // type="danger"
+                    danger
                     onClick={onCancelUpdatePost}
                     // loading={removePostLoading}
                   >

@@ -17,9 +17,9 @@ export interface IPost {
   appeal?: string;
   createdAt?: Date;
   User: IUser;
-  Comment: IComment[];
+  Comments: IComment[];
   Images?: IImage[];
-  Likers: IUser[];
+  Likers: Partial<IUser>[];
   Retweet?: IPost;
 }
 

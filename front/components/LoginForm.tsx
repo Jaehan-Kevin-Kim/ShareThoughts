@@ -1,11 +1,10 @@
-import { Form, Input, Button, Checkbox } from "antd";
+import styled from "@emotion/styled";
+import { Button, Form, Input } from "antd";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
-import styled from "@emotion/styled";
-import PropTypes from "prop-types";
 // import { css, jsx } from "@emotion/react";
-import { css, cx } from "@emotion/css";
-import { useDispatch, useSelector } from "react-redux";
+import { css } from "@emotion/css";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import { login } from "../features/user/userService";
 
 const ButtonWrapper = styled.div`
@@ -16,11 +15,11 @@ const FormItem = styled(Form.Item)`
   margin: 0;
 `;
 const LoginForm = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
-  const { logInLoading, logInError } = useSelector((state) => state.user);
+  const { logInLoading, logInError } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (logInError) {

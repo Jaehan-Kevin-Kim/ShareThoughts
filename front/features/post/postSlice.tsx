@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, SerializedError, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 import {
@@ -31,55 +31,55 @@ export interface PostState {
   hasMorePost: boolean;
   loadPostsLoading: boolean;
   loadPostsDone: boolean;
-  loadPostsError: Error | null;
+  loadPostsError: SerializedError | null;
   loadHashtagPostsLoading: boolean;
   loadHashtagPostsDone: boolean;
-  loadHashtagPostsError: Error | null;
+  loadHashtagPostsError: SerializedError | null;
   loadUserPostsLoading: boolean;
   loadUserPostsDone: boolean;
-  loadUserPostsError: Error | null;
+  loadUserPostsError: SerializedError | null;
   loadPostLoading: boolean;
   loadPostDone: boolean;
-  loadPostError: Error | null;
+  loadPostError: SerializedError | null;
   updatePostLoading: boolean;
   updatePostDone: boolean;
-  updatePostError: Error | null;
+  updatePostError: SerializedError | null;
   addPostLoading: boolean;
   addPostDone: boolean;
-  addPostError: Error | null;
+  addPostError: SerializedError | null;
   removePostLoading: boolean;
   removePostDone: boolean;
-  removePostError: Error | null;
+  removePostError: SerializedError | null;
   uploadImagesLoading: boolean;
   uploadImagesDone: boolean;
-  uploadImagesError: Error | null;
+  uploadImagesError: SerializedError | null;
   updateImagesLoading: boolean;
   updateImagesDone: boolean;
-  updateImagesError: Error | null;
+  updateImagesError: SerializedError | null;
   removeImageLoading: boolean;
   removeImageDone: boolean;
-  removeImageError: Error | null;
+  removeImageError: SerializedError | null;
   addCommentLoading: boolean;
   addCommentDone: boolean;
-  addCommentError: Error | null;
+  addCommentError: SerializedError | null;
   retweetLoading: boolean;
   retweetDone: boolean;
-  retweetError: Error | null;
+  retweetError: SerializedError | null;
   addLikeLoading: boolean;
   addLikeDone: boolean;
-  addLikeError: Error | null;
+  addLikeError: SerializedError | null;
   removeLikeLoading: boolean;
   removeLikeDone: boolean;
-  removeLikeError: Error | null;
+  removeLikeError: SerializedError | null;
   addReportLoading: boolean;
   addReportDone: boolean;
-  addReportError: Error | null;
+  addReportError: SerializedError | null;
   loadReportsLoading: boolean;
   loadReportsDone: boolean;
-  loadReportsError: Error | null;
+  loadReportsError: SerializedError | null;
   postAppealLoading: boolean;
   postAppealDone: boolean;
-  postAppealError: Error | null;
+  postAppealError: SerializedError | null;
 }
 
 export const initialState: PostState = {
@@ -153,7 +153,7 @@ const postSlice = createSlice({
         (v, i) => i !== action.payload,
       );
     },
-    removeUpdateImageAll(state, action) {
+    removeUpdateImageAll(state, action: PayloadAction<void>) {
       state.updateImagePaths = [];
     },
   },
@@ -286,10 +286,10 @@ const postSlice = createSlice({
         // const postIndex = state.mainPosts.findIndex((post)=>post.id === action.payload.PostId);
         // state.mainPosts[postIndex] = state.payload.body;
         state.mainPosts.find(
-          (post) => post.Id === action.payload.PostId,
+          (post) => post.id === action.payload.PostId,
         ).content = action.payload.body.content;
         state.mainPosts.find(
-          (post) => post.Id === action.payload.PostId,
+          (post) => post.id === action.payload.PostId,
         ).Images = action.payload.body.Images;
       })
       .addCase(updatePost.rejected, (state, action) => {
@@ -402,7 +402,7 @@ const postSlice = createSlice({
         state.addLikeLoading = false;
         state.addLikeDone = true;
         state.addLikeError = null;
-        // state.imagePaths = state.imagePaths.concnat(action.payload);
+
         const postIndex = state.mainPosts.findIndex(
           (v) => v.id === parseInt(action.payload.PostId, 10),
         );
@@ -410,19 +410,14 @@ const postSlice = createSlice({
           state.mainPosts[postIndex].Likers.push({
             id: action.payload.User.id,
             nickname: action.payload.User.nickname,
-            Like: {
-              UserId: action.payload.User.id,
-              PostId: action.payload.PostId,
-            },
           });
         } else {
-          state.mainPosts[postIndex].push({
-            Likers: {
+          state.mainPosts[postIndex].Likers = [
+            {
               id: action.payload.User.id,
               nickname: action.payload.User.nickname,
-              Like: { UserId: action.User.id, PostId: action.payload.PostId },
             },
-          });
+          ];
         }
       })
       .addCase(addLike.rejected, (state, action) => {
@@ -431,15 +426,15 @@ const postSlice = createSlice({
       })
 
       .addCase(removeLike.pending, (state) => {
-        state.removeLike.Loading = true;
-        state.removeLike.Done = false;
-        state.removeLike.Error = null;
+        state.removeLikeLoading = true;
+        state.removeLikeDone = false;
+        state.removeLikeError = null;
       })
       .addCase(removeLike.fulfilled, (state, action) => {
         console.log("fulfilled", action.payload);
-        state.removeLike.Loading = false;
-        state.removeLike.Done = true;
-        state.removeLike.Error = null;
+        state.removeLikeLoading = false;
+        state.removeLikeDone = true;
+        state.removeLikeError = null;
         const post = state.mainPosts.find(
           // eslint-disable-next-line no-shadow
           (post) => post.id === action.payload.PostId,
@@ -449,58 +444,58 @@ const postSlice = createSlice({
         );
       })
       .addCase(removeLike.rejected, (state, action) => {
-        state.removeLike.Loading = false;
-        state.removeLike.Error = action.error;
+        state.removeLikeLoading = false;
+        state.removeLikeError = action.error;
       })
 
       .addCase(addReport.pending, (state) => {
-        state.addReport.Loading = true;
-        state.addReport.Done = false;
-        state.addReport.Error = null;
+        state.addReportLoading = true;
+        state.addReportDone = false;
+        state.addReportError = null;
       })
       .addCase(addReport.fulfilled, (state, action) => {
         console.log("fulfilled", action.payload);
-        state.addReport.Loading = false;
-        state.addReport.Done = true;
-        state.addReport.Error = null;
+        state.addReportLoading = false;
+        state.addReportDone = true;
+        state.addReportError = null;
         // const post = state.mainPosts.find(post=>post.id === action.payload.PostId);
         // post.Likers = post.Likers.filter(liker => liker.id !== action.payload.UserId);
         // haven't implemented for add report front-end part yet?
       })
       .addCase(addReport.rejected, (state, action) => {
-        state.addReport.Loading = false;
-        state.addReport.Error = action.error;
+        state.addReportLoading = false;
+        state.addReportError = action.error;
       })
 
       .addCase(loadReport.pending, (state) => {
-        state.loadReport.Loading = true;
-        state.loadReport.Done = false;
-        state.loadReport.Error = null;
+        state.loadReportsLoading = true;
+        state.loadReportsDone = false;
+        state.loadReportsError = null;
       })
       .addCase(loadReport.fulfilled, (state, action) => {
         console.log("fulfilled", action.payload);
-        state.loadReport.Loading = false;
-        state.loadReport.Done = true;
-        state.loadReport.Error = null;
+        state.loadReportsLoading = false;
+        state.loadReportsDone = true;
+        state.loadReportsError = null;
         // const post = state.mainPosts.find(post=>post.id === action.payload.PostId);
         // post.Likers = post.Likers.filter(liker => liker.id !== action.payload.UserId);
         // haven't implemented for add report front-end part yet?
       })
       .addCase(loadReport.rejected, (state, action) => {
-        state.loadReport.Loading = false;
-        state.loadReport.Error = action.error;
+        state.loadReportsLoading = false;
+        state.loadReportsError = action.error;
       })
 
       .addCase(postAppeal.pending, (state) => {
-        state.postAppeal.Loading = true;
-        state.postAppeal.Done = false;
-        state.postAppeal.Error = null;
+        state.postAppealLoading = true;
+        state.postAppealDone = false;
+        state.postAppealError = null;
       })
       .addCase(postAppeal.fulfilled, (state, action) => {
         console.log("fulfilled", action.payload);
-        state.postAppeal.Loading = false;
-        state.postAppeal.Done = true;
-        state.postAppeal.Error = null;
+        state.postAppealLoading = false;
+        state.postAppealDone = true;
+        state.postAppealError = null;
         state.mainPosts.find((post) => post.id === action.payload.id).appeal =
           action.payload.appeal;
         // const post = state.mainPosts.find(post=>post.id === action.payload.PostId);
@@ -508,8 +503,8 @@ const postSlice = createSlice({
         // haven't implemented for add report front-end part yet?
       })
       .addCase(postAppeal.rejected, (state, action) => {
-        state.postAppeal.Loading = false;
-        state.postAppeal.Error = action.error;
+        state.postAppealLoading = false;
+        state.postAppealError = action.error;
       });
   },
 });

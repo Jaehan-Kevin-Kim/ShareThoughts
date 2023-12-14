@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/css";
 import useInput from "../hooks/useInput";
 import { addComment } from "../features/post/postService";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 
 const CommentForm = ({ post }) => {
-  const dispatch = useDispatch();
-  const id = useSelector((state) => state.user.me?.id);
-  const { addCommentDone, addCommentLoading } = useSelector(
+  // const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const id = useAppSelector((state) => state.user.me?.id);
+  const { addCommentDone, addCommentLoading } = useAppSelector(
     (state) => state.post,
   );
   const [commentText, onChangeCommentText, setCommentText] = useInput("");
@@ -23,7 +25,7 @@ const CommentForm = ({ post }) => {
   const onSubmitComment = useCallback(() => {
     console.log(post.id, commentText);
 
-    dispatch(addComment({ content: commentText, postId: post.id, userId: id }));
+    dispatch(addComment({ content: commentText, postId: post.id}));
   }, [commentText, id]);
   return (
     <Form onFinish={onSubmitComment}>

@@ -1,6 +1,6 @@
-import { AnyAction, Middleware } from "redux";
-import { type } from "../index";
+import { loadHashtagPosts } from "features/post/postService";
 import _ from "lodash";
+import { Action, AnyAction, Dispatch, Middleware } from "redux";
 
 // // Throttle 미들웨어
 // const throttleMiddleware: Middleware = (store) => (next) => (action) => {
@@ -36,9 +36,9 @@ import _ from "lodash";
 
 // export default throttleMiddleware;
 
-const throttleMiddleware: Middleware = (store) => {
+const throttleMiddleware: Middleware<any> = (store) => {
   const throttledActions = new Map<string, ReturnType<typeof _.throttle>>();
-  return (next) => (action: AnyAction) => {
+  return (next: Dispatch<Action>) => (action: Action) => {
     if (
       action.type === "post/loadHashtagPosts/fulfilled" ||
       action.type === "post/loadHashtagPosts/pending"
@@ -46,15 +46,36 @@ const throttleMiddleware: Middleware = (store) => {
       if (!throttledActions.has(action.type)) {
         throttledActions.set(
           action.type,
-          _.throttle((action: AnyAction) => next(action), 5000),
+          _.throttle((action: Action) => next(action), 5000),
         );
       }
       const throttled = throttledActions.get(action.type);
-      throttled(action);
+      if (throttled) {
+        throttled(action);
+      }
+      // throttled(action);
     } else {
       next(action);
     }
   };
+  // const throttleMiddleware: Middleware = () => {
+  //   const throttledDispatches = new Map<string, _.DebouncedFunc<Dispatch<AnyAction>>>();
+
+  //   return (next: Dispatch<AnyAction>) => (action: AnyAction) => {
+  //     if (action.type === loadHashtagPosts.pending.type || action.type === loadHashtagPosts.fulfilled.type) {
+  //       if (!throttledDispatches.has(action.type)) {
+  //         throttledDispatches.set(action.type, _.throttle(next, 5000));
+  //       }
+  //       const throttledDispatch = throttledDispatches.get(action.type);
+  //       if (throttledDispatch) {
+  //         throttledDispatch(action);
+  //       }
+  //     } else {
+  //       next(action);
+  //     }
+  //   };
+  // };
+
   // const throttledActions = new Map();
 
   // return next => action => {

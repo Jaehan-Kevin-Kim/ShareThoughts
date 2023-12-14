@@ -1,13 +1,15 @@
+import React from "react";
 import { Form, Input } from "antd";
 import { css } from "@emotion/css";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
 import useInput from "../hooks/useInput";
 import { changeNickname } from "../features/user/userService";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 
 const NicknameEditForm = () => {
-  const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const { me } = useAppSelector((state) => state.user);
   const [nickname, onChangeNickname] = useInput(me?.nickname || "");
   const onSubmit = useCallback(() => {
     console.log("onSubmit");
