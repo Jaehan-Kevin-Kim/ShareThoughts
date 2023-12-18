@@ -1,15 +1,15 @@
+import { useAppSelector } from "@hooks/reduxHooks";
 import axios from "axios";
 import Head from "next/head";
 import Router from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import AppLayout from "../components/AppLayout";
 import FollowList from "../components/FollowList";
 import NicknameEditForm from "../components/NicknameEditForm";
 import { backEndUrl } from "../config/config";
-import wrapper from "../store/configureStore";
 import { loadMyInfo } from "../features/user/userService";
+import wrapper from "../store/configureStore";
 
 const fetcher = (url) =>
   axios.get(url, { withCredentials: true }).then((result) => result.data);
@@ -31,7 +31,7 @@ const profile = () => {
     fetcher,
   );
 
-  const { me } = useSelector((state) => state.user);
+  const { me } = useAppSelector((state) => state.user);
 
   /*
   useEffect(() => {

@@ -1,21 +1,21 @@
 import { Avatar, Card } from "antd";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import axios from "axios";
+import _ from "lodash";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import AppLayout from "../../components/AppLayout";
 import PostCard from "../../components/PostCard";
-import wrapper from "../../store/configureStore";
 import { loadHashtagPosts } from "../../features/post/postService";
 import { loadMyInfo } from "../../features/user/userService";
-import _ from "lodash";
-import { useAppSelector } from "@hooks/reduxHooks";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import wrapper from "../../store/configureStore";
+import { IPost } from "@typings/db";
 
 const Hashtag = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { tag } = router.query;
   const { mainPosts, hasMorePosts, loadPostsLoading } = useAppSelector(
@@ -88,17 +88,17 @@ const Hashtag = () => {
             <div key="twit">
               tweet
               <br />
-              {userInfo.Posts}
+              {userInfo.Posts?.length}
             </div>,
             <div key="following">
               Following
               <br />
-              {userInfo.Followings}
+              {userInfo.Followings?.length}
             </div>,
             <div key="follower">
               Follower
               <br />
-              {userInfo.Followers}
+              {userInfo.Followers?.length}
             </div>,
           ]}>
           <Card.Meta
@@ -153,12 +153,14 @@ export const getServerSideProps: GetServerSideProps =
       }
 
       // Dispatch actions as needed
-      await store.dispatch(loadHashtagPosts(context.params.tag));
+      await store.dispatch(
+        loadHashtagPosts({ data: context.params.tag as string }),
+      );
       await store.dispatch(loadMyInfo());
 
       // Optional: You might want to access the updated state after dispatching actions
       const state = store.getState();
-      console.log("Updated state: ", state);
+      // console.log("Updated state: ", state);
 
       // Return an empty props object
       return { props: {} };

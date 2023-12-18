@@ -3,13 +3,25 @@ import { Button, Collapse, Input } from "antd";
 import moment from "moment";
 import Link from "next/link";
 import PropTypes from "prop-types";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { backEndUrl } from "../config/config";
 import { updateImages } from "../features/post/postService";
 import postSlice from "../features/post/postSlice";
+import { IPost, IReport } from "@typings/db";
+
+interface Props {
+  lockStatus: boolean;
+  editMode?: boolean;
+  onCancelChangePost: () => void;
+  postData: string;
+  post?: IPost;
+  onUpdatePost: (formData: any) => void;
+  reports: IReport[];
+  onOpenAppealModal?: () => void;
+}
 
 //Hashtag checker with regular expression
-const PostCardContent = ({
+const PostCardContent: FC<Props> = ({
   postData,
   editMode,
   onCancelChangePost,
@@ -155,7 +167,7 @@ const PostCardContent = ({
             }}>
             This Post has been deactivated by several reports.{" "}
           </div>
-          {id && id === post.UserId && (
+          {id && id === post.User.id && (
             <Collapse>
               <Collapse.Panel
                 key={post.id}
@@ -274,22 +286,22 @@ const PostCardContent = ({
   );
 };
 
-PostCardContent.propTypes = {
-  postData: PropTypes.string.isRequired,
-  onCancelChangePost: PropTypes.func.isRequired,
-  onUpdatePost: PropTypes.func.isRequired,
-  editMode: PropTypes.bool,
-  post: PropTypes.object,
-  lockStatus: PropTypes.bool.isRequired,
-  reports: PropTypes.objectOf(PropTypes.any),
-  onOpenAppealModal: PropTypes.func,
-};
+// PostCardContent.propTypes = {
+//   postData: PropTypes.string.isRequired,
+//   onCancelChangePost: PropTypes.func.isRequired,
+//   onUpdatePost: PropTypes.func.isRequired,
+//   editMode: PropTypes.bool,
+//   post: PropTypes.object,
+//   lockStatus: PropTypes.bool.isRequired,
+//   reports: PropTypes.objectOf(PropTypes.any),
+//   onOpenAppealModal: PropTypes.func,
+// };
 
-PostCardContent.defaultProps = {
-  editMode: false,
-  post: undefined,
-  onOpenAppealModal: undefined,
-  reports: undefined,
-};
+// PostCardContent.defaultProps = {
+//   editMode: false,
+//   post: undefined,
+//   onOpenAppealModal: undefined,
+//   reports: undefined,
+// };
 
 export default PostCardContent;

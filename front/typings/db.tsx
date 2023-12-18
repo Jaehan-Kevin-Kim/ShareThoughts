@@ -5,8 +5,8 @@ export interface IUser {
   Posts?: IPost[];
   Comments?: IComment[];
   Liked?: IPost[]; // 'Like' 관계를 통해 연결된 Post
-  Followings?: IUser; // 'Follow' 관계를 통해 연결된 팔로잉들
-  Followers?: IUser; // 'Follow' 관계를 통해 연결된 팔로워들
+  Followings?: Partial<IUser>[]; // 'Follow' 관계를 통해 연결된 팔로잉들
+  Followers?: Partial<IUser>[]; // 'Follow' 관계를 통해 연결된 팔로워들
   PostUser?: IReport; // 'Report' 관계, 포스팅한 사용자
   ReportUser?: IReport; // 'Report' 관계, 리포트한 사용자
 }
@@ -14,13 +14,15 @@ export interface IUser {
 export interface IPost {
   id: number;
   content: string;
-  appeal?: string;
   createdAt?: Date;
-  User: IUser;
-  Comments: IComment[];
+  appeal?: string;
+  lockStatus?: boolean;
+  User?: IUser;
+  Comments?: IComment[];
   Images?: IImage[];
-  Likers: Partial<IUser>[];
+  Likers?: Partial<IUser>[];
   Retweet?: IPost;
+  Reports?: IReport[];
 }
 
 export interface IImage {
@@ -49,4 +51,5 @@ export interface IReport {
   PostUser: IUser;
   ReportUser: IUser;
   Posts: IPost[];
+  createdAt: Date;
 }

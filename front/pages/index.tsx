@@ -1,23 +1,24 @@
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash";
+import { useEffect, useState } from "react";
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import { loadPosts } from "../features/post/postService";
 import { loadMyInfo } from "../features/user/userService";
 import wrapper from "../store/configureStore";
-import { useAppSelector } from "@hooks/reduxHooks";
-import _ from "lodash";
+import { GetServerSidePropsContext } from "next";
+import { GetServerSideProps } from "next";
 
 const Home = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
 
   const { me } = useAppSelector((state) => state.user);
   const {
     mainPosts,
-    hasMorePost,
+    hasMorePosts,
     loadPostsLoading,
     retweetError,
     addReportDone,
@@ -52,7 +53,7 @@ const Home = () => {
         document.documentElement.scrollHeight - 300
       ) {
         //아래는 loadPostRequest가 여러번 실행되는걸 막기위한 옵션 (!loadPostsLoading을 추가한 부분)
-        if (hasMorePost && !loadPostsLoading) {
+        if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
 
           const throttledLoadPosts = _.throttle((dispatch, lastId) => {
@@ -70,7 +71,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePost, loadPostsLoading, mainPosts]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <>
@@ -84,22 +85,33 @@ const Home = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  async (context) => {
-    const cookie = context.req ? context.req.headers.cookie : "";
-    axios.defaults.headers.Cookie = "";
-    if (context.req && cookie) {
-      axios.defaults.headers.Cookie = cookie;
-    }
-    // console.log("context check: ", context);
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps(
+    (store) => async (context: GetServerSidePropsContext) => {
+      const cookie = context.req ? context.req.headers.cookie : "";
+      axios.defaults.headers.Cookie = "";
+      if (context.req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+      // console.log("context check: ", context);
 
-    await context.store.dispatch(loadMyInfo());
+      await store.dispatch(loadMyInfo());
 
-    await context.store.dispatch(loadPosts());
+      // await store.dispatch(loadPosts());
 
-    // await context.store.dispatch(END);
-    // await context.store.sagaTask.toPromise();
-  },
-);
+      console.log("call loadposts in index");
+
+      const throttledLoadPosts = _.throttle((dispatch, lastId) => {
+        dispatch(loadPosts(lastId));
+      }, 5000);
+
+      throttledLoadPosts(store.dispatch, 0);
+
+      // await context.store.dispatch(END);
+      // await context.store.sagaTask.toPromise();
+
+      return { props: {} };
+    },
+  );
 
 export default Home;

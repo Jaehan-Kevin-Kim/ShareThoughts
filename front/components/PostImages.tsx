@@ -1,12 +1,13 @@
 import { PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
-import React, { useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import styled from "@emotion/styled";
 
 import { backEndUrl } from "../config/config";
 import ImagesZoom from "./ImagesZoom";
 import { CloseBtn } from "./ImagesZoom/styles";
 import { Button } from "antd";
+import { IImage } from "@typings/db";
 
 const Image = styled.img`
   max-width: 800px;
@@ -15,7 +16,13 @@ const Image = styled.img`
   object-fit: contain;
 `;
 
-const PostImages = ({ images, editMode, onRemoveImage }) => {
+interface Props {
+  images: IImage[];
+  editMode?: boolean;
+  onRemoveImage?: (src: any) => () => void;
+}
+
+const PostImages: FC<Props> = ({ images, editMode, onRemoveImage }) => {
   const [showImagesZoom, setShowImagesZoom] = useState(false);
   const prod = process.env.NODE_ENV === "production";
 
@@ -234,13 +241,13 @@ const PostImages = ({ images, editMode, onRemoveImage }) => {
 
 export default PostImages;
 
-PostImages.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.object),
-  editMode: PropTypes.bool,
-  onRemoveImage: PropTypes.func,
-};
+// PostImages.propTypes = {
+//   images: PropTypes.arrayOf(PropTypes.object),
+//   editMode: PropTypes.bool,
+//   onRemoveImage: PropTypes.func,
+// };
 
-PostImages.defaultProps = {
-  images: undefined,
-  editMode: false,
-};
+// PostImages.defaultProps = {
+//   images: undefined,
+//   editMode: false,
+// };

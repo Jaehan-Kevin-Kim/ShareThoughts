@@ -1,16 +1,17 @@
+import { useAppSelector } from "@hooks/reduxHooks";
 import axios from "axios";
-import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import Head from "next/head";
-import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import AppLayout from "../../components/AppLayout";
-import wrapper from "../../store/configureStore";
 import PostCard from "../../components/PostCard";
-import { loadMyInfo } from "../../features/user/userService";
 import { loadPost } from "../../features/post/postService";
+import { loadMyInfo } from "../../features/user/userService";
+import wrapper from "../../store/configureStore";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
 const Post = () => {
-  const { singlePost } = useSelector((state) => state.post);
+  const { singlePost } = useAppSelector((state) => state.post);
   const router = useRouter();
   const { id } = router.query;
 
@@ -46,31 +47,34 @@ const Post = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  async (context) => {
-    const cookie = context.req ? context.req.headers.cookie : "";
-    console.log(context);
-    axios.defaults.headers.Cookie = "";
-    if (context.req && cookie) {
-      axios.defaults.headers.Cookie = cookie;
-    }
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps(
+    (store) => async (context: GetServerSidePropsContext) => {
+      const cookie = context.req ? context.req.headers.cookie : "";
+      // console.log(context);
+      axios.defaults.headers.Cookie = "";
+      if (context.req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
 
-    await context.store.dispatch(loadMyInfo());
+      await store.dispatch(loadMyInfo());
 
-    await context.store.dispatch(loadPost(context.params.id));
+      await store.dispatch(loadPost(+context.params.id));
 
-    // context.store.dispatch({
-    //   type: LOAD_MY_INFO_REQUEST,
-    // });
-    // context.store.dispatch({
-    //   type: LOAD_POST_REQUEST,
-    //   data: context.params.id,
-    //   // or data: context.query.id
-    // });
+      // context.store.dispatch({
+      //   type: LOAD_MY_INFO_REQUEST,
+      // });
+      // context.store.dispatch({
+      //   type: LOAD_POST_REQUEST,
+      //   data: context.params.id,
+      //   // or data: context.query.id
+      // });
 
-    // context.store.dispatch(END);
-    // await context.store.sagaTask.toPromise();
-  },
-);
+      // context.store.dispatch(END);
+      // await context.store.sagaTask.toPromise();
+
+      return { props: {} };
+    },
+  );
 
 export default Post;

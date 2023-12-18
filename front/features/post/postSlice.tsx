@@ -28,7 +28,7 @@ export interface PostState {
   singlePost: IPost | null;
   imagePaths: string[];
   updateImagePaths: string[];
-  hasMorePost: boolean;
+  hasMorePosts: boolean;
   loadPostsLoading: boolean;
   loadPostsDone: boolean;
   loadPostsError: SerializedError | null;
@@ -87,7 +87,7 @@ export const initialState: PostState = {
   singlePost: null,
   imagePaths: [],
   updateImagePaths: [],
-  hasMorePost: true,
+  hasMorePosts: true,
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
@@ -175,7 +175,7 @@ const postSlice = createSlice({
         state.loadUserPostsError = null;
         // state.me = action.payload || null;
         state.mainPosts = state.mainPosts.concat(action.payload);
-        state.hasMorePost = action.payload.length === 10;
+        state.hasMorePosts = action.payload.length === 10;
       })
       .addCase(loadUserPosts.rejected, (state, action) => {
         state.loadUserPostsLoading = false;
@@ -193,7 +193,7 @@ const postSlice = createSlice({
         state.loadHashtagPostsError = null;
         // state.me = action.payload || null;
         state.mainPosts = state.mainPosts.concat(action.payload);
-        state.hasMorePost = action.payload.length === 10;
+        state.hasMorePosts = action.payload.length === 10;
       })
       .addCase(loadHashtagPosts.rejected, (state, action) => {
         state.loadHashtagPostsLoading = false;
@@ -210,8 +210,9 @@ const postSlice = createSlice({
         state.loadPostsDone = true;
         state.loadPostsError = null;
         // state.me = action.payload || null;
+
         state.mainPosts = state.mainPosts.concat(action.payload);
-        state.hasMorePost = action.payload.length === 10;
+        state.hasMorePosts = action.payload.length === 10;
       })
       .addCase(loadPosts.rejected, (state, action) => {
         state.loadPostsLoading = false;

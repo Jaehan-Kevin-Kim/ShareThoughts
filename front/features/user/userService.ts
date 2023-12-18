@@ -4,21 +4,21 @@ import axios from "axios";
 export const loadMyInfo = createAsyncThunk(
   "user/loadMyInfo",
   async (thunkAPI) => {
-    try {
-      const response = await axios.get("/user");
-      console.log("userj response", response.data);
-      return response.data || null;
-    } catch (error) {
-      const message =
-        error.response?.data?.message || error.message || error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
+    // try {
+    const response = await axios.get("/user");
+    console.log("userj response", response.data);
+    return response.data || null;
+    // } catch (error) {
+    //   const message =
+    //     error.response?.data?.message || error.message || error.toString();
+    //   return thunkAPI.rejectWithValue(message);
+    // }
   },
 );
 
 export const loadUser = createAsyncThunk(
   "user/loadUser",
-  async (data, { rejectWithValue }) => {
+  async (data: number, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/user/${data}`);
       return response.data;

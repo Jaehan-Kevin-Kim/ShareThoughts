@@ -1,25 +1,27 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+
 import { Avatar, Card } from "antd";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import axios from "axios";
-import PostCard from "../../components/PostCard";
-import wrapper from "../../store/configureStore";
+import _ from "lodash";
 import AppLayout from "../../components/AppLayout";
+import PostCard from "../../components/PostCard";
 import { loadUserPosts } from "../../features/post/postService";
 import { loadMyInfo, loadUser } from "../../features/user/userService";
-import _ from "lodash";
+import wrapper from "../../store/configureStore";
 
 const User = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { id } = router.query as { id: string };
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useAppSelector(
     (state) => state.post,
   );
-  const { userInfo } = useSelector((state) => state.user);
+  const { userInfo } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const onScroll = () => {
@@ -37,14 +39,14 @@ const User = () => {
           //   }),
           // );
           const throttleLoadUserPosts = _.throttle(
-            (dispatch, data: string, lastId: number) => {
+            (dispatch, data: number, lastId: number) => {
               dispatch(loadUserPosts({ data, lastId }));
             },
           );
 
           throttleLoadUserPosts(
             dispatch,
-            id,
+            +id,
             mainPosts[mainPosts.length - 1] &&
               mainPosts[mainPosts.length - 1].id,
           );
@@ -88,17 +90,17 @@ const User = () => {
             <div key="twit">
               tweet
               <br />
-              {userInfo.Posts}
+              {userInfo.Posts.length}
             </div>,
             <div key="following">
               Following
               <br />
-              {userInfo.Followings}
+              {userInfo.Followings.length}
             </div>,
             <div key="follower">
               Follower
               <br />
-              {userInfo.Followers}
+              {userInfo.Followers.length}
             </div>,
           ]}>
           <Card.Meta
@@ -115,30 +117,32 @@ const User = () => {
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  async (context) => {
+  (store) => async (context) => {
     const cookie = context.req ? context.req.headers.cookie : "";
     axios.defaults.headers.Cookie = "";
     if (context.req && cookie) {
       axios.defaults.headers.Cookie = cookie;
     }
 
-    context.store.dispatch(loadUserPosts(context.params.id));
+    await store.dispatch(
+      loadUserPosts({ data: +context.params.id, lastId: 0 }),
+    );
     // context.store.dispatch({
     //   type: LOAD_USER_POSTS_REQUEST,
     //   data: context.params.id,
     // });
-    context.store.dispatch(loadMyInfo());
-    // context.store.dispatch({
+    await store.dispatch(loadMyInfo());
+    // store.dispatch({
     //   type: LOAD_MY_INFO_REQUEST,
     // });
-    context.store.dispatch(loadUser(context.params.id));
+    await store.dispatch(loadUser(+context.params.id));
     // context.store.dispatch({
     //   type: LOAD_USER_REQUEST,
     //   data: context.params.id,
     // });
     // context.store.dispatch(END);
     // await context.store.sagaTask.toPromise();
-    console.log("getState", context.store.getState().post.mainPosts);
+    console.log("getState", store.getState().post.mainPosts);
     return { props: {} };
   },
 );

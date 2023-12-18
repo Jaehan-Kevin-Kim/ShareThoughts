@@ -49,14 +49,10 @@ const AppLayout = (props) => {
       <Global />
       <Menu mode="horizontal">
         <Menu.Item>
-          <Link href="/">
-            <a>ShareThoughts</a>
-          </Link>
+          <Link href="/">ShareThoughts</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link href="/profile">
-            <a>Profile</a>
-          </Link>
+          <Link href="/profile">Profile</Link>
         </Menu.Item>
         <Menu.Item>
           <SearchInput

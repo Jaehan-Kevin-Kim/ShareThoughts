@@ -1,14 +1,16 @@
-import { Button, Form, Input } from "antd";
-import React, { useCallback, useEffect } from "react";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/css";
-import useInput from "../hooks/useInput";
-import { addComment } from "../features/post/postService";
 import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
+import { IPost } from "@typings/db";
+import { Button, Form, Input } from "antd";
+import { FC, useCallback, useEffect } from "react";
+import { addComment } from "../features/post/postService";
+import useInput from "../hooks/useInput";
 
-const CommentForm = ({ post }) => {
-  // const dispatch = useDispatch();
+interface Props {
+  post: IPost;
+}
+
+const CommentForm: FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch();
   const id = useAppSelector((state) => state.user.me?.id);
   const { addCommentDone, addCommentLoading } = useAppSelector(
@@ -25,7 +27,7 @@ const CommentForm = ({ post }) => {
   const onSubmitComment = useCallback(() => {
     console.log(post.id, commentText);
 
-    dispatch(addComment({ content: commentText, postId: post.id}));
+    dispatch(addComment({ content: commentText, postId: post.id }));
   }, [commentText, id]);
   return (
     <Form onFinish={onSubmitComment}>
@@ -53,7 +55,7 @@ const CommentForm = ({ post }) => {
     </Form>
   );
 };
-
+/* 
 CommentForm.propTypes = {
   post: PropTypes.shape({
     id: PropTypes.number,
@@ -63,6 +65,6 @@ CommentForm.propTypes = {
     Comments: PropTypes.arrayOf(PropTypes.object),
     Images: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
-};
+}; */
 
 export default CommentForm;

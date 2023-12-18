@@ -1,12 +1,12 @@
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import { Avatar, Button, Card } from "antd";
 import Link from "next/link";
-import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
 import { logout } from "../features/user/userService";
 
 const UserProfile = () => {
-  const dispatch = useDispatch();
-  const { me, logOutLoading } = useSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const { me, logOutLoading } = useAppSelector((state) => state.user);
 
   const onLogout = useCallback(() => {
     // setIsLoggedIn(false);
@@ -19,38 +19,30 @@ const UserProfile = () => {
         actions={[
           <div key="posts">
             <Link href={`/user/${me.id}`}>
-              <a>
-                Posts
-                <br />
-                {me.Posts.length}
-              </a>
+              Posts
+              <br />
+              {me.Posts.length}
             </Link>
           </div>,
           <div key="followings">
             <Link href="/profile">
-              <a>
-                Following
-                <br />
-                {me.Followings.length}
-              </a>
+              Following
+              <br />
+              {me.Followings.length}
             </Link>
           </div>,
           <div key="followers">
             <Link href="/profile">
-              <a>
-                Followers
-                <br />
-                {me.Followers.length}
-              </a>
+              Followers
+              <br />
+              {me.Followers.length}
             </Link>
           </div>,
         ]}>
         <Card.Meta
           avatar={
             <Link href={`/user/${me.id}`}>
-              <a>
-                <Avatar>{me.nickname[0]}</Avatar>
-              </a>
+              <Avatar>{me.nickname[0]}</Avatar>
             </Link>
           }
           title={me.nickname}

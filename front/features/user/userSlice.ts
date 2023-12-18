@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { SerializedError, createSlice } from "@reduxjs/toolkit";
 import {
   changeNickname,
   follow,
@@ -14,14 +14,68 @@ import {
   unfollow,
 } from "./userService";
 import { HYDRATE } from "next-redux-wrapper";
+import { IUser } from "@typings/db";
 
-export const initialState = {
+export interface UserState {
+  loadMyInfoLoading: boolean;
+  loadMyInfoDone: boolean;
+  loadMyInfoError: SerializedError | null;
+  loadUserLoading: boolean;
+  loginLoading: boolean;
+  loginDone: boolean;
+  loginError: SerializedError | null;
+  loadUserDone: boolean;
+  loadUserError: SerializedError | null;
+  logInLoading: boolean;
+  logInDone: boolean;
+  logInError: SerializedError | null;
+  logOutLoading: boolean;
+  logOutDone: boolean;
+  logOutError: SerializedError | null;
+  signUpLoading: boolean;
+  signUpDone: boolean;
+  signUpError: SerializedError | null;
+  changeNicknameLoading: boolean;
+  changeNicknameDone: boolean;
+  changeNicknameError: SerializedError | null;
+  logoutLoading: boolean;
+  logoutDone: boolean;
+  logoutError: SerializedError | null;
+  signupUserLoading: boolean;
+  signupUserDone: boolean;
+  signupUserError: SerializedError | null;
+  followLoading: boolean;
+  followDone: boolean;
+  followError: SerializedError | null;
+  unfollowLoading: boolean;
+  unfollowDone: boolean;
+  unfollowError: SerializedError | null;
+  loadFollowingsLoading: boolean;
+  loadFollowingsDone: boolean;
+  loadFollowingsError: SerializedError | null;
+  loadFollowersLoading: boolean;
+  loadFollowersDone: boolean;
+  loadFollowersError: SerializedError | null;
+  removeFollowerLoading: boolean;
+  removeFollowerDone: boolean;
+  removeFollowerError: SerializedError | null;
+  me: Partial<IUser>;
+  userInfo: Partial<IUser>;
+}
+
+export const initialState: UserState = {
   loadMyInfoLoading: false, // 로그인 시도 중
   loadMyInfoDone: false,
-  loadMyInfoError: false,
+  loadMyInfoError: null,
+  loadUserLoading: false,
+  loginLoading: false,
+  loginDone: false,
+  loginError: null,
+  loadUserDone: false,
+  loadUserError: null,
   logInLoading: false, // 로그인 시도 중
   logInDone: false,
-  logInError: false,
+  logInError: null,
   logOutLoading: false, // 로그아웃 시도 중
   logOutDone: false,
   logOutError: null,
@@ -31,6 +85,12 @@ export const initialState = {
   changeNicknameLoading: false, // Nickname 변경 시도 중
   changeNicknameDone: false,
   changeNicknameError: null,
+  logoutLoading: false,
+  logoutDone: false,
+  logoutError: null,
+  signupUserLoading: false,
+  signupUserDone: false,
+  signupUserError: null,
   followLoading: false,
   followDone: false,
   followError: null,
@@ -40,15 +100,13 @@ export const initialState = {
   loadFollowingsLoading: false,
   loadFollowingsDone: false,
   loadFollowingsError: null,
-  loadFollwersLoading: false,
-  loadFollwersDone: false,
-  loadFollwersError: null,
+  loadFollowersLoading: false,
+  loadFollowersDone: false,
+  loadFollowersError: null,
   removeFollowerLoading: false,
   removeFollowerDone: false,
   removeFollowerError: null,
   me: null,
-  signUpData: {},
-  loginData: {},
   userInfo: null,
 };
 
@@ -58,10 +116,6 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(HYDRATE, (state, action) => ({
-        ...state,
-        ...action.payload.post,
-      }))
       .addCase(loadMyInfo.pending, (state) => {
         state.loadMyInfoLoading = true;
         state.loadMyInfoDone = false;
@@ -76,7 +130,7 @@ const userSlice = createSlice({
       })
       .addCase(loadMyInfo.rejected, (state, action) => {
         state.loadMyInfoLoading = false;
-        state.loadMyInfoError = action.error.message;
+        state.loadMyInfoError = action.error;
       })
 
       .addCase(loadUser.pending, (state) => {
@@ -93,7 +147,7 @@ const userSlice = createSlice({
       })
       .addCase(loadUser.rejected, (state, action) => {
         state.loadUserLoading = false;
-        state.loadUserError = action.error.message;
+        state.loadUserError = action.error;
       })
       .addCase(login.pending, (state) => {
         state.loginLoading = true;
@@ -109,7 +163,7 @@ const userSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.loginLoading = false;
-        state.loginError = action.error.message;
+        state.loginError = action.error;
       })
       .addCase(logout.pending, (state) => {
         state.logoutLoading = true;
@@ -154,6 +208,7 @@ const userSlice = createSlice({
         state.followLoading = false;
         state.followDone = true;
         state.me.Followings.push({ id: action.payload.UserId });
+        // state.me.Followings =
         // state.followError = null;
         // state.me = null;
       })

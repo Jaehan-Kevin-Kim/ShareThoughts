@@ -1,13 +1,12 @@
 /* eslint-disable consistent-return */
+import styled from "@emotion/styled";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
+import { Button, Checkbox, Form, Input } from "antd";
 import Head from "next/head";
 import Router from "next/router";
-import { Button, Form, Input, Checkbox } from "antd";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "@emotion/styled";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
-import { signupUser } from "../features/user/userService";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -23,8 +22,8 @@ const signup = () => {
   const [term, setTerm] = useState("");
   const [termError, setTermError] = useState(false);
 
-  const dispatch = useDispatch();
-  const { signUpLoading, me, signUpDone, signUpError } = useSelector(
+  const dispatch = useAppDispatch();
+  const { signUpLoading, me, signUpDone, signUpError } = useAppSelector(
     (state) => state.user,
   );
 
@@ -80,7 +79,6 @@ const signup = () => {
     console.log(email, nickname, password);
     dispatch(signup({ email, password, nickname }));
 
-    
     // dispatch({
     //   type: SIGN_UP_REQUEST,
     //   data: { email, password, nickname },

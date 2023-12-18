@@ -14,7 +14,7 @@ import axios from "axios";
 
 export const loadUserPosts = createAsyncThunk(
   "post/loadUserPosts",
-  async ({ data, lastId }: { data: string; lastId: number }) => {
+  async ({ data, lastId }: { data: number; lastId: number }) => {
     const response = await axios.get(
       `/user/${data}/posts?lastId=${lastId || 0}`,
     );
@@ -42,7 +42,7 @@ export const loadUserPosts = createAsyncThunk(
 
 export const loadHashtagPosts = createAsyncThunk(
   "post/loadHashtagPosts",
-  async ({ data, lastId }: { data: string; lastId: number }) => {
+  async ({ data, lastId }: { data: string; lastId?: number }) => {
     const response = await axios.get(
       `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`,
     );
@@ -68,10 +68,13 @@ export const loadPost = createAsyncThunk(
   },
 );
 
-export const addPost = createAsyncThunk("post/addPost", async (data) => {
-  const response = await axios.post("/post", data);
-  return response.data;
-});
+export const addPost = createAsyncThunk(
+  "post/addPost",
+  async (data: FormData) => {
+    const response = await axios.post("/post", data);
+    return response.data;
+  },
+);
 
 export const removePost = createAsyncThunk(
   "post/removePost",
@@ -99,7 +102,7 @@ export const addComment = createAsyncThunk(
 
 export const uploadImages = createAsyncThunk(
   "post/uploadImages",
-  async (data) => {
+  async (data: FormData) => {
     const response = await axios.post("/post/images", data);
     return response.data;
   },

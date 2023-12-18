@@ -1,11 +1,9 @@
-import React from "react";
-import { Form, Input } from "antd";
 import { css } from "@emotion/css";
-import { useDispatch, useSelector } from "react-redux";
-import { useCallback } from "react";
-import useInput from "../hooks/useInput";
-import { changeNickname } from "../features/user/userService";
 import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
+import { Form, Input } from "antd";
+import { useCallback } from "react";
+import { changeNickname } from "../features/user/userService";
+import useInput from "../hooks/useInput";
 
 const NicknameEditForm = () => {
   const dispatch = useAppDispatch();

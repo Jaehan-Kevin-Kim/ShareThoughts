@@ -1,9 +1,8 @@
-import { Store, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 // import logger from "redux-logger";
 import logger from "redux-logger";
-import rootReducer, { RootState } from "../features/index";
-import throttleMiddleware from "features/middleware/throttle";
+import rootReducer from "../features/index";
 
 const isDev = process.env.NODE_ENV === "development";
 // export type RootState = ReturnType<typeof rootReducer>;
@@ -16,7 +15,7 @@ function getServerState() {
 }
 
 const serverState = getServerState();
-console.log("serverState: ", serverState);
+// console.log("serverState: ", serverState);
 
 // 원래 아래 동작하던 코드 이렇게 사용안해야 되는구나
 // const makeStore: () => Store<RootState> = () => {

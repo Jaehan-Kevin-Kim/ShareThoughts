@@ -8,6 +8,7 @@ const { Post, User, Image, Comment, Report } = require("../models");
 router.get("/", async (req, res, next) => {
   try {
     const where = {};
+    // const lastId = req.query?.lastId ? req.query.lastId :
     if (parseInt(req.query.lastId, 10)) {
       // console.log("Last Id: ", req.query.lastId);
       //초기 loading이 아닐 때 (초기 로딩은 값이 0 이기 때문에 false가 됨)
@@ -15,7 +16,7 @@ router.get("/", async (req, res, next) => {
       //lastId보다 작은 이라는 조건문을 작성 해야 함. => 이렇게 작성하면 id가 lastId보다 작은 이라는 형태의 조건문이 완성 됨.
       // console.log("where.id: ", where.id);
     }
-    // console.log("where", where);
+    console.log("where", where);
 
     const posts = await Post.findAll({
       where,
@@ -71,7 +72,7 @@ router.get("/", async (req, res, next) => {
         },
       ],
     });
-    // console.log("posts", posts);
+    console.log("posts", posts);
     res.status(200).json(posts);
   } catch (error) {
     console.error(error);

@@ -81,11 +81,9 @@ const LoginForm = () => {
           Log In
         </Button>
         <Link href="/signup">
-          <a>
-            <Button htmlType="submit" loading={logInLoading}>
-              Sign Up
-            </Button>
-          </a>
+          <Button htmlType="submit" loading={logInLoading}>
+            Sign Up
+          </Button>
         </Link>
       </ButtonWrapper>
     </Form>

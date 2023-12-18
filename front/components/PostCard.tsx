@@ -29,7 +29,7 @@ import CommentForm from "./CommentForm";
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
-import { IComment } from "@typings/db";
+import { IComment, IPost } from "@typings/db";
 
 // 아래 게시글 순서를 강제로 변경함 (나중에 report 됬을 때 masking 하기 위해서, 그리고 보기도 더 좋음)
 const CardItem = styled(Card)`
@@ -45,7 +45,11 @@ const CardItem = styled(Card)`
   }
 `;
 
-const PostCard = ({ post }) => {
+interface PostCardProps {
+  post: IPost;
+}
+
+const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const dispatch = useAppDispatch();
   const [liked, setLiked] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -307,7 +311,7 @@ const PostCard = ({ post }) => {
                 <Button.Group>
                   {id && post.User.id === id ? (
                     <>
-                      {!post.RetweetId && (
+                      {!post.Retweet.id && (
                         <Button onClick={onChangePost}>Modify</Button>
                       )}
                       <Button
@@ -331,9 +335,9 @@ const PostCard = ({ post }) => {
               <EllipsisOutlined />
             </Popover>,
           ]}
-          title={post.RetweetId ? `Retweet by ${post.User.nickname}.` : null}
+          title={post.Retweet.id ? `Retweet by ${post.User.nickname}.` : null}
           extra={id && <FollowButton post={post} />}>
-          {post.RetweetId && post.Retweet ? (
+          {post.Retweet.id && post.Retweet ? (
             <Card
               cover={
                 !post.lockStatus &&
@@ -347,9 +351,7 @@ const PostCard = ({ post }) => {
               <Card.Meta
                 avatar={
                   <Link href={`/user/${post.Retweet.User.id}`}>
-                    <a>
-                      <Avatar>{post.User.nickname[0]}</Avatar>
-                    </a>
+                    <Avatar>{post.User.nickname[0]}</Avatar>
                   </Link>
                 }
                 title={post.User.nickname}
@@ -373,9 +375,7 @@ const PostCard = ({ post }) => {
               <Card.Meta
                 avatar={
                   <Link href={`/user/${post.User.id}`}>
-                    <a>
-                      <Avatar>{post.User.nickname[0]}</Avatar>
-                    </a>
+                    <Avatar>{post.User.nickname[0]}</Avatar>
                   </Link>
                 }
                 title={post.User.nickname}
@@ -401,7 +401,7 @@ const PostCard = ({ post }) => {
         </CardItem>
         {commentFormOpened && (
           <div>
-            <CommentForm post={post} />{" "}
+            <CommentForm post={post} />
             <List
               header={`${post.Comments.length} comments`}
               itemLayout="horizontal"
@@ -412,9 +412,7 @@ const PostCard = ({ post }) => {
                     author={item.User.nickname}
                     avatar={
                       <Link href={`/user/${item.User.id}`}>
-                        <a>
-                          <Avatar>{item.User.nickname[0]}</Avatar>
-                        </a>
+                        <Avatar>{item.User.nickname[0]}</Avatar>
                       </Link>
                     }
                     content={item.content}
@@ -429,20 +427,20 @@ const PostCard = ({ post }) => {
   );
 };
 
-PostCard.propTypes = {
-  post: PropTypes.shape({
-    id: PropTypes.number,
-    User: PropTypes.object,
-    content: PropTypes.string,
-    createdAt: PropTypes.string,
-    Comments: PropTypes.arrayOf(PropTypes.object),
-    Images: PropTypes.arrayOf(PropTypes.object),
-    RetweetId: PropTypes.number,
-    Retweet: PropTypes.objectOf(PropTypes.any),
-    Likers: PropTypes.objectOf(PropTypes.any),
-    Reports: PropTypes.objectOf(PropTypes.any),
-    lockStatus: PropTypes.bool,
-  }).isRequired,
-};
+// PostCard.propTypes = {
+//   post: PropTypes.shape({
+//     id: PropTypes.number,
+//     User: PropTypes.object,
+//     content: PropTypes.string,
+//     createdAt: PropTypes.string,
+//     Comments: PropTypes.arrayOf(PropTypes.object),
+//     Images: PropTypes.arrayOf(PropTypes.object),
+//     RetweetId: PropTypes.number,
+//     Retweet: PropTypes.objectOf(PropTypes.any),
+//     Likers: PropTypes.objectOf(PropTypes.any),
+//     Reports: PropTypes.objectOf(PropTypes.any),
+//     lockStatus: PropTypes.bool,
+//   }).isRequired,
+// };
 
 export default PostCard;
