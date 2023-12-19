@@ -191,6 +191,7 @@ const userSlice = createSlice({
         console.log("fulfilled", action.payload);
         state.signupUserLoading = false;
         state.signupUserDone = true;
+
         // state.signupUserError = null;
         // state.me = null;
       })

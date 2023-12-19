@@ -7,6 +7,7 @@ import Router from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
+import { signupUser } from "features/user/userService";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -23,9 +24,8 @@ const signup = () => {
   const [termError, setTermError] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { signUpLoading, me, signUpDone, signUpError } = useAppSelector(
-    (state) => state.user,
-  );
+  const { signupUserLoading, me, signupUserDone, signupUserError } =
+    useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (me?.id) {
@@ -38,17 +38,17 @@ const signup = () => {
   // }
 
   useEffect(() => {
-    if (signUpDone) {
+    if (signupUserDone) {
       Router.replace("/");
     }
-  }, [signUpDone]);
+  }, [signupUserDone]);
 
   useEffect(() => {
-    if (signUpError) {
-      // console.log(signUpError);
-      alert(signUpError);
+    if (signupUserError) {
+      // console.log(signupUserError);
+      alert(signupUserError);
     }
-  }, [signUpError]);
+  }, [signupUserError]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -77,7 +77,7 @@ const signup = () => {
       return setTermError(true);
     }
     console.log(email, nickname, password);
-    dispatch(signup({ email, password, nickname }));
+    dispatch(signupUser({ email, password, nickname }));
 
     // dispatch({
     //   type: SIGN_UP_REQUEST,
@@ -140,7 +140,7 @@ const signup = () => {
             )}
           </div>
           <div>
-            <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>
+            <Checkbox name="user-term" checked={!!term} onChange={onChangeTerm}>
               Do you agree to the terms and conditions for use?
             </Checkbox>
             {termError && (
@@ -150,7 +150,10 @@ const signup = () => {
             )}
           </div>
           <div style={{ marginTop: "10px" }}>
-            <Button type="primary" htmlType="submit" loading={signUpLoading}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={signupUserLoading}>
               Sign Up
             </Button>
           </div>

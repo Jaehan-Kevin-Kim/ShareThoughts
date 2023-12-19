@@ -44,10 +44,13 @@ export const logout = createAsyncThunk("user/logout", async () => {
   return response.data;
 });
 
-export const signupUser = createAsyncThunk("user/signup", async (data) => {
-  const response = await axios.post("/user", data);
-  return response.data;
-});
+export const signupUser = createAsyncThunk(
+  "user/signup",
+  async (data: { email; password; nickname }) => {
+    const response = await axios.post("/user", data);
+    return response.data;
+  },
+);
 
 export const follow = createAsyncThunk(
   "user/follow",

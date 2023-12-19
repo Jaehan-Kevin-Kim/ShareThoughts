@@ -210,6 +210,7 @@ const postSlice = createSlice({
         state.loadPostsDone = true;
         state.loadPostsError = null;
         // state.me = action.payload || null;
+        console.log("loadPosts results: ", action.payload);
 
         state.mainPosts = state.mainPosts.concat(action.payload);
         state.hasMorePosts = action.payload.length === 10;

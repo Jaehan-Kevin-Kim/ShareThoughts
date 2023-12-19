@@ -311,7 +311,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                 <Button.Group>
                   {id && post.User.id === id ? (
                     <>
-                      {!post.Retweet.id && (
+                      {!post.Retweet?.id && (
                         <Button onClick={onChangePost}>Modify</Button>
                       )}
                       <Button
@@ -335,9 +335,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               <EllipsisOutlined />
             </Popover>,
           ]}
-          title={post.Retweet.id ? `Retweet by ${post.User.nickname}.` : null}
+          title={post.Retweet?.id ? `Retweet by ${post.User.nickname}.` : null}
           extra={id && <FollowButton post={post} />}>
-          {post.Retweet.id && post.Retweet ? (
+          {post.Retweet?.id && post.Retweet ? (
             <Card
               cover={
                 !post.lockStatus &&
