@@ -3,10 +3,10 @@ import axios from "axios";
 
 export const loadMyInfo = createAsyncThunk(
   "user/loadMyInfo",
-  async (thunkAPI) => {
+  async () => {
     // try {
     const response = await axios.get("/user");
-    console.log("userj response", response.data);
+    console.log("user response", response.data);
     return response.data || null;
     // } catch (error) {
     //   const message =

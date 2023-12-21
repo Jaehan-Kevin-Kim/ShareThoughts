@@ -114,34 +114,6 @@ const Hashtag = () => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps =
-//   wrapper.getServerSideProps(async (context: GetServerSidePropsContext) => {
-//     const cookie = context.req ? context.req.headers.cookie : "";
-//     axios.defaults.headers.Cookie = "";
-//     if (context.req && cookie) {
-//       axios.defaults.headers.Cookie = cookie;
-//     }
-
-//     await context.store.dispatch(loadHashtagPosts(context.params.tag));
-//     // context.store.dispatch({
-//     //   type: LOAD_HASHTAG_POSTS_REQUEST,
-//     //   data: context.params.tag,
-//     // });
-
-//     await context.store.dispatch(loadMyInfo());
-//     // context.store.dispatch({
-//     //   type: LOAD_MY_INFO_REQUEST,
-//     // });
-//     // context.store.dispatch({
-//     //   type: LOAD_USER_REQUEST,
-//     //   data: context.params.id,
-//     // });
-//     // await context.store.dispatch(END);
-//     // await context.store.sagaTask.toPromise();
-//     console.log("getState", context.store.getState().post.mainPosts);
-//     return { props: {} };
-//   }) satisfies GetServerSideProps;
-
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps(
     (store) => async (context: GetServerSidePropsContext) => {

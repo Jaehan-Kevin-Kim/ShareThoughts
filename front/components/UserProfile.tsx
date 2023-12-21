@@ -21,21 +21,21 @@ const UserProfile = () => {
             <Link href={`/user/${me.id}`}>
               Posts
               <br />
-              {me.Posts.length}
+              {me.Posts?.length}
             </Link>
           </div>,
           <div key="followings">
             <Link href="/profile">
               Following
               <br />
-              {me.Followings.length}
+              {me.Followings?.length}
             </Link>
           </div>,
           <div key="followers">
             <Link href="/profile">
               Followers
               <br />
-              {me.Followers.length}
+              {me.Followers?.length}
             </Link>
           </div>,
         ]}>

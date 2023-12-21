@@ -97,15 +97,15 @@ export const getServerSideProps: GetServerSideProps =
 
       await store.dispatch(loadMyInfo());
 
-      // await store.dispatch(loadPosts());
+      await store.dispatch(loadPosts());
 
       console.log("call loadposts in index");
 
-      const throttledLoadPosts = _.throttle((dispatch, lastId) => {
-        dispatch(loadPosts(lastId));
-      }, 5000);
+      // const throttledLoadPosts = _.throttle((dispatch, lastId) => {
+      //   dispatch(loadPosts(lastId));
+      // }, 5000);
 
-      throttledLoadPosts(store.dispatch, 0);
+      // throttledLoadPosts(store.dispatch, 0);
 
       // await context.store.dispatch(END);
       // await context.store.sagaTask.toPromise();

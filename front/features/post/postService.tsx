@@ -50,14 +50,22 @@ export const loadHashtagPosts = createAsyncThunk(
   },
 );
 
-const loadPostsThrottle = async (lastId: number) => {
-  const response = await axios.get(`/posts?lastId=${lastId || 0}`);
-  return response.data;
-};
+// const loadPostsThrottle = async (lastId: number) => {
+//   const response = await axios.get(`/posts?lastId=${lastId || 0}`);
+//   return response.data;
+// };
+
+// export const loadPosts = createAsyncThunk(
+//   "post/loadPosts",
+//   _.throttle(loadPostsThrottle, 5000),
+// );
 
 export const loadPosts = createAsyncThunk(
   "post/loadPosts",
-  _.throttle(loadPostsThrottle, 5000),
+  async (lastId: number | void) => {
+    const response = await axios.get(`/posts?lastId=${lastId || 0}`);
+    return response.data;
+  },
 );
 
 export const loadPost = createAsyncThunk(

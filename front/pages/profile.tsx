@@ -1,4 +1,4 @@
-import { useAppSelector } from "@hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@hooks/reduxHooks";
 import axios from "axios";
 import Head from "next/head";
 import Router from "next/router";
@@ -10,11 +10,13 @@ import NicknameEditForm from "../components/NicknameEditForm";
 import { backEndUrl } from "../config/config";
 import { loadMyInfo } from "../features/user/userService";
 import wrapper from "../store/configureStore";
+import { GetServerSideProps } from "next";
 
 const fetcher = (url) =>
   axios.get(url, { withCredentials: true }).then((result) => result.data);
 
 const profile = () => {
+  const dispatch = useAppDispatch();
   const [followingsLimit, setFollowingsLimit] = useState(3);
   const [followersLimit, setFollowersLimit] = useState(3);
   // const { data, error } = useSWR(
@@ -46,6 +48,8 @@ const profile = () => {
 
   useEffect(() => {
     if (!(me && me.id)) {
+      console.log("The user has not logged in");
+
       Router.push("/");
     }
   }, [me && me.id]);
@@ -93,23 +97,21 @@ const profile = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req }) => {
-      const cookie = req ? req.headers.coolkie : "";
-      axios.defaults.headers.Cookie = "";
-      // 쿠키가 브라우저에 있는 경우만 넣어서 실행
-      // (주의, 아래 조건이 없다면 다른 사람으로 로그인 될 수도 있음)
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps((store) => async ({ req }) => {
+    const cookie = req ? req.headers.cookie : "";
+    axios.defaults.headers.Cookie = "";
+    // 쿠키가 브라우저에 있는 경우만 넣어서 실행
+    // (주의, 아래 조건이 없다면 다른 사람으로 로그인 될 수도 있음)
 
-      if (req && cookie) {
-        axios.defaults.headers.Cookie = cookie;
-      }
-      await store.dispatch(loadMyInfo());
+    if (req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+    await store.dispatch(loadMyInfo());
 
-      return {
-        props: {},
-      };
-    },
-);
+    return {
+      props: {},
+    };
+  });
 
 export default profile;
