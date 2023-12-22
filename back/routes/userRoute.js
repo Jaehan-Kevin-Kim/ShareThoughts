@@ -1,4 +1,5 @@
 const express = require("express");
+
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const passport = require("passport");
@@ -109,10 +110,10 @@ router.post("/", isNotLoggedIn, async (req, res, next) => {
     // res.setHeader("Access-Control-Allow-Origin", "http://localhost:3050");
     // res.setHeader("Access-Control-Allow-Origin", "*"); 이건 모든 port를 다 받아들이는 것
     // res.send("ok"); 이렇게 간단하게 혹은 아래와 같이 상태코드와 함께 보내 줄 수도 있음.
-    res.status(201).send("okay"); //201은 생성 성공의 뜻.
+    return res.status(201).send("okay"); //201은 생성 성공의 뜻.
   } catch (error) {
     console.error(error);
-    next(error); //status 500
+    return next(error); //status 500
   }
 });
 
@@ -327,10 +328,10 @@ router.post("/like/:postId", isLoggedIn, async (req, res, next) => {
     // 위 처럼 작성 해도 되고, 혹은 아래와 같이 간단하게 한줄로 작성 가능 함. (이미 req.user로 user값을 가지고 왔기 때문에, 아래와 같이 사용 가능)
     await req.user.addLiked(req.params.postId);
 
-    res.status(200).json({ UserId: user.id, PostId: req.params.postId });
+    return res.status(200).json({ UserId: user.id, PostId: req.params.postId });
   } catch (error) {
     console.error(error);
-    next(error);
+    return next(error);
   }
 });
 

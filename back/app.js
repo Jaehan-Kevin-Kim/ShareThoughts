@@ -5,16 +5,17 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const path = require("path");
+const passport = require("passport");
+const helmet = require("helmet");
+const hpp = require("hpp");
 const postRouter = require("./routes/postRoute");
 const postsRouter = require("./routes/postsRoute");
 const userRouter = require("./routes/userRoute");
 const hashtagRouter = require("./routes/hashtagRoute");
 const reportRouter = require("./routes/reportRoute");
 const db = require("./models");
-const passport = require("passport");
-const helmet = require("helmet");
-const hpp = require("hpp");
 const passportConfig = require("./passport");
+
 const app = express();
 
 dotenv.config();
@@ -49,7 +50,7 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
-/* 해당 설정을 위와 같이 개발시, 배포시로 나눠줘도 괜찮음 
+/* 해당 설정을 위와 같이 개발시, 배포시로 나눠줘도 괜찮음
 app.use(
   cors({
     // origin: true,
