@@ -1,5 +1,5 @@
-import express, { Request, Response } from 'express';
-import morgan from 'morgan';
+import express, { Request, Response } from "express";
+import morgan from "morgan";
 import cors from "cors";
 import session from "express-session";
 import cookieParser from "cookie-parser";
@@ -15,11 +15,11 @@ import userRouter from "./routes/userRoute";
 import hashtagRouter from "./routes/hashtagRoute";
 import reportRouter from "./routes/reportRoute";
 import db from "./models";
-import { sequelize } from './models';
+import { sequelize } from "./models";
 import passportConfig from "./passport";
 
 dotenv.config();
-const prod = process.env.NODE_ENV === 'production';
+const prod = process.env.NODE_ENV === "production";
 
 const app = express();
 
@@ -52,7 +52,7 @@ if (prod) {
     );
 }
 
-app.use('/', express.static(path.join(__dirname, "uploads")));
+app.use("/", express.static(path.join(__dirname, "uploads")));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -75,7 +75,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 app.get("/", (req: Request, res: Response) => {
     res.send("main page");
