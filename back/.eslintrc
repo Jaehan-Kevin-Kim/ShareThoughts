@@ -18,7 +18,19 @@
     "import/extensions": "off",
     "no-unused-vars": "off",
     "max-len": "off",
+    // "indent": ["error", 4],
     "linebreak-style": "off",
+    "no-use-before-define": "off",
+    // "no-use-before-define": [
+    //   "error",
+    //   {
+    //     "classes": false
+    //   }
+    // ],
+
+    // "tabWidth": 4,
+    // "semi": true,
+
     // "prettier/prettier": [
     //   "error",
     //   {
@@ -26,7 +38,18 @@
     //     "parser": "flow"
     //   }
     // ],
-    "prettier/prettier": "error", // prettier 의 포맷팅 에러를 lint 에러 리포팅으로 볼 수 있도록 하는 규칙
+    "prettier/prettier": "off",
+    // "prettier/prettier": [
+    //   "error",
+    //   {
+    //     "trailingComma": "es5",
+    //     // "singleQuote": true,
+    //     "printWidth": 100,
+    //     // "tabWidth": 4,
+    //     "semi": true,
+    //     "endOfLine": "auto"
+    //   }
+    // ], // prettier 의 포맷팅 에러를 lint 에러 리포팅으로 볼 수 있도록 하는 규칙
     "quotes": "off",
     // "prettier/prettier": ["error", { "doubleQuote": true }],
     "jsx-a11y/label-has-associated-control": "off",
@@ -49,3 +72,39 @@
     "@typescript-eslint/no-unused-vars": ["warn"]
   }
 }
+// }
+
+////////////////
+// {
+//   // "parser": "babel-eslint",
+//   "parser": "@typescript-eslint/parser",
+
+//   "env": {
+//     "browser": true,
+//     "node": true,
+//     "es6": true
+//   },
+
+//   "extends": [
+//     "eslint:recommended",
+//     "plugin:prettier/recommended",
+//     "plugin:react-hooks/recommended"
+//   ],
+//   "plugins": ["@typescript-eslint"],
+//   "rules": {
+//     "no-undef": "off"
+//   },
+//   "settings": {
+//     "react": {
+//       "version": "detect"
+//     }
+//   },
+//   "overrides": [
+//     {
+//       "files": ["*.ts", "*.tsx"],
+//       "rules": {
+//         "@typescript-eslint/no-unused-vars": [2, { "args": "none" }]
+//       }
+//     }
+//   ]
+// }

@@ -1,0 +1,5 @@
+{
+  "watch": ["app.js", "routes", "config", "passport", "models", "nodemon.json"],
+  "exec": "ts-node app.ts",
+  "ext": "js json"
+}
