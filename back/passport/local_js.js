@@ -19,7 +19,7 @@ module.exports = () => {
           //첫번 째, login하면 email이 진짜 있는 지 확인 해야 함.
           const existUser = await User.findOne({
             where: {
-              email: email,
+              email,
             },
           });
           if (!existUser) {

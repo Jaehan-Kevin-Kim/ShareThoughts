@@ -2,11 +2,18 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize
 import { User } from "./user";
 import { Post } from "./post";
 
+interface CommentCreationAttributes {
+    content: string,
+    userId: number,
+    postId: number,
+}
+
+
 @Table({
     charset: "utf8mb4",
     collate: "utf8mb4_general_ci"
 })
-export class Comment extends Model<Comment> {
+export class Comment extends Model<Comment, CommentCreationAttributes> {
     @Column({
         type: DataType.TEXT,
         allowNull: false,
@@ -25,6 +32,6 @@ export class Comment extends Model<Comment> {
     @ForeignKey(() => Post)
     postId!: number;
 
-    @BelongsTo(() => Post, { foreignKey: 'postId' })
+    @BelongsTo(() => Post, { foreignKey: 'postId', as: 'post' })
     post!: Post;
 }

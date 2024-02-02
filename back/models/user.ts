@@ -2,12 +2,20 @@ import { BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequeliz
 import { Comment } from "./comment";
 import { Post } from "./post";
 import { Report } from "./report";
+import { HasManyGetAssociationsMixin } from "sequelize";
+
+interface UserCreationAttributes {
+    email: string;
+    password: string;
+    nickname: string;
+}
 
 @Table({
     charset: "utf8",
     collate: "utf8_general_ci"
 })
-export class User extends Model<User> {
+export class User extends Model<User, UserCreationAttributes
+> {
     @Column({
         type: DataType.STRING(30),
         allowNull: false,
@@ -27,26 +35,28 @@ export class User extends Model<User> {
     })
     password!: string;
 
+    // getFollowers!: HasManyGetAssociationsMixin<User>;
+
     // Association
-    @HasMany(() => Post)
+    @HasMany(() => Post, { as: 'posts' })
     posts!: Post[];
 
     @HasMany(() => Comment)
     comments!: Comment[];
 
-    @HasMany(() => Report, { as: 'PostUser' })
+    @HasMany(() => Report, { as: 'postUser' })
     postUsers!: Report[];
 
-    @HasMany(() => Report, { as: 'ReportUser' })
+    @HasMany(() => Report, { as: 'reportUser' })
     reportUsers!: Report[];
 
-    @BelongsToMany(() => Post, { through: "Like", as: "Liked", foreignKey: 'userId', otherKey: "postId" })
+    @BelongsToMany(() => Post, { through: "Like", as: "liked", foreignKey: 'userId', otherKey: "postId" })
     liked!: Post[];
 
-    @BelongsToMany(() => User, { through: "Follow", as: "Followers", foreignKey: 'followingId', otherKey: 'followerId' })
+    @BelongsToMany(() => User, { through: "Follow", as: "followers", foreignKey: 'followingId', otherKey: 'followerId' })
     followers!: User[];
 
-    @BelongsToMany(() => User, { through: "Follow", as: "Followings", foreignKey: "followerId", otherKey: 'followingId' })
+    @BelongsToMany(() => User, { through: "Follow", as: "followings", foreignKey: "followerId", otherKey: 'followingId' })
     followings!: User[];
 
 }

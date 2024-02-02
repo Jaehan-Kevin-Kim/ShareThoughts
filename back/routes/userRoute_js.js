@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { Op } = require("sequelize"); //to implement less than (Op: Operator)
 const { User, Post, Comment, Image } = require("../models");
-const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares_js");
 
 // GET /user
 router.get("/", async (req, res, next) => {
@@ -153,7 +153,7 @@ router.get("/followers", isLoggedIn, async (req, res, next) => {
 });
 
 // GET /user/followings
-router.get("/followings", async (req, res, next) => {
+router.get("/followings", isLoggedIn, async (req, res, next) => {
   try {
     const me = await User.findOne({
       where: { id: req.user.id },

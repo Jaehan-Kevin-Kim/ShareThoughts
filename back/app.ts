@@ -3,6 +3,7 @@ import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
 import * as dotenv from "dotenv";
 import * as express from "express";
+import { Request, Response } from 'express';
 import * as session from "express-session";
 import * as hpp from "hpp";
 import * as morgan from "morgan";
@@ -16,13 +17,16 @@ import db from "./models/index";
 // // @ts-ignore
 // import hashtagRouter from "./routes/hashtagRoute";
 // // @ts-ignore
-// import postRouter from "./routes/postRoute";
+import postRouter from "./routes/postRoute";
 // // @ts-ignore
-// import postsRouter from "./routes/postsRoute";
+import postsRouter from "./routes/postsRoute";
 // // @ts-ignore
-// import reportRouter from "./routes/reportRoute";
 // // @ts-ignore
-// import userRouter from "./routes/userRoute";
+import userRouter from "./routes/userRoute";
+import hashtagRouter from './routes/hashtagRoute';
+import reportRouter from "./routes/reportRoute";
+import passportConfig from "./passport";
+
 
 dotenv.config();
 const prod = process.env.NODE_ENV === "production";
@@ -36,7 +40,7 @@ db.sequelize
     })
     .catch(console.error);
 
-// passportConfig();
+passportConfig();
 
 if (prod) {
     app.use(morgan("combined")); // combined는 더 정확한 정보를 줌 (접속자의 ip등도 포함): 만약 특정 ip 접속자가 디도스와 같은 공격을 하는 경우 차단 가능 함. 따라서 배포용은 combined로 실행하기
@@ -81,20 +85,23 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+// passportConfig();
 
-// app.get("/", (req: express.Request, res: express.Response) => {
-//     res.send("main page");
-// });
+
+app.get("/", (req: Request, res: Response) => {
+    res.send("main page");
+});
 
 // app.get("/", (req: express.Request, res: express.Response) => {
 //     res.send("hello api");
 // });
 
-// app.use("/post", postRouter);
-// app.use("/posts", postsRouter);
+app.use("/user", userRouter);
+app.use("/post", postRouter);
+app.use("/posts", postsRouter);
 // app.use("/user", userRouter);
-// app.use("/hashtag", hashtagRouter);
-// app.use("/report", reportRouter);
+app.use("/hashtag", hashtagRouter);
+app.use("/report", reportRouter);
 
 app.listen(prod ? process.env.PORT : 3065, () => {
     console.log(`server is running on ${process.env.PORT}!!`);

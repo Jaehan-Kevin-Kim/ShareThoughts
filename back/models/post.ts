@@ -5,11 +5,17 @@ import { User } from "./user";
 import { Report } from "./report";
 import { Hashtag } from "./hashtag";
 
+interface PostCreationAttributes {
+    content: string,
+    userId: number,
+    retweetId?: number,
+}
+
 @Table({
     charset: "utf8mb4",
     collate: "utf8mb4_general_ci",
 })
-export class Post extends Model<Post> {
+export class Post extends Model<Post, PostCreationAttributes> {
     //Columns
     @Column({
         type: DataType.TEXT,
@@ -31,7 +37,7 @@ export class Post extends Model<Post> {
     appeal?: string;
 
     // Associations
-    @HasMany(() => Comment)
+    @HasMany(() => Comment, { as: 'comments' })
     comments!: Comment[];
 
     @HasMany(() => Image)
@@ -40,13 +46,13 @@ export class Post extends Model<Post> {
     @HasMany(() => Report)
     reports!: Report[];
 
-    @ForeignKey(() => User)
+    @ForeignKey(() => User,)
     // @Column
     userId!: number;
 
     // @BelongsTo(() => User)
     // user!: User;
-    @BelongsTo(() => User, { foreignKey: 'userId' })
+    @BelongsTo(() => User, { foreignKey: 'userId', as: 'author' })
     user!: User;
 
     @ForeignKey(() => Post)
@@ -54,7 +60,7 @@ export class Post extends Model<Post> {
     retweetId?: number;
 
     // @BelongsTo(() => Post, { as: "Retweet" })
-    @BelongsTo(() => Post, { as: "Retweet", foreignKey: 'retweetId' })
+    @BelongsTo(() => Post, { as: "retweet", foreignKey: 'retweetId' })
     retweet?: Post;
 
     // @BelongsToMany(() => Hashtag, { through: "PostHashtag", foreignKey: "PostId", })
@@ -62,7 +68,7 @@ export class Post extends Model<Post> {
     @BelongsToMany(() => Hashtag, { through: "PostHashtag", foreignKey: "postId", otherKey: "hashtagId" })
     hashtags!: Hashtag[];
 
-    @BelongsToMany(() => User, { through: "Like", as: "Likers", foreignKey: "postId", otherKey: "userId" })
+    @BelongsToMany(() => User, { through: "Like", as: "likers", foreignKey: "postId", otherKey: "userId" })
     likers!: User[];
 
 

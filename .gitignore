@@ -1,8 +1,9 @@
 node_modules
 .next
-
+**/.DS_Store
 
 # backend
 config.json
 .env
 ShareThought.pem
+uploads

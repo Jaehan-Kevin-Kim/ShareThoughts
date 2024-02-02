@@ -1,5 +1,7 @@
 const express = require("express");
+
 const router = express.Router();
+const { Op } = require("sequelize"); //to implement less than (Op: Operator)
 const { Hashtag, User, Image, Comment, Post } = require("../models");
 
 // 특정 hashtag 게시글 가져오기

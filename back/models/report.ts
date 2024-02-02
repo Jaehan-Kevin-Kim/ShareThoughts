@@ -2,11 +2,19 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize
 import { Post } from "./post";
 import { User } from "./user";
 
+
+interface ReportCreationAttributes {
+    reason: string;
+    reportUserId: number,
+    postId: number,
+    postUserId: number,
+}
+
 @Table({
     charset: "utf8mb4",
     collate: "utf8mb4_general_ci",
 })
-export class Report extends Model<Report> {
+export class Report extends Model<Report, ReportCreationAttributes> {
     // Columns
     @Column({
         type: DataType.TEXT,
@@ -24,12 +32,12 @@ export class Report extends Model<Report> {
     @ForeignKey(() => User)
     postUserId!: number;
 
-    @BelongsTo(() => User, { as: 'PostUser', foreignKey: 'postUserId' })
+    @BelongsTo(() => User, { as: 'postUser', foreignKey: 'postUserId' })
     postUser!: User;
 
     @ForeignKey(() => User)
     reportUserId!: number;
 
-    @BelongsTo(() => User, { as: 'ReportUser', foreignKey: 'reportUserId' })
+    @BelongsTo(() => User, { as: 'reportUser', foreignKey: 'reportUserId' })
     reportUser!: User;
 }

@@ -186,11 +186,13 @@ const userSlice = createSlice({
         state.signupUserLoading = true;
         state.signupUserDone = false;
         state.signupUserError = null;
+
       })
       .addCase(signupUser.fulfilled, (state, action) => {
         console.log("fulfilled", action.payload);
         state.signupUserLoading = false;
         state.signupUserDone = true;
+        state.me = action.payload;
 
         // state.signupUserError = null;
         // state.me = null;
