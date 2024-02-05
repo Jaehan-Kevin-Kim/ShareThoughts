@@ -12,6 +12,7 @@ import { Hashtag } from '../models/hashtag';
 import { Image } from '../models/image';
 import { Comment } from '../models/comment';
 import { User } from '../models/user';
+import { Report } from '../models/report';
 
 
 const router = express.Router();
@@ -285,14 +286,12 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
                     },
                     {
                         model: Image,
-
                     }
-
                 ]
             },
             {
                 model: User,
-                as: 'auther',
+                as: "author",
                 attributes: ["id", "nickname"]
             },
             {
@@ -305,9 +304,11 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
             },
             {
                 model: Comment,
+                as: "comments",
                 include: [
                     {
                         model: User,
+                        // as: "author",
                         attributes: ["id", "nickname"]
                     }
                 ]
@@ -324,14 +325,54 @@ router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
 
 // Retreive a post using postId
 //GET post/:postId
-// router.get("/:postId", async (req, res, next) => {
-//     try {
+router.get("/:postId", async (req, res, next) => {
+    try {
+        const post = await Post.findByPk(req.params.postId);
 
-//     } catch (error) {
-//         console.error(error);
-//         return next(error)
+        if (!post) {
+            return res.status(404).send("This post is not exist");
+        }
 
-//     }
-// });
+        const fullPost = await Post.findOne({
+            where: { id: post.id },
+            include: [
+                {
+                    model: User,
+                    as: "author",
+                    attributes: ["id", "nickname"],
+                },
+                {
+                    model: Image
+                },
+                {
+                    model: Comment,
+                    include: [
+                        {
+                            model: User,
+                            attributes: ["id", "nickname"],
+                            order: [["createdAt", "DESC"]]
+                        }
+                    ]
+                },
+                {
+                    model: User,
+                    as: 'likers',
+                    attributes: ["id"]
+                },
+                {
+                    model: Report
+                },
+            ]
+        });
+        res.status(200).json(fullPost);
+
+    } catch (error) {
+        console.error(error);
+        return next(error);
+
+    }
+});
+
+
 
 export default router;
