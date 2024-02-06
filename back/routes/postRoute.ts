@@ -364,8 +364,208 @@ router.get("/:postId", async (req, res, next) => {
                 },
             ]
         });
-        res.status(200).json(fullPost);
+        return res.status(200).json(fullPost);
 
+    } catch (error) {
+        console.error(error);
+        return next(error);
+
+    }
+});
+
+// Update One post content
+//upload.none()을 적는 이유는 위 post 때와 같이 formData형태로 front-end에서 요청을 받는데, image없이 text 형태로만 받기 때문에, upload.none()을 넣어줘야함.
+//추가로 해당요청은 formData에서 실제 image가 아닌 image의 src들만을 받기 때문에, 여기서는 upload.none()으로 처리 해주고, 실제 이미지는 image post 하는 요청에서 실제 파일을 업로드하는 처리를 함. 
+//Patch /post/:postId
+router.patch("/:postId", isLoggedIn, upload.none(), async (req, res, next) => {
+
+    try {
+        const existPost: any = await Post.findByPk(req.params.postId);
+        if (!existPost) {
+            return res.status(404).send("You cannot edit for non exist post");
+        }
+
+        if (existPost.userId !== req.user!.id) {
+            return res.status(401).send('You are only allowed to edit your own post');
+        }
+
+        if (existPost.retweetId) {
+            return res.status(401).send("You cannot edit a retweeted post");
+        }
+
+        await Post.update(
+            {
+                content: req.body.content,
+            },
+            {
+                where: {
+                    id: req.params.postId,
+                    userId: req.user!.id,
+                }
+            }
+        );
+
+        // Check if content contains a hashtag
+        const hashtags = req.body.content.match(/#[^\s#]+/g);
+        if (hashtags) {
+            const result = await Promise.all(
+                hashtags.map((tag: string) =>
+                    Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } }))
+            );
+            //위 result의 결과는 이런 형태가 됨. [[노드, true], [리액트, true]]
+            //따라서 아래의 경우 addHashtags뒤에 바로 addHashtags(result)가 아닌 아래처럼 반복문을 돌려 배열의 첫번째 값으로 등록을 해줘야 함.
+            await existPost.setHashtags(result.map((v) => v[0]));
+        }
+
+
+        // check if body contains image src
+        if (req.body.image) {
+            if (Array.isArray(req.body.image)) {
+                const images = await Promise.all(
+                    req.body.image.map((image: string) =>
+                        Image.create({ src: image, postId: existPost.id }))
+                );
+                console.log("images: ", images);
+                // await existPost.addImages(images);
+                // 이렇게 addImages 해주는 것이 image table에서 postId를 기재하게 해 주는 동작임
+            } else {
+                const image = await Image.create({ src: req.body.image, postId: existPost.id });
+                console.log(image);
+
+            }
+        }
+
+        const postWithImage = await Post.findOne({
+            where: { id: existPost.id },
+            include: [{ model: Image }]
+        });
+
+        return res.status(200).json({
+            postId: parseInt(req.params.postId, 10),
+            body: postWithImage,
+        });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+
+});
+
+
+// Delete a Post
+//DELETE /post/:postId
+router.delete("/:postId", isLoggedIn, async (req, res, next) => {
+    try {
+        const existPost = await Post.findByPk(req.params.postId);
+
+        if (!existPost) {
+            return res.status(400).send("You cannot delete non exist post");
+        }
+
+        if (existPost.userId !== req.user!.id) {
+            return res.status(401).send("You are allowed to delete only your own post");
+        }
+
+        await Post.destroy({
+            where: {
+                id: req.params.postId,
+            }
+        });
+        return res.status(200).json({ postId: parseInt(req.params.postId, 10) });
+
+    } catch (error) {
+        console.error(error);
+        return next(error);
+
+    }
+});
+
+//Like a post
+//POST /post/like/:postId
+router.post('/like/:postId', isLoggedIn, async (req, res, next) => {
+
+    try {
+        const post: any = await Post.findOne({
+            where: { id: req.params.postId }
+        });
+        if (!post) {
+            return res.status(403).send("You cannot give a Like to non exist post");
+        }
+
+        await post.addLikers(req.user!.id);
+
+        const returnUserInfo = await User.findOne({
+            where: {
+                id: req.user!.id
+            },
+            attributes: ["id", "nickname", "email"]
+        });
+
+        return res.status(200).json({
+            postId: post.id,
+            user: returnUserInfo
+        });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+
+//Remove like from a post
+//DELETE /post/unlike/:postId
+router.delete('/unlike/:postId', isLoggedIn, async (req, res, next) => {
+    try {
+        const post: any = await Post.findOne({
+            where: { id: req.params.postId }
+        });
+
+        if (!post) {
+            return res.status(403).send("You cannot remove a Like to non exist post");
+        }
+
+        await post.removeLikers(req.user!.id);
+        return res.status(200).json({
+            userId: req.user?.id,
+            postId: parseInt(req.params.postId, 10)
+        });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+//Update appeal letter
+//PATCH /post/appeal/:postId
+router.patch("/appeal/:postId", isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await Post.findByPk(req.params.postId);
+
+
+        if (!post) {
+            return res.status(403).send("You cannot write an appeal letter to non exist post");
+        }
+
+        if (req.user!.id !== post.userId) {
+            return res
+                .status(403)
+                .send("Only post's owner can write an appeal letter for their posts.");
+        }
+
+        await Post.update(
+            {
+                appeal: req.body.appeal,
+            },
+            {
+                where: {
+                    id: req.params.postId,
+                },
+            },
+        );
+
+        const updatedPost = await Post.findByPk(req.params.postId);
+
+        return res.status(200).json(updatedPost);
     } catch (error) {
         console.error(error);
         return next(error);
