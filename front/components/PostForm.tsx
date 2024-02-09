@@ -26,11 +26,12 @@ const PostForm = () => {
   const onClickImageUpload = useCallback(() => {
     if (!!imageInput.current) {
       imageInput.current.click();
+      // 위가 이상하게 오류가 떠서 추후 enable 하기.
     }
   }, [imageInput.current]);
 
   const onChangeImages = useCallback((e) => {
-    console.log("images", e.target.files);
+    // console.log("images", e.target.files);
     const imageFormData = new FormData(); // FormData로 만들면 multipart 형식으로 server로 보낼 수 있음. (무조건 multipart 형태로 만들어야지 backend에서 multer가 처리 함.)
 
     //아래 내용은 위 e.target.files가 배열처럼 생겼지만 배열이 아닌 유사배열이기 때문에 forEach를 사용을 못하는 상황이 발생 함. 따라서 아래와 같이 배열의 forEach method를 빌려와서 하나씩 반복해서 사용 함.

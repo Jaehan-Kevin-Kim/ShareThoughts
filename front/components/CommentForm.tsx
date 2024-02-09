@@ -25,7 +25,7 @@ const CommentForm: FC<Props> = ({ post }) => {
   }, [addCommentDone]);
 
   const onSubmitComment = useCallback(() => {
-    console.log(post.id, commentText);
+    // console.log(post.id, commentText);
 
     dispatch(addComment({ content: commentText, postId: post.id }));
   }, [commentText, id]);

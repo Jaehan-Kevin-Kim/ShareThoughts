@@ -73,12 +73,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   useEffect(() => {
     console.log("post in postCard: ", post);
-    const { Likers } = post;
-    console.log("Likers: ", Likers);
-    console.log("Likers.length: ", Likers?.length);
+    const { likers } = post;
+    // console.log("likers: ", likers);
+    // console.log("likers.length: ", likers?.length);
     // 아래 조건문 변경 하기
-    if (me && Likers?.length > 0) {
-      Likers.forEach((v) => {
+    if (me && likers?.length > 0) {
+      likers.forEach((v) => {
         if (v.id === me.id) {
           setLiked(true);
         } else {
@@ -126,15 +126,15 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   const onUpdatePost = useCallback(
     (formData) => {
-      console.log("formData: ", formData);
+      // console.log("formData: ", formData);
       // for (let key of formData.keys()) {
-      //   console.log(`${key}: ${formData.get(key)}`);
+      //   // console.log(`${key}: ${formData.get(key)}`);
       // }
 
       // for (let value of formData.values()) {
-      //   console.log(value);
+      //   // console.log(value);
       // }
-      console.log("click");
+      // console.log("click");
       dispatch(updatePost({ postId: post.id, formData }));
       // dispatch({
       //   type: UPDATE_POST_REQUEST,
@@ -154,7 +154,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     }
 
     // setLiked((prev) => !prev);
-    console.log("liked: ", liked);
+    // console.log("liked: ", liked);
     if (!liked) {
       dispatch(addLike(post.id));
       // dispatch({
@@ -200,9 +200,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   const onClickAppealModalSubmit = useCallback(() => {
     // setOpenAppealModal(true);
-    console.log("appealText: ", appealText);
+    // console.log("appealText: ", appealText);
     if (!appealText || appealText.split(" ").join("").length < 30) {
-      console.log("not satisfied");
+      // console.log("not satisfied");
       return alert("Please write at least 30 letters for the appeal letter");
     }
 
@@ -221,7 +221,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       return alert("Login is required");
     }
 
-    if (post.User.id === id) {
+    if (post.author.id === id) {
       return alert("You cannot submit a report for your own Post.");
     }
     return setOpenReportModal(true);
@@ -284,11 +284,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <CardItem
           cover={
             !post.lockStatus &&
-            post.Images[0] && (
+            // post.images[0]
+            post.images?.length > 0 && (
               <PostImages
                 onRemoveImage={onRemoveImage}
                 editMode={editMode}
-                images={post.Images}
+                images={post.images}
               />
             )
           }
@@ -309,9 +310,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               key="popover"
               content={
                 <Button.Group>
-                  {id && post.User.id === id ? (
+                  {id && post.author.id === id ? (
                     <>
-                      {!post.Retweet?.id && (
+                      {!post.retweet?.id && (
                         <Button onClick={onChangePost}>Modify</Button>
                       )}
                       <Button
@@ -321,7 +322,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                         Delete
                       </Button>
                       <Button onClick={onOpenReportModal}>Report</Button>
-                      {post.lockStatus && post.User.id === id && (
+                      {post.lockStatus && post.author.id === id && (
                         <Button type="primary" onClick={onOpenAppealModal}>
                           Appeal
                         </Button>
@@ -335,14 +336,16 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               <EllipsisOutlined />
             </Popover>,
           ]}
-          title={post.Retweet?.id ? `Retweet by ${post.User.nickname}.` : null}
+          title={
+            post.retweet?.id ? `Retweet by ${post.author.nickname}.` : null
+          }
           extra={id && <FollowButton post={post} />}>
-          {post.Retweet?.id && post.Retweet ? (
+          {post.retweet?.id && post.retweet ? (
             <Card
               cover={
                 !post.lockStatus &&
-                post.Retweet.Images[0] && (
-                  <PostImages images={post.Retweet.Images} />
+                post.retweet.images[0] && (
+                  <PostImages images={post.retweet.images} />
                 )
               }>
               <div style={{ float: "right" }}>
@@ -350,18 +353,18 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               </div>
               <Card.Meta
                 avatar={
-                  <Link href={`/user/${post.Retweet.User.id}`}>
-                    <Avatar>{post.User.nickname[0]}</Avatar>
+                  <Link href={`/user/${post.retweet.author.id}`}>
+                    <Avatar>{post.author.nickname[0]}</Avatar>
                   </Link>
                 }
-                title={post.User.nickname}
+                title={post.author.nickname}
                 description={
                   <PostCardContent
                     lockStatus={post.lockStatus}
-                    postData={post.Retweet.content}
+                    postData={post.retweet.content}
                     onCancelChangePost={onCancelChangePost}
                     onUpdatePost={onUpdatePost}
-                    reports={post.Reports}
+                    reports={post.reports}
                   />
                 }
               />
@@ -374,11 +377,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
               <Card.Meta
                 avatar={
-                  <Link href={`/user/${post.User.id}`}>
-                    <Avatar>{post.User.nickname[0]}</Avatar>
+                  <Link href={`/user/${post.author.id}`}>
+                    <Avatar>{post.author.nickname[0]}</Avatar>
                   </Link>
                 }
-                title={post.User.nickname}
+                title={post.author.nickname}
                 description={
                   <PostCardContent
                     lockStatus={post.lockStatus}
@@ -387,7 +390,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
                     postData={post.content}
                     post={post}
                     onUpdatePost={onUpdatePost}
-                    reports={post.Reports}
+                    reports={post.reports}
                     onOpenAppealModal={onOpenAppealModal}
                   />
                 }
@@ -403,16 +406,16 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           <div>
             <CommentForm post={post} />
             <List
-              header={`${post.Comments.length} comments`}
+              header={`${post.comments.length} comments`}
               itemLayout="horizontal"
-              dataSource={post.Comments}
+              dataSource={post.comments}
               renderItem={(item: IComment) => (
                 <li>
                   <Comment
-                    author={item.User.nickname}
+                    author={item.user.nickname}
                     avatar={
-                      <Link href={`/user/${item.User.id}`}>
-                        <Avatar>{item.User.nickname[0]}</Avatar>
+                      <Link href={`/user/${item.user.id}`}>
+                        <Avatar>{item.user.nickname[0]}</Avatar>
                       </Link>
                     }
                     content={item.content}
@@ -437,7 +440,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 //     Images: PropTypes.arrayOf(PropTypes.object),
 //     RetweetId: PropTypes.number,
 //     Retweet: PropTypes.objectOf(PropTypes.any),
-//     Likers: PropTypes.objectOf(PropTypes.any),
+//     likers: PropTypes.objectOf(PropTypes.any),
 //     Reports: PropTypes.objectOf(PropTypes.any),
 //     lockStatus: PropTypes.bool,
 //   }).isRequired,

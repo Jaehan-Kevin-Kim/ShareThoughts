@@ -15,7 +15,7 @@ import { backEndUrl } from "../../config/config";
 
 const ImagesZoom = ({ images, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  console.log("images", images);
+  // console.log("images", images);
   /* eslint-disable import/prefer-default-export */
   const prod = process.env.NODE_ENV === "production";
 
@@ -86,13 +86,13 @@ export default ImagesZoom;
 //   // const [imagesArray, setImagesArray] = useState([])
 //   // const images = ()=>{  }
 //   const imagesArray = images.map((image) => image.src);
-//   console.log("imagesArray", imagesArray);
-//   console.log(images);
-//   // console.log(imagesArray[0]);
+//   // console.log("imagesArray", imagesArray);
+//   // console.log(images);
+//   // // console.log(imagesArray[0]);
 //   // useEffect(() => {
 //   //   const imagesArray = images.map((image) => image);
 //   // }, [])(images);
-//   // console.log(imagesArray);
+//   // // console.log(imagesArray);
 //   return (
 //     // <Overlay>
 //     //   <Global />
@@ -124,7 +124,7 @@ export default ImagesZoom;
 //           {images.map((image, i) =>
 //             // <div key={image.src} style={{ backgroundImage: `url(${image.src})` }}>
 //             // </div>
-//             console.log(image.src),
+//             // console.log(image.src),
 //           )}
 //         </div>
 //       </Slide>
@@ -166,7 +166,7 @@ const Indicator = styled.div`
 
 const ImagesZoom = ({ images, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  console.log(images);
+  // console.log(images);
 
   const settings = {
     dots: true,

@@ -142,7 +142,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     // });
     // context.store.dispatch(END);
     // await context.store.sagaTask.toPromise();
-    // console.log("getState", store.getState().post.mainPosts);
+    // // console.log("getState", store.getState().post.mainPosts);
     return { props: {} };
   },
 );

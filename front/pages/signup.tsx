@@ -45,7 +45,7 @@ const signup = () => {
 
   useEffect(() => {
     if (signupUserError) {
-      // console.log(signupUserError);
+      // // console.log(signupUserError);
       alert(signupUserError);
     }
   }, [signupUserError]);
@@ -59,7 +59,7 @@ const signup = () => {
     [password],
   );
   const onChangeTerm = useCallback((e) => {
-    // console.log(e.target.checked);
+    // // console.log(e.target.checked);
     setTerm(e.target.checked);
     setTermError(false);
   }, []);
@@ -73,10 +73,10 @@ const signup = () => {
       return setPasswordError(true);
     }
     if (!term) {
-      // console.log(term);
+      // // console.log(term);
       return setTermError(true);
     }
-    console.log(email, nickname, password);
+    // console.log(email, nickname, password);
     dispatch(signupUser({ email, password, nickname }));
 
     // dispatch({

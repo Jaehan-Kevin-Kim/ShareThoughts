@@ -26,7 +26,7 @@ const PostImages: FC<Props> = ({ images, editMode, onRemoveImage }) => {
   const [showImagesZoom, setShowImagesZoom] = useState(false);
   const prod = process.env.NODE_ENV === "production";
 
-  // console.log("images", images);
+  // // console.log("images", images);
 
   const onZoom = useCallback(() => {
     setShowImagesZoom(true);

@@ -2,13 +2,13 @@ export interface IUser {
   id: number;
   email: string;
   nickname: string;
-  Posts?: IPost[];
-  Comments?: IComment[];
-  Liked?: IPost[]; // 'Like' 관계를 통해 연결된 Post
-  Followings?: Partial<IUser>[]; // 'Follow' 관계를 통해 연결된 팔로잉들
-  Followers?: Partial<IUser>[]; // 'Follow' 관계를 통해 연결된 팔로워들
-  PostUser?: IReport; // 'Report' 관계, 포스팅한 사용자
-  ReportUser?: IReport; // 'Report' 관계, 리포트한 사용자
+  posts?: IPost[];
+  comments?: IComment[];
+  liked?: IPost[]; // 'Like' 관계를 통해 연결된 Post
+  followings?: Partial<IUser>[]; // 'Follow' 관계를 통해 연결된 팔로잉들
+  followers?: Partial<IUser>[]; // 'Follow' 관계를 통해 연결된 팔로워들
+  postUser?: IReport; // 'Report' 관계, 포스팅한 사용자
+  reportUser?: IReport; // 'Report' 관계, 리포트한 사용자
 }
 
 export interface IPost {
@@ -17,39 +17,39 @@ export interface IPost {
   createdAt?: Date;
   appeal?: string;
   lockStatus?: boolean;
-  User?: IUser;
-  Comments?: IComment[];
-  Images?: IImage[];
-  Likers?: Partial<IUser>[];
-  Retweet?: IPost;
-  Reports?: IReport[];
+  author?: IUser;
+  comments?: IComment[];
+  images?: IImage[];
+  likers?: Partial<IUser>[];
+  retweet?: IPost;
+  reports?: IReport[];
 }
 
 export interface IImage {
   id: number;
   src: string;
-  PostId: number;
+  postId: number;
 }
 
 export interface IComment {
   id: number;
   content: string;
   createdAt: Date;
-  Post: IPost;
-  User: IUser;
+  post: IPost;
+  user: IUser;
 }
 
 export interface IHashtage {
   id: number;
   name: string;
-  Posts: IPost[];
+  posts: IPost[];
 }
 
 export interface IReport {
   id: number;
   reason: string;
-  PostUser: IUser;
-  ReportUser: IUser;
-  Posts: IPost[];
+  postUser: IUser;
+  reportUser: IUser;
+  posts: IPost[];
   createdAt: Date;
 }

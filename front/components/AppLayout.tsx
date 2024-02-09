@@ -37,8 +37,8 @@ const AppLayout = (props) => {
   const [searchInput, onChangeSearchInput] = useInput("");
   const { me, logInDone } = useAppSelector((state) => state.user);
   // const { logInDone } = useAppSelector((state) => state.user);
-  // console.log("me", me);
-  // console.log("loginDone", logInDone);
+  // // console.log("me", me);
+  // // console.log("loginDone", logInDone);
 
   const onSearchClick = useCallback(() => {
     Router.push(`/hashtag/${searchInput}`);

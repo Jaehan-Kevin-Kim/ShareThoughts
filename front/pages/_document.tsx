@@ -49,7 +49,7 @@ export default class MyDocument extends Document {
         ),
       };
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     } finally {
       sheet.seal();
     }

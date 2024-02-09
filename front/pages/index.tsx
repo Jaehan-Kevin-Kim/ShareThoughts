@@ -35,14 +35,14 @@ const Home = () => {
     }
 
     if (addReportError) {
-      console.log("addReportError: ", addReportError);
+      // console.log("addReportError: ", addReportError);
       alert(addReportError);
     }
   }, [retweetError, addReportDone, addReportError]);
 
   useEffect(() => {
     function onScroll() {
-      // console.log(
+      // // console.log(
       //   window.scrollY,
       //   window.pageYOffset,
       //   document.documentElement.clientHeight,
@@ -93,8 +93,9 @@ export const getServerSideProps: GetServerSideProps =
       if (context.req && cookie) {
         axios.defaults.headers.Cookie = cookie;
       }
-      // console.log("context check: ", context);
+      // // console.log("context check: ", context);
 
+      // 추후 아래 정보를 enable 하기
       await store.dispatch(loadMyInfo());
 
       await store.dispatch(loadPosts());

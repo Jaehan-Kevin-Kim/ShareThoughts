@@ -132,7 +132,7 @@ export const getServerSideProps: GetServerSideProps =
 
       // Optional: You might want to access the updated state after dispatching actions
       const state = store.getState();
-      // console.log("Updated state: ", state);
+      // // console.log("Updated state: ", state);
 
       // Return an empty props object
       return { props: {} };

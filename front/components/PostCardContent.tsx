@@ -48,12 +48,12 @@ const PostCardContent: FC<Props> = ({
     if (updatePostDone) {
       onCancelChangePost();
     }
-    console.log(post);
+    // console.log(post);
   }, [updatePostDone]);
 
   // useEffect(() => {
   //   if (lockStatus) {
-  //     console.log("lockStatus: ", lockStatus);
+  //     // console.log("lockStatus: ", lockStatus);
   //     return <div> This Post has been deactivated by reports.</div>;
   //   }
   //   return null;
@@ -81,11 +81,11 @@ const PostCardContent: FC<Props> = ({
   );
 
   const onChangeImages = useCallback((e) => {
-    console.log("image event: ", e);
-    console.log(e.target);
-    console.log("e.target.files: ", e.target.files);
-    // console.log(e.target.files.map((v) => console.log(v)));
-    console.log(e.target.files[0]);
+    // console.log("image event: ", e);
+    // console.log(e.target);
+    // console.log("e.target.files: ", e.target.files);
+    // // console.log(e.target.files.map((v) => // console.log(v)));
+    // console.log(e.target.files[0]);
 
     const imageFormData = new FormData();
 
@@ -105,24 +105,24 @@ const PostCardContent: FC<Props> = ({
     //   imageFormData.append("image", f);
     // });
 
-    // console.log("imageFormData: ", imageFormData);
-    // console.log("imageFormData: ", imageFormData);
+    // // console.log("imageFormData: ", imageFormData);
+    // // console.log("imageFormData: ", imageFormData);
 
     // for (let key of imageFormData.keys()) {
-    //   console.log(`${key}: ${imageFormData.get(key)}`);
+    //   // console.log(`${key}: ${imageFormData.get(key)}`);
     // }
     // for (let value of imageFormData.values()) {
-    //   console.log(value);
+    //   // console.log(value);
     // }
 
     // for (const pair of imageFormData.entries()) {
-    //   console.log(`${pair[0]}, ${pair[1]}`);
-    //   console.log(`${pair}, ${pair.values()}`);
+    //   // console.log(`${pair[0]}, ${pair[1]}`);
+    //   // console.log(`${pair}, ${pair.values()}`);
     // }
   }, []);
 
   const onCancelUpdatePost = useCallback(() => {
-    console.log("cancel Change Post");
+    // console.log("cancel Change Post");
     dispatch(postSlice.actions.removeUpdateImageAll());
     // dispatch({
     //   type: REMOVE_UPDATEIMAGEALL,
@@ -134,15 +134,15 @@ const PostCardContent: FC<Props> = ({
     const formData = new FormData();
     updateImagePaths.forEach((path) => formData.append("image", path));
     formData.append("content", editText);
-    // console.log("click in post card content");
+    // // console.log("click in post card content");
     onUpdatePost(formData);
   }, [editText, updateImagePaths]);
 
   // const onUpdatePost = useCallback(() => {
   //   // const formData = new FormData();
   //   // formData.append("content", editText);
-  //   console.log("post: ", post);
-  //   console.log("editText: ", editText);
+  //   // console.log("post: ", post);
+  //   // console.log("editText: ", editText);
   //   dispatch({
   //     type: UPDATE_POST_REQUEST,
   //     data: {

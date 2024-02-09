@@ -6,7 +6,7 @@ export const loadMyInfo = createAsyncThunk(
   async () => {
     // try {
     const response = await axios.get("/user");
-    console.log("user response", response.data);
+    // console.log("user response", response.data);
     return response.data || null;
     // } catch (error) {
     //   const message =

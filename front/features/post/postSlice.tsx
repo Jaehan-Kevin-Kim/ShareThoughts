@@ -169,7 +169,7 @@ const postSlice = createSlice({
         state.loadUserPostsError = null;
       })
       .addCase(loadUserPosts.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadUserPostsLoading = false;
         state.loadUserPostsDone = true;
         state.loadUserPostsError = null;
@@ -187,7 +187,7 @@ const postSlice = createSlice({
         state.loadHashtagPostsError = null;
       })
       .addCase(loadHashtagPosts.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadHashtagPostsLoading = false;
         state.loadHashtagPostsDone = true;
         state.loadHashtagPostsError = null;
@@ -205,12 +205,12 @@ const postSlice = createSlice({
         state.loadPostsError = null;
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadPostsLoading = false;
         state.loadPostsDone = true;
         state.loadPostsError = null;
         // state.me = action.payload || null;
-        console.log("loadPosts results: ", action.payload);
+        // console.log("loadPosts results: ", action.payload);
 
         state.mainPosts = state.mainPosts.concat(action.payload);
         state.hasMorePosts = action.payload.length === 10;
@@ -225,7 +225,7 @@ const postSlice = createSlice({
         state.loadPostError = null;
       })
       .addCase(loadPost.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadPostLoading = false;
         state.loadPostDone = true;
         state.loadPostError = null;
@@ -242,7 +242,7 @@ const postSlice = createSlice({
         state.addPostError = null;
       })
       .addCase(addPost.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.addPostLoading = false;
         state.addPostDone = true;
         state.addPostError = null;
@@ -260,14 +260,14 @@ const postSlice = createSlice({
         state.removePostError = null;
       })
       .addCase(removePost.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.removePostLoading = false;
         state.removePostDone = true;
         state.removePostError = null;
         const postIndex = state.mainPosts.findIndex(
           (post) => post.id === action.payload.PostId,
         );
-        console.log("postIndex: ", postIndex);
+        // console.log("postIndex: ", postIndex);
         state.mainPosts.splice(postIndex, 1);
       })
       .addCase(removePost.rejected, (state, action) => {
@@ -281,7 +281,7 @@ const postSlice = createSlice({
         state.updatePostError = null;
       })
       .addCase(updatePost.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.updatePostLoading = false;
         state.updatePostDone = true;
         state.updatePostError = null;
@@ -305,7 +305,7 @@ const postSlice = createSlice({
         state.addCommentError = null;
       })
       .addCase(addComment.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.addCommentLoading = false;
         state.addCommentDone = true;
         state.addCommentError = null;
@@ -324,7 +324,7 @@ const postSlice = createSlice({
         state.uploadImagesError = null;
       })
       .addCase(uploadImages.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.uploadImagesLoading = false;
         state.uploadImagesDone = true;
         state.uploadImagesError = null;
@@ -341,7 +341,7 @@ const postSlice = createSlice({
         state.removeImageError = null;
       })
       .addCase(removeImage.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.removeImageLoading = false;
         state.removeImageDone = true;
         state.removeImageError = null;
@@ -364,7 +364,7 @@ const postSlice = createSlice({
         state.updateImagesError = null;
       })
       .addCase(updateImages.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.updateImagesLoading = false;
         state.updateImagesDone = true;
         state.updateImagesError = null;
@@ -382,7 +382,7 @@ const postSlice = createSlice({
         state.retweetError = null;
       })
       .addCase(retweet.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.retweetLoading = false;
         state.retweetDone = true;
         state.retweetError = null;
@@ -400,7 +400,7 @@ const postSlice = createSlice({
         state.addLikeError = null;
       })
       .addCase(addLike.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.addLikeLoading = false;
         state.addLikeDone = true;
         state.addLikeError = null;
@@ -433,7 +433,7 @@ const postSlice = createSlice({
         state.removeLikeError = null;
       })
       .addCase(removeLike.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.removeLikeLoading = false;
         state.removeLikeDone = true;
         state.removeLikeError = null;
@@ -456,7 +456,7 @@ const postSlice = createSlice({
         state.addReportError = null;
       })
       .addCase(addReport.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.addReportLoading = false;
         state.addReportDone = true;
         state.addReportError = null;
@@ -475,7 +475,7 @@ const postSlice = createSlice({
         state.loadReportsError = null;
       })
       .addCase(loadReport.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadReportsLoading = false;
         state.loadReportsDone = true;
         state.loadReportsError = null;
@@ -494,7 +494,7 @@ const postSlice = createSlice({
         state.postAppealError = null;
       })
       .addCase(postAppeal.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.postAppealLoading = false;
         state.postAppealDone = true;
         state.postAppealError = null;

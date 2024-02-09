@@ -122,7 +122,7 @@ const userSlice = createSlice({
         state.loadMyInfoError = null;
       })
       .addCase(loadMyInfo.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadMyInfoLoading = false;
         state.loadMyInfoDone = true;
         state.loadMyInfoError = null;
@@ -139,7 +139,7 @@ const userSlice = createSlice({
         state.loadUserError = null;
       })
       .addCase(loadUser.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadUserLoading = false;
         state.loadUserDone = true;
         state.loadUserError = null;
@@ -155,7 +155,7 @@ const userSlice = createSlice({
         state.loginError = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loginLoading = false;
         state.loginDone = true;
         state.loginError = null;
@@ -171,7 +171,7 @@ const userSlice = createSlice({
         state.logoutError = null;
       })
       .addCase(logout.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.logoutLoading = false;
         state.logoutDone = true;
         // state.logoutError = null;
@@ -189,7 +189,7 @@ const userSlice = createSlice({
 
       })
       .addCase(signupUser.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.signupUserLoading = false;
         state.signupUserDone = true;
         state.me = action.payload;
@@ -207,7 +207,7 @@ const userSlice = createSlice({
         state.followError = null;
       })
       .addCase(follow.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.followLoading = false;
         state.followDone = true;
         state.me.Followings.push({ id: action.payload.UserId });
@@ -226,7 +226,7 @@ const userSlice = createSlice({
         state.changeNicknameError = null;
       })
       .addCase(changeNickname.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.changeNicknameLoading = false;
         state.changeNicknameDone = true;
         // state.me.Followings.push({ id: action.payload.UserId });
@@ -244,7 +244,7 @@ const userSlice = createSlice({
         state.loadFollowingsError = null;
       })
       .addCase(loadFollowings.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadFollowingsLoading = false;
         state.loadFollowingsDone = true;
         // state.me.Followings.push({ id: action.payload.UserId });
@@ -262,7 +262,7 @@ const userSlice = createSlice({
         state.loadFollowersError = null;
       })
       .addCase(loadFollowers.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.loadFollowersLoading = false;
         state.loadFollowersDone = true;
         // state.me.Followings.push({ id: action.payload.UserId });
@@ -281,7 +281,7 @@ const userSlice = createSlice({
         state.removeFollowerError = null;
       })
       .addCase(removeFollower.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.removeFollowerLoading = false;
         state.removeFollowerDone = true;
         // state.me.Followings.push({ id: action.payload.UserId });
@@ -302,7 +302,7 @@ const userSlice = createSlice({
         state.unfollowError = null;
       })
       .addCase(unfollow.fulfilled, (state, action) => {
-        console.log("fulfilled", action.payload);
+        // console.log("fulfilled", action.payload);
         state.unfollowLoading = false;
         state.unfollowDone = true;
         // state.me.Followings.push({ id: action.payload.UserId });

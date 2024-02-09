@@ -48,7 +48,7 @@ const profile = () => {
 
   useEffect(() => {
     if (!(me && me.id)) {
-      console.log("The user has not logged in");
+      // console.log("The user has not logged in");
 
       Router.push("/");
     }
