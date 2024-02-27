@@ -26,11 +26,11 @@ const Post = () => {
   return (
     <AppLayout>
       <Head>
-        <title>{singlePost.User.nickname}&aposs content</title>
+        <title>{singlepost.author.nickname}&aposs content</title>
         <meta name="description" content={singlePost.content} />
         <meta
           property="og:title"
-          content={`${singlePost.User.nickname}'s post.`}
+          content={`${singlepost.author.nickname}'s post.`}
         />
         <meta property="og:description" content={singlePost.content} />
         <meta

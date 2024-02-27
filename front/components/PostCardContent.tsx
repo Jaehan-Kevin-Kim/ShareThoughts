@@ -167,7 +167,7 @@ const PostCardContent: FC<Props> = ({
             }}>
             This Post has been deactivated by several reports.{" "}
           </div>
-          {id && id === post.User.id && (
+          {id && id === post.author.id && (
             <Collapse>
               <Collapse.Panel
                 key={post.id}

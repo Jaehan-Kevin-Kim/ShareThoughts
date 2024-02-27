@@ -21,21 +21,21 @@ const UserProfile = () => {
             <Link href={`/user/${me.id}`}>
               Posts
               <br />
-              {me.Posts?.length}
+              {me.posts?.length}
             </Link>
           </div>,
           <div key="followings">
             <Link href="/profile">
               Following
               <br />
-              {me.Followings?.length}
+              {me.followings?.length}
             </Link>
           </div>,
           <div key="followers">
             <Link href="/profile">
               Followers
               <br />
-              {me.Followers?.length}
+              {me.followers?.length}
             </Link>
           </div>,
         ]}>
@@ -47,9 +47,11 @@ const UserProfile = () => {
           }
           title={me.nickname}
         />
-        <Button onClick={onLogout} loading={logOutLoading}>
-          Logout
-        </Button>
+        <div style={{ marginTop: 10 }}>
+          <Button onClick={onLogout} loading={logOutLoading}>
+            Logout
+          </Button>
+        </div>
       </Card>
     </>
   );

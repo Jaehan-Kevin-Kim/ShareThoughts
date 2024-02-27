@@ -186,7 +186,6 @@ const userSlice = createSlice({
         state.signupUserLoading = true;
         state.signupUserDone = false;
         state.signupUserError = null;
-
       })
       .addCase(signupUser.fulfilled, (state, action) => {
         // console.log("fulfilled", action.payload);
@@ -210,8 +209,8 @@ const userSlice = createSlice({
         // console.log("fulfilled", action.payload);
         state.followLoading = false;
         state.followDone = true;
-        state.me.Followings.push({ id: action.payload.UserId });
-        // state.me.Followings =
+        state.me.followings.push({ id: action.payload.UserId });
+        // state.me.followings =
         // state.followError = null;
         // state.me = null;
       })
@@ -229,7 +228,7 @@ const userSlice = createSlice({
         // console.log("fulfilled", action.payload);
         state.changeNicknameLoading = false;
         state.changeNicknameDone = true;
-        // state.me.Followings.push({ id: action.payload.UserId });
+        // state.me.followings.push({ id: action.payload.UserId });
         state.me.nickname = action.payload.nickname;
         // state.changeNicknameError = null;
         // state.me = null;
@@ -247,8 +246,8 @@ const userSlice = createSlice({
         // console.log("fulfilled", action.payload);
         state.loadFollowingsLoading = false;
         state.loadFollowingsDone = true;
-        // state.me.Followings.push({ id: action.payload.UserId });
-        state.me.Followings = action.payload;
+        // state.me.followings.push({ id: action.payload.UserId });
+        state.me.followings = action.payload;
         // state.loadFollowingsError = null;
         // state.me = null;
       })
@@ -265,8 +264,8 @@ const userSlice = createSlice({
         // console.log("fulfilled", action.payload);
         state.loadFollowersLoading = false;
         state.loadFollowersDone = true;
-        // state.me.Followings.push({ id: action.payload.UserId });
-        state.me.Followers = action.payload;
+        // state.me.followings.push({ id: action.payload.UserId });
+        state.me.followers = action.payload;
         // state.loadFollowersError = null;
         // state.me = null;
       })
@@ -284,8 +283,8 @@ const userSlice = createSlice({
         // console.log("fulfilled", action.payload);
         state.removeFollowerLoading = false;
         state.removeFollowerDone = true;
-        // state.me.Followings.push({ id: action.payload.UserId });
-        state.me.Followers = state.me.Followers.filter(
+        // state.me.followings.push({ id: action.payload.UserId });
+        state.me.followers = state.me.followers.filter(
           (follower) => follower.id !== action.payload.UserId,
         );
         // state.removeFollowerError = null;
@@ -305,8 +304,8 @@ const userSlice = createSlice({
         // console.log("fulfilled", action.payload);
         state.unfollowLoading = false;
         state.unfollowDone = true;
-        // state.me.Followings.push({ id: action.payload.UserId });
-        state.me.Followings = state.me.Followings.filter(
+        // state.me.followings.push({ id: action.payload.UserId });
+        state.me.followings = state.me.followings.filter(
           (user) => user.id !== action.payload.UserId,
         );
         // state.unfollowError = null;

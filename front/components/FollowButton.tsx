@@ -14,17 +14,17 @@ const FollowButton: FC<Props> = ({ post }) => {
     (state) => state.user,
   );
 
-  const isFollowing = me && me.Followings.find((v) => v.id === post.User.id);
+  const isFollowing = me && me.followings.find((v) => v.id === post.author.id);
 
   const onFollow = useCallback(() => {
     if (isFollowing) {
-      dispatch(unfollow(post.User.id));
+      dispatch(unfollow(post.author.id));
     } else {
-      dispatch(follow(post.User.id));
+      dispatch(follow(post.author.id));
     }
   }, [isFollowing]);
 
-  if (post.User.id === me.id) {
+  if (post.author.id === me.id) {
     return null;
   }
   return (

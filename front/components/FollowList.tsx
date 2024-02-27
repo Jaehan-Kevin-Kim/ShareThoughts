@@ -6,11 +6,36 @@ import { useDispatch } from "react-redux";
 import { removeFollower, unfollow } from "../features/user/userService";
 import { useAppDispatch } from "@hooks/reduxHooks";
 
-const FollowList = ({ header, data, onClickMore, loading }) => {
+interface FollowListProps {
+  header: string;
+  data: {
+    id: number;
+    email: string;
+    nickname: string;
+    password: string;
+    createdAt: Date;
+    updatedAt: Date;
+    Follow: {
+      createdAt: Date;
+      updatedAt: Date;
+      followingId: number;
+      followerId: number;
+    };
+  }[];
+  onClickMore: () => void;
+  loading: boolean;
+}
+
+const FollowList: React.FC<FollowListProps> = ({
+  header,
+  data,
+  onClickMore,
+  loading,
+}) => {
   const dispatch = useAppDispatch();
 
   //아래의 경우는 고차함수로 인자가 넘어 왔을때 function을 처리 하는 방법
-  const onCancel = (id) => () => {
+  const onCancel = (id: number) => () => {
     if (header === "Following List") {
       dispatch(unfollow(id));
     } else {
@@ -25,15 +50,17 @@ const FollowList = ({ header, data, onClickMore, loading }) => {
       size="small"
       header={<div>{header}</div>}
       loadMore={
-        <div
-          className={css`
-            text-align: center;
-            margin: 10px 0;
-          `}>
-          <Button onClick={onClickMore} loading={loading}>
-            More...
-          </Button>
-        </div>
+        data.length > 3 && (
+          <div
+            className={css`
+              text-align: center;
+              margin: 10px 0;
+            `}>
+            <Button onClick={onClickMore} loading={loading}>
+              More...
+            </Button>
+          </div>
+        )
       }
       bordered
       dataSource={data}
@@ -44,20 +71,97 @@ const FollowList = ({ header, data, onClickMore, loading }) => {
           `}>
           <Card
             actions={[<StopOutlined key="stop" onClick={onCancel(item.id)} />]}>
-            <Card.Meta description={item.nickname} />
+            <Card.Meta description={item.nickname} style={{ textAlign: "center" }} />
           </Card>
         </List.Item>
       )}
-      //위 onClick={onCancel(인자)}이렇게 넘겨 줄 수 있는 것은, 현재 반복문 안에서 특정 값을 인자로 보내기 위함이다. 이걸 나중에 함수에서 받아서 쓸 때는 고차함수 형태로 해서 해당 값을 받을 수 있음.
+      /* //위 onClick={onCancel(인자)}이렇게 넘겨 줄 수 있는 것은, 현재 반복문 안에서 특정 값을 인자로 보내기 위함이다. 이걸 나중에 함수에서 받아서 쓸 때는 고차함수 형태로 해서 해당 값을 받을 수 있음. */
     />
   );
-};
 
-FollowList.propTypes = {
+  // return (
+  // {
+  //   data && data.length > 0 ? (
+  //     <List
+  //       style={{ marginBottom: 20 }}
+  //       grid={{ column: 4, gutter: 4, xs: 2, md: 3 }}
+  //       size="small"
+  //       header={<div>{header}</div>}
+  //       loadMore={
+  //         data.length > 0 && (
+  //           <div
+  //             className={css`
+  //               text-align: center;
+  //               margin: 10px 0;
+  //             `}>
+  //             <Button onClick={onClickMore} loading={loading}>
+  //               More...
+  //             </Button>
+  //           </div>
+  //         )
+  //       }
+  //       bordered
+  //       dataSource={data}
+  //       renderItem={(item) => (
+  //         <List.Item
+  //           className={css`
+  //             margin-top: 20px;
+  //           `}>
+  //           <Card
+  //             actions={[
+  //               <StopOutlined key="stop" onClick={onCancel(item.id)} />,
+  //             ]}>
+  //             <Card.Meta description={item.nickname} />
+  //           </Card>
+  //         </List.Item>
+  //       )}
+  //       /* //위 onClick={onCancel(인자)}이렇게 넘겨 줄 수 있는 것은, 현재 반복문 안에서 특정 값을 인자로 보내기 위함이다. 이걸 나중에 함수에서 받아서 쓸 때는 고차함수 형태로 해서 해당 값을 받을 수 있음. */
+  //     />
+  //   ) : (
+  //     <List
+  //       style={{ marginBottom: 20 }}
+  //       grid={{ column: 4, gutter: 4, xs: 2, md: 3 }}
+  //       size="small"
+  //       header={<div>{header}</div>}
+  //       loadMore={
+  //         data.length > 0 && (
+  //           <div
+  //             className={css`
+  //               text-align: center;
+  //               margin: 10px 0;
+  //             `}>
+  //             <Button onClick={onClickMore} loading={loading}>
+  //               More...
+  //             </Button>
+  //           </div>
+  //         )
+  //       }
+  //       bordered
+  //       /* dataSource={data}
+  //       renderItem={(item) => (
+  //         <List.Item
+  //           className={css`
+  //             margin-top: 20px;
+  //           `}>
+  //           <Card
+  //             actions={[
+  //               <StopOutlined key="stop" onClick={onCancel(item.id)} />,
+  //             ]}>
+  //             <Card.Meta description={item.nickname} />
+  //           </Card>
+  //         </List.Item>
+  //       )} */
+  //       /* //위 onClick={onCancel(인자)}이렇게 넘겨 줄 수 있는 것은, 현재 반복문 안에서 특정 값을 인자로 보내기 위함이다. 이걸 나중에 함수에서 받아서 쓸 때는 고차함수 형태로 해서 해당 값을 받을 수 있음. */
+  //     />
+  //   );
+  //   /* ); */
+  // }
+};
+/* FollowList.propTypes = {
   header: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
   onClickMore: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-};
+}; */
 
 export default FollowList;

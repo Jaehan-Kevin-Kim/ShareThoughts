@@ -48,7 +48,7 @@ const profile = () => {
 
   useEffect(() => {
     if (!(me && me.id)) {
-      // console.log("The user has not logged in");
+      console.log("The user has not logged in", me);
 
       Router.push("/");
     }
@@ -80,18 +80,18 @@ const profile = () => {
         <NicknameEditForm />
         <FollowList
           header="Followings"
-          data={followingsData}
+          data={followingsData?.followings || []}
           onClickMore={loadMoreFollowings}
           loading={!followingError && !followingsData}
         />
         <FollowList
           header="Followers"
-          data={followersData}
+          data={followersData?.followers || []}
           onClickMore={loadMoreFollowers}
           loading={!followerError && !followersData}
         />
-        {/* <FollowList header="Following List" data={me.Followings} />
-        <FollowList header="Follower List" data={me.Followers} /> */}
+        {/* <FollowList header="Following List" data={me.followings} />
+        <FollowList header="Follower List" data={me.followers} /> */}
       </AppLayout>
     </>
   );
